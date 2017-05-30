@@ -69,7 +69,7 @@ public abstract class ATScript extends ATMethodProvider {
 	public int loop() throws InterruptedException {
 		try {
 			int sleep;
-			if (randomHandler != null && (sleep = randomHandler.loop()) > 0) {
+			if (randomHandler != null && (sleep = randomHandler.onLoop()) > 0) {
 				return sleep;
 			} else if (states.isEmpty()) {
 				return 100;
@@ -138,7 +138,6 @@ public abstract class ATScript extends ATMethodProvider {
 	 */
 	@Override
 	public void onPaint(Graphics2D g2) {
-		int x = 50, y = 50, yy = 10;
 		if (randomHandler != null && randomHandler.isActive()) {
 			randomHandler.onPaint(g2);
 		} else {

@@ -26,7 +26,6 @@ public class RandomHandler extends ATScript {
 		int sleep = -1;
 		currentState = getState();
 		if (currentState != null) {
-			System.out.println("Performing: " + currentState.getName());
 			active = true;
 			sleep = currentState.perform();
 		} else {

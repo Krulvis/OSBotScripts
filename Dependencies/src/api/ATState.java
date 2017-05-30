@@ -5,20 +5,25 @@ package api;
  */
 public abstract class ATState<S extends ATScript> extends ATMethodProvider {
 
-    public final S script;
-    public String name;
+	public final S script;
+	public String name;
 
-    public ATState(String name, S script) {
-        this.name = name;
-        this.script = script;
-        init(script);
-    }
+	public ATState(String name, S script) {
+		this.name = name;
+		this.script = script;
+		init(script);
+	}
 
-    public ATState(S script) {
-        this.script = script;
-    }
+	public ATState(S script) {
+		this.script = script;
+	}
 
-    public abstract int perform() throws InterruptedException;
+	public abstract int perform() throws InterruptedException;
 
-    public abstract boolean validate();
+	public abstract boolean validate();
+
+	@Override
+	public String getName() {
+		return this.name;
+	}
 }
