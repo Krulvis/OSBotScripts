@@ -18,6 +18,7 @@ public class Starting extends ATState<Staker> {
 	@Override
 	public int perform() throws InterruptedException {
 		if (script.myPlayer == null && client.isLoggedIn()) {
+			script.startConfigListener();
 			script.myPlayer = new SPlayer(myPlayer().getName(), new int[]{skills.getStatic(Skill.ATTACK), skills.getStatic(Skill.STRENGTH), skills.getStatic(Skill.DEFENCE), skills.getStatic(Skill.HITPOINTS), skills.getStatic(Skill.PRAYER)});
 		}
 		return Random.smallSleep();

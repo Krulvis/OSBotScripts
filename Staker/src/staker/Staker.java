@@ -3,10 +3,16 @@ package staker;
 import api.ATScript;
 import api.ATState;
 import api.util.ATPainter;
+import api.util.Timer;
 import api.util.gui.GUIWrapper;
+import api.webapi.WebAPI;
 import api.wrappers.staking.Duel;
 import api.wrappers.staking.calculator.SPlayer;
 import api.wrappers.staking.data.RuleSet;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonNull;
+import com.google.gson.JsonObject;
 import org.osbot.rs07.api.map.Position;
 import org.osbot.rs07.script.ScriptManifest;
 import staker.states.*;
@@ -43,12 +49,19 @@ public class Staker extends ATScript {
     public boolean trayMessage = false;
     public int declineTime = 120000;
     public String autoChatMessage = "1";
+    public boolean walkBack = true;
 
     /**
      * Offer settingsFolder
      */
     public int minAmount = 1;
     public int maxAmount = 2000000;
+
+    /**
+     * WebAPI settings
+     */
+    public Timer lastUpdateTimer;
+    public ATState prevState;
 
     /**
      * States
@@ -105,5 +118,90 @@ public class Staker extends ATScript {
             }
         }
         return null;
+    }
+
+    public void addStatusUpdater() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (webAPI.isConnected()) {
+                    try {
+                        ATState state = currentState;
+                        if (lastUpdateTimer == null || lastUpdateTimer.isFinished() || (prevState == null && state != null) || (state != null && prevState != null && !state.getName().equalsIgnoreCase(prevState.getName()))) {
+                            //System.out.println("Updating status: PREV: " + (prevState == null ? "None" : prevState.getName()) + ", New: " + (state != null ? state.getName() : "None"));
+                            lastUpdateTimer = new Timer(60000);
+                            prevState = state;
+                            webAPI.sendStatus(webAPI.hasAccount() && state != null && webAPI.getStatus() != WebAPI.Status.INACTIVE ? state.getName() : webAPI.getStatus().toString());
+                        }
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }, "StatusUpdaterThread").start();
+    }
+
+    public void getNewSettings() {
+        if (webAPI.isConnected() && webAPI.getWebConnection().id >= 0) {
+            try {
+                JsonElement el = webAPI.getWebConnection().getJson("bot/duel/config");
+                System.out.println("StakeSettings response: " + el);
+                if (el != null && el != JsonNull.INSTANCE) {
+                    JsonArray arr = el.getAsJsonArray();
+                    for (JsonElement element : arr) {
+                        JsonObject obj = element.getAsJsonObject();
+                        if (obj != null) {
+                            JsonElement min_ele = obj.get("min_offer");
+                            minAmount = min_ele != null && !min_ele.isJsonNull() ? min_ele.getAsInt() : minAmount;
+
+                            JsonElement max_ele = obj.get("max_offer");
+                            maxAmount = max_ele != null && !max_ele.isJsonNull() ? max_ele.getAsInt() : maxAmount;
+
+                            JsonElement mod_ele = obj.get("returnPercent");
+                            returnPercent = mod_ele != null && !mod_ele.isJsonNull() ? mod_ele.getAsInt() : returnPercent;
+
+                            JsonElement _declineTimer = obj.get("decline_timer");
+                            declineTime = _declineTimer != null && !_declineTimer.isJsonNull() ? _declineTimer.getAsInt() * 1000 : declineTime;
+
+                            JsonElement _message = obj.get("message");
+                            autoChatMessage = _message != null && !_message.isJsonNull() ? _message.getAsString() : autoChatMessage;
+
+                            JsonElement equal_ele = obj.get("equal_offer");
+                            equalOfferAtHighOdds = equal_ele != null && !equal_ele.isJsonNull() ? equal_ele.getAsBoolean() : equalOfferAtHighOdds;
+
+                            JsonElement _relocate = obj.get("relocate");
+                            walkBack = _relocate != null && !_relocate.isJsonNull() ? _relocate.getAsBoolean() : walkBack;
+
+                            System.out.println("New settings obtained...");
+                            System.out.println("Min Amount: " + minAmount);
+                            System.out.println("Max Amount: " + maxAmount);
+                            System.out.println("Modifier: " + returnPercent);
+                            System.out.println("Message: " + autoChatMessage);
+                            System.out.println("Decline Time: " + declineTime);
+                            System.out.println("Equal at high odds: " + equalOfferAtHighOdds);
+                        }
+                    }
+                }
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void startConfigListener() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (webAPI.isConnected()) {
+                    getNewSettings();
+                    try {
+                        Thread.sleep(60000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }, "ConfigListenerThread").start();
     }
 }

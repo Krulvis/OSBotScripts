@@ -329,6 +329,7 @@ public class ATStake extends ATMethodProvider {
             int id = ids[i];
             int amount = amounts[i];
             items.add(new Item(null, id, amount));
+
         }
         return items.toArray(new Item[items.size()]);
     }
