@@ -59,22 +59,22 @@ public class DebugInteraction extends ATScript {
     }
 
     @Override
-    public void onPaint(Graphics2D g) {
+    public void onPaint(Graphics2D g2) {
         int x = 10;
         int y = 50;
         int yy = 10;
         if (target != null && opponent != null && dest != null) {
-            g.draw(target);
-            g.drawString("Sufficient: " + interact.sufficient("Fight", opponent.getName(), dest), x, y += yy);
-            g.drawString("Option index: " + interact.getOptionIndex("Fight", opponent.getName()), x, y += yy);
-            g.drawString("ooptinos: ", x, y += yy);
+            g2.draw(target);
+            g2.drawString("Sufficient: " + interact.sufficient("Fight", opponent.getName(), dest), x, y += yy);
+            g2.drawString("Option index: " + interact.getOptionIndex("Fight", opponent.getName()), x, y += yy);
+            g2.drawString("ooptinos: ", x, y += yy);
             for (Option o : menu.getMenu()) {
-                g.drawString(o.action.replaceAll("\\<[^>]*>", "") + ", " + o.name.replaceAll("\\<[^>]*>", ""), x, y += yy);
+                g2.drawString(o.action.replaceAll("\\<[^>]*>", "") + ", " + o.name.replaceAll("\\<[^>]*>", ""), x, y += yy);
             }
         } else {
-            g.drawString("Target: " + (target != null), x, y += yy);
-            g.drawString("opponent: " + (opponent != null), x, y += yy);
-            g.drawString("Dest: " + (dest != null), x, y += yy);
+            g2.drawString("Target: " + (target != null), x, y += yy);
+            g2.drawString("opponent: " + (opponent != null), x, y += yy);
+            g2.drawString("Dest: " + (dest != null), x, y += yy);
         }
     }
 

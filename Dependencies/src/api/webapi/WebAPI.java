@@ -19,6 +19,8 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 
+import static api.webapi.WebAPI.Status.ACTIVE;
+
 /**
  * Created by Krulvis on 30-May-17.
  */
@@ -27,7 +29,7 @@ public class WebAPI extends ATMethodProvider {
 	public Account currentAccount;
 	public WebConnection webConnection;
 	public Action currentAction;
-	public Status status = Status.STARTING;
+	private Status status = Status.STARTING;
 	private ArrayList<Action> actions;
 	public Relog relog;
 	public Update update;
@@ -180,7 +182,7 @@ public class WebAPI extends ATMethodProvider {
 			JsonObject ob = el.getAsJsonObject();
 			if (!ob.isJsonNull()) {
 				JsonElement _status = ob.get("online");
-				status = _status != null && !_status.isJsonNull() && _status.getAsString().equals("true") ? Status.ACTIVE : Status.INACTIVE;
+				status = _status != null && !_status.isJsonNull() && _status.getAsString().equals("true") ? ACTIVE : Status.INACTIVE;
 				System.out.println("RECEIVED Status: " + status);
 			}
 		}
@@ -269,6 +271,17 @@ public class WebAPI extends ATMethodProvider {
 
 	public enum Status {
 		BANNED, ACTIVE, INACTIVE, IDADDED, STARTING
+	}
+
+	public Status getStatus() {
+		return this.status;
+	}
+
+	/**
+	 * @return true if status of bot is active and should thus login / do script
+	 */
+	public boolean isActive() {
+		return status.equals(ACTIVE);
 	}
 
 	public void setCurrentAccount(Account account) {

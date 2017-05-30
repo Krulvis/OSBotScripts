@@ -55,7 +55,7 @@ public class DebugPlayers extends ATScript {
     }
 
     @Override
-    public void onPaint(Graphics2D g) {
+    public void onPaint(Graphics2D g2) {
 
     }
 }

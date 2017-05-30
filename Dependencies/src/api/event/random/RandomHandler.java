@@ -26,6 +26,7 @@ public class RandomHandler extends ATScript {
 		int sleep = -1;
 		currentState = getState();
 		if (currentState != null) {
+			System.out.println("Performing: " + currentState.getName());
 			active = true;
 			sleep = currentState.perform();
 		} else {
@@ -41,16 +42,18 @@ public class RandomHandler extends ATScript {
 	}
 
 	@Override
-	public void onPaint(Graphics2D g) {
-		ATState random = currentState;
+	public void onPaint(Graphics2D g2) {
+		ATState random = this.currentState;
 		if (random != null) {
-			Color c = g.getColor();
-			Font f = g.getFont();
-			g.setFont(ATPainter.BIG20);
-			g.setColor(Color.CYAN);
-			g.drawString("Solving Random: " + random.getName(), 200, 200);
-			g.setColor(c);
-			g.setFont(f);
+			Color c = g2.getColor();
+			Font f = g2.getFont();
+			g2.setFont(ATPainter.BIG20);
+			g2.setColor(Color.CYAN);
+			g2.drawString("Solving Random: " + random.getName(), 200, 200);
+			g2.setColor(c);
+			g2.setFont(f);
+		} else {
+			g2.drawString("No current Random", 200, 200);
 		}
 	}
 

@@ -130,16 +130,23 @@ public abstract class ATScript extends ATMethodProvider {
 	 */
 	protected abstract Class<? extends GUIWrapper> getGUI();
 
+	/**
+	 * Basic painter of every ATScript,
+	 * checks for active randomhandler, painter class and current state of script
+	 *
+	 * @param g2
+	 */
 	@Override
-	public void onPaint(Graphics2D graphics2D) {
+	public void onPaint(Graphics2D g2) {
+		int x = 50, y = 50, yy = 10;
 		if (randomHandler != null && randomHandler.isActive()) {
-			randomHandler.onPaint(graphics2D);
+			randomHandler.onPaint(g2);
 		} else {
 			if (currentState != null) {
-				currentState.onPaint(graphics2D);
+				currentState.onPaint(g2);
 			}
 			if (painter != null) {
-				painter.paint(graphics2D);
+				painter.paint(g2);
 			}
 		}
 	}
