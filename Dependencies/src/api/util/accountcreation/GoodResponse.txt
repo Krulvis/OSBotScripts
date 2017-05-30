@@ -1,0 +1,91 @@
+<!doctype html>
+    <!--[if lt IE 7]><html class='no-js lt-ie10 lt-ie9 lt-ie8 lt-ie7' lang='en'><![endif]-->
+    <!--[if (IE 7)&!(IEMobile)]><html class='no-js lt-ie10 lt-ie9 lt-ie8' lang='en'><![endif]-->
+    <!--[if (IE 8)&!(IEMobile)]><html class='no-js lt-ie10 lt-ie9' lang='en'><![endif]-->
+    <!--[if (IE 9)&!(IEMobile)]><html class='no-js lt-ie10' lang='en'><![endif]-->
+    <!--[if gt IE 9]><!--><!-- x --> <html class='no-js no-autoplay' lang='en'> <!--<![endif]-->
+<head>
+    <title>Account Created - Old School RuneScape</title>
+    <meta name='description' content="Sign up now and start playing Old School RuneScape."/>
+    <meta name='author' content='Jagex'/>
+    <meta api.util.accountcreation.http-equiv='X-UA-Compatible' content='IE=edge'>
+    <link rel='dns-prefetch' href='//www.google-analytics.com' />
+    <link rel='dns-prefetch' href='//ajax.googleapis.com' />
+    <link rel='dns-prefetch' href='//connect.facebook.net' />
+    <link href='https://www.runescape.com/g=oldscape/css/c/oldschool-18.css' rel='stylesheet' />
+    <link rel='shortcut icon' href='https://www.runescape.com/img/global/favicon.ico?1'>
+    <link rel='apple-touch-icon' href='https://www.runescape.com/img/global/mobile.png?1'>
+    <meta property='og:title' content="Account Created - Old School RuneScape" />
+    <meta property='og:site_name' content='Oldschool RuneScape' />
+    <meta property='og:image' content='https://www.runescape.com/img/rsp777/social-share-fb.jpg' />
+    <meta property='og:url' content='https://secure.runescape.com/m=account-creation/g=oldscape/g=oldscape/account_created' />
+    <meta property='og:description' content="Sign up now and start playing Old School RuneScape." />
+    <meta name='twitter:domain' content='Oldschool.RuneScape.com'>
+    <meta name='twitter:url' content='https://secure.runescape.com/m=account-creation/g=oldscape/g=oldscape/account_created'>
+    <meta name='twitter:title' content="Account Created - Old School RuneScape">
+    <meta name='twitter:description' content="Sign up now and start playing Old School RuneScape.">
+    <meta name='twitter:image:src' content='https://www.runescape.com/img/rsp777/social-share.jpg'>
+    <meta name='twitter:site' content='@OldschoolRS'>
+    <meta name='google-site-verification' content='pUwl5KYHKSZ6tbbgsR2wYNv1kbVmsYral3iFmijHTWM' />
+<link rel='canonical' href='https://secure.runescape.com/m=account-creation/g=oldscape/g=oldscape/account_created' />
+    </head>
+	<body id='create-account--congratulations' class='create-account--congratulations create-account'>
+		<div class='page-wrap'>
+<main class='main main--account-creation'>
+    <section class='account-box'>
+        <h1 class='account-box__title'>Account Created</h1>
+        <h2 class='account-box__title account-box__title--secondary'>Confirm your e-mail</h2>
+        <p class='account-box__copy'>Click the link we have included in the confirmation email. The email was sent to sum4714@aol.com</p>
+        <img class='account-box__down-arrow' src='https://www.runescape.com/img/rsp777/accountcreation/downArrow.png' title="then" alt="then">
+        <a class='account-box__download' href='api.util.accountcreation.http://www.runescape.com/g=oldscape/downloads/oldschool.msi?127'>Download Now</a>
+        <p class='account-box__copy'>If your confirmation email has not arrived please check your spam filter.</p>
+        <p class='account-box__copy account-box__copy--noemail'>Not received an email? <a class='account-box__copy-link' id='account-resend' href='https://secure.runescape.com/m=account-creation/g=oldscape/email_resend.ws?tracker=BPwYkSQ8*GZcfcBX1CGepQYTzobwjl4hK9alPpZSumeawMB2GCpXmiMATCIlklvh'>Click here to resend</a></p>
+        <p class='account-box__copy'>Typed the wrong email? <a class='account-box__copy-link' id='account-wrong' href='https://secure.runescape.com/m=account-creation/g=oldscape/create_account'>Click here to change it</a></p>
+        <p class='account-box__copy account-box__copy--return'>Return to <a class='account-box__copy-link' href='api.util.accountcreation.http://oldschool.runescape.com/g=oldscape/'>oldschool.runescape.com</a></p>
+    </section>
+</main>
+<script type='text/javascript'>
+    var OS_TRACKING_SUCCESS_PAGE_LOADED='4001',
+    OS_TRACKING_RESEND_EMAIL_CLICKED = '5002',
+    OS_TRACKING_CHANGE_EMAIL_CLICKED = '5001';
+</script>
+
+
+	<script type="text/javascript">
+		pageLocation = 'https://secure.runescape.com/m=account-creation/g=oldscape/account_created%3Ftracker%3DBPwYkSQ8*GZcfcBX1CGepQYTzobwjl4hK9alPpZSumeawMB2GCpXmiMATCIlklvh%26trialactive%3Dtrue';
+		document.domain = 'runescape.com';
+		var baseURL = 'https://www.runescape.com/g=oldscape', homeRedirect = 'api.util.accountcreation.http://oldschool.runescape.com/g=oldscape/', currentLangId = 0, JXGLOBAL = {};
+		JXGLOBAL.client = [{
+			'platform': 'Windows_x86',
+			'filename': 'oldschool.msi',
+			'version': '1.4.3',
+			'size': '23'
+		},{
+			'platform': 'OSX_x86',
+			'filename': 'runescape.dmg',
+			'version': '1.4.3',
+			'size': '1'
+		}];
+	</script>
+	<script>
+		var RESPONSIVE = RESPONSIVE || {};
+		RESPONSIVE.constant = RESPONSIVE.constant || {};
+			RESPONSIVE.constant.user = {
+				language: 0,
+				isLoggedIn: 0
+			};
+	</script>
+		<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+		<script>window.jQuery || document.write('<script type="text/javascript" src="https://www.runescape.com/js/rs3/jquery_1_11_0-0.js"><\/script>')</script>
+	<script src='https://www.runescape.com/js/c/rs3/modernizr_3_0_0_min-12.js'></script>
+    <script type="text/javascript" src="https://www.runescape.com/js/osrs/plugins-1.js"></script>
+	<script type='text/javascript' src='https://www.runescape.com/js/osrs/gtm-3.js'></script>
+	<script type='text/javascript' src='https://www.runescape.com/js/jagex_global-1.js'></script>
+    <script type="text/javascript" src="https://www.runescape.com/js/c/os/functions-9.js" async defer></script>
+<script type='text/javascript'>
+    var track = new Image();
+    track.src = 'https://tags.w55c.net/rs?id=6173c04efdbb447ba2bdfb58efd88c85&t=cart&sku=old-school';
+</script>
+		</div>
+    </body>
+</html>

@@ -1,0 +1,199 @@
+package api.wrappers.staking;
+
+import api.util.Timer;
+import api.wrappers.staking.calculator.Odds;
+import api.wrappers.staking.calculator.SPlayer;
+import api.wrappers.staking.data.RuleSet;
+
+import java.awt.*;
+
+import static api.util.ATPainter.*;
+
+/**
+ * Created by Krulvis on 29-May-17.
+ */
+public class Duel {
+
+    private final int yy = 10;
+    private int increaedReturn;
+    private int myExact;
+    private int otherExact;
+    private int myRoundedMultiplied;
+    private SPlayer me, opponent;
+    private Odds odds;
+    public Timer declineTimer = null;
+
+    public Duel(SPlayer me, SPlayer opponent, Odds odds, int increasedModifier, int myExact, int otherExact, int myRoundedMultiplied) {
+        this.me = me;
+        this.opponent = opponent;
+        this.odds = odds;
+        this.increaedReturn = increasedModifier;
+        this.myExact = myExact;
+        this.otherExact = otherExact;
+        this.myRoundedMultiplied = myRoundedMultiplied;
+    }
+
+    public void checkTimer(int declineTime) {
+        if (declineTimer == null) {
+            declineTimer = new Timer(declineTime);
+        }
+    }
+
+    public boolean shouldDecline() {
+        return declineTimer != null && declineTimer.isFinished();
+    }
+
+    public SPlayer getOpponent() {
+        return opponent;
+    }
+
+    public int getAttack() {
+        return opponent.attack;
+    }
+
+    public int getStrength() {
+        return opponent.strength;
+    }
+
+    public int getDefence() {
+        return opponent.defense;
+    }
+
+    public int getHp() {
+        return opponent.hitpoints;
+    }
+
+    public String getPlayerName() {
+        return opponent.name;
+    }
+
+    public void setPlayerName(String playerName) {
+        this.opponent.name = playerName;
+    }
+
+    public int getIncreaedReturn() {
+        return increaedReturn;
+    }
+
+    public int getMyExact() {
+        return myExact;
+    }
+
+    public int getOtherExact() {
+        return otherExact;
+    }
+
+    public void setOtherExact(int otherExact) {
+        this.otherExact = otherExact;
+    }
+
+    public void calculateMyOffer(int returnPercent, boolean equalOffersAtHighOdds) {
+        int difference = (int) Math.abs(odds.getRandomOdds() - returnPercent);
+        increaedReturn = difference > 4.5 ? (int) Math.abs(difference / 4.5) + returnPercent : returnPercent;
+        double modifier = odds.getMultiplier(increaedReturn);
+        //System.out.println("X ing with: " + StakeSettings.increaedReturn + ", returnPercent: " + returnPercent);
+        myExact = (int) Math.round(otherExact * (equalOffersAtHighOdds && odds.getRandomOdds() >= increaedReturn ? 1 : modifier));
+        myRoundedMultiplied = (int) (myExact > 100000 ? Math.floor((myExact / 100000) * 100000) : Math.floor(myExact));
+    }
+
+    public int getMyRoundedMultiplied() {
+        return myRoundedMultiplied;
+    }
+
+    public Odds getOdds() {
+        return odds;
+    }
+
+    public boolean isOddsCalculated() {
+        return getOdds() != null && getOdds().isCalculated();
+    }
+
+    public void resetStakes() {
+        this.myExact = 0;
+        this.otherExact = 0;
+        this.myRoundedMultiplied = 0;
+        this.increaedReturn = 55;
+        this.declineTimer = null;
+    }
+
+    public SPlayer getMe() {
+        return me;
+    }
+
+    public void drawOdds(Graphics2D g, RuleSet ruleSet) {
+        g.setColor(BLACK_A);
+        g.fillRect(550, 360, 120, 100);
+        g.setColor(Color.WHITE);
+        g.setFont(SMALL14);
+        int oddsY = 390, oddsX = 555;
+        drawStringCenter(g, ruleSet.getName(), 600, 380, Color.white);
+        drawString(g, "Rnd Odds: ", oddsX, oddsY += yy);
+        drawString(g, "Pid  Odds: ", oddsX, oddsY += yy);
+        drawString(g, "NPd Odds: ", oddsX, oddsY += yy);
+        drawString(g, "Multiply: ", oddsX, oddsY += yy);
+        oddsY = 390;
+        oddsX = 620;
+        drawString(g, "" + getOdds().getRandomOdds(), oddsX, oddsY += yy);
+        drawString(g, "" + getOdds().getPidOdds(), oddsX, oddsY += yy);
+        drawString(g, "" + getOdds().getNoPidOdds(), oddsX, oddsY += yy);
+        drawString(g, "" + getOdds().getMultiplier(getIncreaedReturn()), oddsX, oddsY += yy);
+    }
+
+    public void drawMoney(Graphics g) {
+        g.setColor(BLACK_A);
+        g.fillRect(670, 437, 60, 23);
+        double value = getOtherExact() / 1000000.0 > 0.0 ? (getOtherExact() / 10000) / 100.D : 0;
+        String valueS = value > 0 ? +value + " M" : "0";
+        if (value > 0 && getOdds() != null) {
+            double offer = (getMyRoundedMultiplied() / 10000) / 100.D;
+            drawString(g, offer + " M", 673, 450);
+        }
+        int x = 275;
+        int y = 347;
+        //if(StakeOffers.otherExact > 0){
+        drawString(g, "Other Exact: " + getOtherExact(), x, y += yy);
+        drawString(g, "My Exact: " + getMyExact(), x, y += yy);
+        drawString(g, "My Rounded: " + getMyRoundedMultiplied(), x, y += yy);
+        drawString(g, "My multiplier: " + getIncreaedReturn(), x, y += yy);
+    }
+
+    public void drawStatsCompare(Graphics2D g) {
+        g.setColor(BLACK_A);
+        g.fillRect(384, 345, 130, 130 + 5);
+        SPlayer opponent = getOpponent();
+        int h_x = 384 + 4, h_y = 345 + 12;
+        Font small11 = new Font("Helvetica", Font.BOLD, 12);
+        Font small10 = new Font("Helvetica", Font.BOLD, 10);
+        g.setFont(small11);
+        drawString(g, "Opp: " + (getPlayerName() != null ? getPlayerName() : "-"), h_x + 15, h_y, Color.WHITE);
+        h_y += 12;
+        if (getPlayerName() != null) {
+            SPlayer myPlayer = getMe();
+            if (opponent != null && myPlayer != null) {
+                g.setFont(small10);
+                drawString(g, "HS Combat: ", h_x, h_y, GRAY);
+                g.setFont(small11);
+                drawString(g, "" + opponent.getCombatLevel(), h_x + 60, h_y, Color.WHITE);
+                g.setFont(small11);
+                h_y += 12;
+                drawString(g, "  Skill", h_x, h_y, DARK_RED);
+                drawString(g, "YOU", h_x + 50, h_y, DARK_RED);
+                drawString(g, "HIM", h_x + 50 + 35, h_y, DARK_RED);
+                String[] skills = new String[]{"Attack", "Strength", "Defense", "Hitpoints", "Prayer"};
+//				for(int ix = 0; ix < hi.skill_.length; ix++){
+                for (int i = 0; i < 5; i++) {
+                    h_y += 12;
+                    g.setFont(small10);
+                    drawString(g, skills[i] + ": ", h_x, h_y, GRAY);
+                    g.setFont(small11);
+
+                    drawString(g, "" + myPlayer.SKILLS[i], h_x + 50 + 5, h_y, myPlayer.SKILLS[i] > opponent.SKILLS[i] ? Color.GREEN : (myPlayer.SKILLS[i] == opponent.SKILLS[i] ? Color.YELLOW : Color.RED));
+                    drawString(g, "" + opponent.SKILLS[i], h_x + 50 + 35 + 5, h_y, opponent.SKILLS[i] > myPlayer.SKILLS[i] ? Color.GREEN : (opponent.SKILLS[i] == myPlayer.SKILLS[i] ? Color.YELLOW : Color.RED));
+                }
+            } else {
+                g.setFont(small10);
+                drawString(g, "Loading...", h_x, h_y, GRAY);
+            }
+        }
+    }
+}
