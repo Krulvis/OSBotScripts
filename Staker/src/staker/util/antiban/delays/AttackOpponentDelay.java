@@ -9,12 +9,12 @@ public class AttackOpponentDelay extends DelayHandler{
 
     @Override
     protected double setMean() {
-        return 0.2;
+        return 0.1;
     }
 
     @Override
     protected double setDeviation() {
-        return 0.5;
+        return 0.1;
     }
 
     @Override

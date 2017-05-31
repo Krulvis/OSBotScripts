@@ -1,7 +1,6 @@
 package api.util.antiban.timers;
 
 import api.util.Timer;
-import api.util.antiban.DelayHandler;
 import api.util.antiban.TimerHandler;
 
 /**
