@@ -3,6 +3,7 @@ package api.wrappers;
 import api.ATMethodProvider;
 import api.util.Random;
 import api.util.Timer;
+import api.util.antiban.delays.ResumeAutochatDelay;
 import org.osbot.rs07.api.filter.Filter;
 import org.osbot.rs07.api.ui.RS2Widget;
 import org.osbot.rs07.utility.Condition;
@@ -96,6 +97,7 @@ public class ATChat extends ATMethodProvider {
             System.out.println("Current msg: " + mes + ", New msg: " + m);
             if (isMessageSet() && mes != null && mes.equalsIgnoreCase(m)) {
                 if (resumeChat()) {
+                    ResumeAutochatDelay.execute();
                     waitFor(2000, new Condition() {
                         @Override
                         public boolean evaluate() {

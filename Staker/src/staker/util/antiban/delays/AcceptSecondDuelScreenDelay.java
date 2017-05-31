@@ -1,34 +1,33 @@
-package staker.util.delays;
+package staker.util.antiban.delays;
 
 import api.util.antiban.DelayHandler;
 
 /**
  * Created by Tony on 31/05/2017.
  */
-public class AttackOpponentDelay extends DelayHandler{
+public class AcceptSecondDuelScreenDelay extends DelayHandler{
 
     @Override
     protected double setMean() {
-        return 0.2;
+        return 3;
     }
 
     @Override
     protected double setDeviation() {
-        return 0.5;
+        return 1.5;
     }
 
     @Override
     protected double setMin() {
-        return 0;
+        return 1.5;
     }
 
-    @Override
-    protected double setMax() {
-        return 0.8;
+    protected double setMax(){
+        return 10;
     }
 
     public static void execute(){
-        DelayHandler delay = new AttackOpponentDelay();
+        DelayHandler delay = new AcceptSecondDuelScreenDelay();
         delay.handle();
     }
 

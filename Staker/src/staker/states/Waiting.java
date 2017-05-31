@@ -3,7 +3,7 @@ package staker.states;
 import api.ATState;
 import api.util.Random;
 import api.util.Timer;
-import staker.util.delays.RelocateDelay;
+import staker.util.antiban.delays.RelocateDelay;
 import api.wrappers.staking.calculator.SPlayer;
 import api.wrappers.staking.data.Settings;
 import org.osbot.rs07.api.model.Item;

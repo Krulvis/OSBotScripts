@@ -1,34 +1,34 @@
-package staker.util.delays;
+package api.util.antiban.delays;
 
 import api.util.antiban.DelayHandler;
 
 /**
  * Created by Tony on 31/05/2017.
  */
-public class RechallengeDelay extends DelayHandler{
+public class ResumeAutochatDelay extends DelayHandler{
 
     @Override
     protected double setMean() {
-        return 1.5;
+        return 7;
     }
 
     @Override
     protected double setDeviation() {
-        return 1;
+        return 5;
     }
 
     @Override
     protected double setMin() {
-        return 0.5;
+        return 2;
     }
 
     @Override
     protected double setMax() {
-        return 8;
+        return 60;
     }
 
     public static void execute(){
-        DelayHandler delay = new RechallengeDelay();
+        DelayHandler delay = new ResumeAutochatDelay();
         delay.handle();
     }
 
