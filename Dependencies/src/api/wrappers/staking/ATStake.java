@@ -399,7 +399,7 @@ public class ATStake extends ATMethodProvider {
         int total = 0;
         final String myOfferString = widgets.get(DUEL_INTERFACE_3, MY_OFFER_3).getMessage();
         //System.out.println("Text of my offer third interface: " + myOfferString);
-        if (myOfferString != null && !myOfferString.contains("Absolutely nothing")) {
+        if (myOfferString != null && !myOfferString.contains("Absolutely nothing") && !myOfferString.equals("")) {
             String[] other_items = myOfferString.split("<br>");
             for (String item : other_items) {
                 item = item.replaceAll("\\<[^>]*>", "");
