@@ -4,6 +4,7 @@ import api.ATMethodProvider;
 import api.util.Random;
 import api.util.Timer;
 import api.util.antiban.delays.ResumeAutochatDelay;
+import api.util.antiban.timers.AutoChatMessageTimer;
 import org.osbot.rs07.api.filter.Filter;
 import org.osbot.rs07.api.ui.RS2Widget;
 import org.osbot.rs07.utility.Condition;
@@ -87,7 +88,7 @@ public class ATChat extends ATMethodProvider {
             //System.out.println("Message is already set n good.");
             return true;
         } else if (setMessage == null) {
-            setMessage = new Timer(Random.nextGaussian(5000, 25000, 10000, 5000));
+            setMessage = AutoChatMessageTimer.getTimer();
             System.out.println("Waiting: " + setMessage.getRemainingString() + ", before settingsFolder autochat message");
         } else if (setMessage.isFinished()) {
             System.out.println("Message set: " + isMessageSet());
