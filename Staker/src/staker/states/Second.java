@@ -5,6 +5,8 @@ import api.util.Random;
 import api.util.Timer;
 import org.osbot.rs07.utility.Condition;
 import staker.Staker;
+import staker.util.antiban.delays.AcceptChallengeDelay;
+import staker.util.antiban.delays.AcceptSecondDuelScreenDelay;
 
 /**
  * Created by Krulvis on 29-May-17.
@@ -20,18 +22,31 @@ public class Second extends ATState<Staker> {
     @Override
     public int perform() throws InterruptedException {
         if (script.currentDuel != null) {
-
             final int otherExact = stake.otherOfferedAmount();
             boolean tooLow = otherExact < script.minAmount;
             boolean tooHigh = otherExact > script.maxAmount;
 
             script.currentDuel.setOtherExact(tooHigh ? script.maxAmount : otherExact);
+            script.currentDuel.setOtherItems(stake.otherOfferedItems());
             script.currentDuel.calculateMyOffer(script.returnPercent, script.equalOfferAtHighOdds);
 
             final int shouldOffer = script.currentDuel.getMyRoundedMultiplied();
             final int currentOffer = stake.myOfferedAmount();
             System.out.println("Other offer: " + otherExact + ", Should offer: " + shouldOffer + ", Curr Offer: " + currentOffer);
-            if (shouldOffer > 0) {
+            if (script.currentDuel.shouldDecline()) {
+                log("Opponent took to long to offer 2nd duel");
+                //TODO Make speciel timer for declining
+                AcceptChallengeDelay.execute();
+                if (stake.declineSecond()) {
+                    script.currentDuel.setCancelReason("took_too_long_2nd");
+                    waitFor(2000, new Condition() {
+                        @Override
+                        public boolean evaluate() {
+                            return !stake.isSecondScreenOpen();
+                        }
+                    });
+                }
+            } else if (shouldOffer > 0) {
                 if (tooLow) {
                     if (tooLowTimer == null) {
                         tooLowTimer = new Timer(Random.nextGaussian(10000, 20000, 5000));
@@ -39,6 +54,7 @@ public class Second extends ATState<Staker> {
                         sleep(random(1000, 4000));
                         log("Declined stake since opponents offer was too low");
                         if (stake.declineSecond()) {
+                            script.currentDuel.setCancelReason("offer_too_low_2nd");
                             waitFor(2000, new Condition() {
                                 @Override
                                 public boolean evaluate() {
@@ -71,19 +87,22 @@ public class Second extends ATState<Staker> {
                             });
                         }
                     }
-                } else if (!stake.isSecondScreenAccepted() && stake.acceptSecondScreen()) {
-                    waitFor(10000, new Condition() {
-                        @Override
-                        public boolean evaluate() {
-                            return otherExact != stake.otherOfferedAmount() || stake.isThirdScreenOpen();
-                        }
-                    });
+                } else if (!stake.isSecondScreenAccepted()) {
+                    AcceptSecondDuelScreenDelay.execute();
+                    if (stake.acceptSecondScreen()) {
+                        waitFor(10000, new Condition() {
+                            @Override
+                            public boolean evaluate() {
+                                return otherExact != stake.otherOfferedAmount() || stake.isThirdScreenOpen();
+                            }
+                        });
+                    }
                 }
             } else {
                 tooLowTimer = null;
             }
         }
-        return Random.smallSleep();
+        return Random.medSleep();
     }
 
     @Override

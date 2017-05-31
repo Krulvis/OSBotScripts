@@ -9,6 +9,7 @@ import api.wrappers.staking.calculator.SPlayer;
 import org.osbot.rs07.api.model.Player;
 import org.osbot.rs07.utility.Condition;
 import staker.Staker;
+import staker.util.antiban.delays.AcceptFirstDuelScreenDelay;
 
 /**
  * Created by Krulvis on 29-May-17.
@@ -44,9 +45,10 @@ public class First extends ATState<Staker> {
             if (script.currentDuel.isOddsCalculated()) {
                 double odds = script.currentDuel.getOdds().getRandomOdds();
                 if (!script.debug && (odds <= 30)) {
-                    log("Declining duel, odds: " + odds + " too " + "Low");
                     System.out.println("Declining duel, odds: " + odds + " too " + "Low");
+                    //TODO Make speciel timer for declining
                     if (stake.declineSecond()) {
+                        script.currentDuel.setCancelReason("odds_too_low_1st");
                         waitFor(2000, new Condition() {
                             @Override
                             public boolean evaluate() {
@@ -59,7 +61,9 @@ public class First extends ATState<Staker> {
 
             if (script.currentDuel.shouldDecline()) {
                 log("Declined challenge, opponent taking too long.");
+                //TODO Make speciel timer for declining
                 if (stake.declineFirst()) {
+                    script.currentDuel.setCancelReason("took_too_long_1st");
                     waitFor(2000, new Condition() {
                         @Override
                         public boolean evaluate() {
@@ -70,6 +74,7 @@ public class First extends ATState<Staker> {
             }
 
             if (script.ruleSet.allGood(this)) {
+                AcceptFirstDuelScreenDelay.execute();
                 if (!stake.isFirstScreenAccepted() && stake.acceptFirstScreen()) {
                     waitFor(random(2000, 5000), new Condition() {
                         @Override
@@ -78,7 +83,7 @@ public class First extends ATState<Staker> {
                         }
                     });
                     if (stake.isSecondScreenOpen()) {
-                        script.currentDuel.declineTimer = new Timer(script.declineTime);
+                        script.currentDuel.declineTimer = new Timer(script.declineTime + Random.nextGaussian(15000, 25000, 5000));
                     }
                 }
             } else if (stake.loadPreset()) {

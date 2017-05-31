@@ -7,13 +7,14 @@ import api.util.Timer;
 import api.util.gui.GUIWrapper;
 import api.webapi.WebAPI;
 import api.wrappers.staking.Duel;
+import api.wrappers.staking.calculator.Calculator;
+import api.wrappers.staking.calculator.Odds;
 import api.wrappers.staking.calculator.SPlayer;
 import api.wrappers.staking.data.RuleSet;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonNull;
-import com.google.gson.JsonObject;
+import com.google.gson.*;
 import org.osbot.rs07.api.map.Position;
+import org.osbot.rs07.api.model.Item;
+import org.osbot.rs07.api.ui.Message;
 import org.osbot.rs07.script.ScriptManifest;
 import staker.states.*;
 import staker.util.Painter;
@@ -29,7 +30,7 @@ import java.util.LinkedList;
 @ScriptManifest(author = "Krulvis", version = 1.01D, logo = "", info = "", name = "Staker")
 public class Staker extends ATScript {
 
-    public boolean debug = true;
+    public boolean debug = false;
     public int totalGains = 0, totalLosses = 0;
 
     /**
@@ -115,6 +116,13 @@ public class Staker extends ATScript {
         }
         this.fight.canAttackPlayer = false;
         return true;
+    }
+
+    @Override
+    public void onMessage(Message m){
+        if (m.getTypeId() == 102 && m.getMessage() != null && m.getMessage().contains("cancelled") && currentDuel != null) {
+            currentDuel.sendResults(webAPI);
+        }
     }
 
     public Duel getPreviousDuel(String name) {

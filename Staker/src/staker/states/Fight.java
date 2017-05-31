@@ -5,13 +5,13 @@ import api.util.Random;
 import api.util.Timer;
 import api.wrappers.staking.data.RuleSet;
 import api.wrappers.staking.data.Settings;
-import org.osbot.rs07.api.filter.NameFilter;
 import org.osbot.rs07.api.model.Character;
 import org.osbot.rs07.api.model.Player;
 import org.osbot.rs07.api.ui.Tab;
 import org.osbot.rs07.input.mouse.RectangleDestination;
 import org.osbot.rs07.utility.Condition;
 import staker.Staker;
+import staker.util.antiban.delays.AttackOpponentDelay;
 
 import java.awt.*;
 
@@ -27,7 +27,6 @@ public class Fight extends ATState<Staker> {
         super("Fight", script);
     }
 
-    public Timer startFightTimer;
     private Timer glTimer;
     private Player opponent;
     public boolean canAttackPlayer = false;
@@ -50,11 +49,11 @@ public class Fight extends ATState<Staker> {
             opponent = getPlayer(script.currentDuel.getPlayerName());
             if (opponent != null) {
                 if (!opponent.isHitBarVisible()) {
-                    startFightTimer = new Timer();
+                    script.currentDuel.resetFightTimer();
                 }
                 if ((opponent.isHitBarVisible() && opponent.getHealthPercent() == 0) || currentHealth() == 0) {
                     System.out.println("Done fighting, " + (currentHealth() == 0 ? "I am" : "enemy is") + " dead");
-                    startFightTimer.stop();
+                    script.currentDuel.stopFightTimer();
                     openInventory();
                 } else if (fight(script.ruleSet)) {
 
@@ -120,7 +119,8 @@ public class Fight extends ATState<Staker> {
 
     public boolean attackOpponent() {
         if (!canAttackPlayer) {
-            if (!checkAttackThread.isAlive()) {
+            if (checkAttackThread == null || !checkAttackThread.isAlive()) {
+                checkAttackThread = CheckAttackThread();
                 checkAttackThread.start();
             }
         } else {
@@ -150,28 +150,31 @@ public class Fight extends ATState<Staker> {
         return false;
     }
 
-    public final Thread checkAttackThread = new Thread(new Runnable() {
-        @Override
-        public void run() {
-            Timer attackTimer = new Timer(5000);
-            while (!attackTimer.isFinished()) {
-                try {
-                    if (opponent != null) {
-                        String text = opponent.getHeadMessage();
-                        if (text.equals("1")) {
-                            //TODO Add delay to decide when to attack after "1"  is said
-                            Thread.sleep(nextGaussian(50, 150, 100, 50));
-                            break;
+    public Thread checkAttackThread = null;
+
+    public final Thread CheckAttackThread() {
+        return new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Timer attackTimer = new Timer(5000);
+                while (!attackTimer.isFinished()) {
+                    try {
+                        if (opponent != null) {
+                            String text = opponent.getHeadMessage();
+                            if (text.equals("1")) {
+                                AttackOpponentDelay.execute();
+                                break;
+                            }
                         }
+                        Thread.sleep(nextGaussian(50, 150, 100, 50));
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
                     }
-                    Thread.sleep(nextGaussian(50, 150, 100, 50));
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
                 }
+                canAttackPlayer = true;
             }
-            canAttackPlayer = true;
-        }
-    }, "CanAttackPlayer Thread");
+        }, "CanAttackPlayer Thread");
+    }
 
     @Override
     public boolean validate() {

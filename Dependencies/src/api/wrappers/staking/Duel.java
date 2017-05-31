@@ -1,9 +1,12 @@
 package api.wrappers.staking;
 
 import api.util.Timer;
+import api.webapi.WebAPI;
 import api.wrappers.staking.calculator.Odds;
 import api.wrappers.staking.calculator.SPlayer;
 import api.wrappers.staking.data.RuleSet;
+import com.google.gson.*;
+import org.osbot.rs07.api.model.Item;
 
 import java.awt.*;
 
@@ -19,9 +22,14 @@ public class Duel {
     private int myExact;
     private int otherExact;
     private int myRoundedMultiplied;
+    private double multiplier;
     private SPlayer me, opponent;
     private Odds odds;
     public Timer declineTimer = null;
+    private Timer fightTimer = null;
+    private Item[] otherItems;
+    private String cancelReason = null;
+    private boolean won, finished;
 
     public Duel(SPlayer me, SPlayer opponent, Odds odds, int increasedModifier, int myExact, int otherExact, int myRoundedMultiplied) {
         this.me = me;
@@ -87,10 +95,48 @@ public class Duel {
         this.otherExact = otherExact;
     }
 
+    public Item[] getOtherItems() {
+        return otherItems;
+    }
+
+    public void setOtherItems(Item[] otherItems) {
+        this.otherItems = otherItems;
+    }
+
+    public String getCancelReason() {
+        return cancelReason;
+    }
+
+    public void setCancelReason(String cancelReason) {
+        this.cancelReason = cancelReason;
+    }
+
+    public void setWon(boolean won) {
+        this.won = won;
+    }
+
+    public void setFinished(boolean finished) {
+        this.finished = finished;
+    }
+
+    public Timer getFightTimer() {
+        return fightTimer;
+    }
+
+    public void resetFightTimer() {
+        this.fightTimer = new Timer();
+    }
+
+    public void stopFightTimer() {
+        if (this.fightTimer != null) {
+            this.fightTimer.stop();
+        }
+    }
+
     public void calculateMyOffer(int returnPercent, boolean equalOffersAtHighOdds) {
         int difference = (int) Math.abs(odds.getRandomOdds() - returnPercent);
         increaedReturn = difference > 4.5 ? (int) Math.abs(difference / 4.5) + returnPercent : returnPercent;
-        double multiplier = odds.getMultiplier(increaedReturn);
+        multiplier = odds.getMultiplier(increaedReturn);
         //System.out.println("X ing with: " + multiplier + ", returnPercent: " + returnPercent);
         myExact = (int) Math.round(otherExact * (equalOffersAtHighOdds && odds.getRandomOdds() >= increaedReturn ? 1 : multiplier));
         myRoundedMultiplied = (int) (myExact > 100000 ? Math.floor((myExact / 100000) * 100000) : Math.floor(myExact));
@@ -114,6 +160,11 @@ public class Duel {
         this.myRoundedMultiplied = 0;
         this.increaedReturn = 55;
         this.declineTimer = null;
+        this.otherItems = null;
+        this.cancelReason = null;
+        this.won = false;
+        this.finished = false;
+        this.fightTimer = null;
     }
 
     public SPlayer getMe() {
@@ -194,6 +245,47 @@ public class Duel {
                 g.setFont(small10);
                 drawString(g, "Loading...", h_x, h_y, GRAY);
             }
+        }
+    }
+
+    public double getMultiplier() {
+        return multiplier;
+    }
+
+    public void sendResults(WebAPI webAPI) {
+        if (webAPI.isConnected()) {
+            //convert naar JSON before sending dis shit
+            JsonNull nul = JsonNull.INSTANCE;
+            JsonObject object = new JsonObject();
+            object.add("opponent_rsn", new JsonPrimitive(getPlayerName()));
+            object.add("won", finished ? new JsonPrimitive(won) : new JsonPrimitive(false));
+            object.add("bot_stake_value", new JsonPrimitive(getMyRoundedMultiplied() > 0 ? getMyRoundedMultiplied() : 0));
+            object.add("opponent_stake_value", new JsonPrimitive(getOtherExact() > 0 ? getOtherExact() : 0));
+            JsonArray bet_items = new JsonArray();
+            Item[] items = getOtherItems();
+            if (items != null && items.length > 0) {
+                for (Item i : items) {
+                    if (i != null && i.getId() > 0) {
+                        bet_items.add(i);
+                    }
+                }
+            }
+            object.add("opponent_stake_items", bet_items);
+            object.add("duration", new JsonPrimitive(fightTimer != null ? (int) (fightTimer.getElapsedTime() / 1000) : 0));
+            Odds odds = getOdds();
+
+            object.add("npid_odds", odds != null ? new JsonPrimitive(odds.getNoPidOdds()) : nul);
+            object.add("pid_odds", odds != null ? new JsonPrimitive(odds.getPidOdds()) : nul);
+            object.add("rnd_odds", odds != null ? new JsonPrimitive(odds.getRandomOdds()) : nul);
+            object.add("returnPercent", odds != null ? new JsonPrimitive(getMultiplier()) : nul);
+            object.add("finished", new JsonPrimitive(finished));
+            if (cancelReason != null) {
+                object.add("cancelled_reason", new JsonPrimitive(cancelReason));
+            }
+            JsonElement response = webAPI.getWebConnection().sendJSON("bot/duel", "POST", object);
+            webAPI.sendInventoryScreenshot();
+            webAPI.sendInventoryValue();
+            System.out.println("Send stake results: " + response);
         }
     }
 }

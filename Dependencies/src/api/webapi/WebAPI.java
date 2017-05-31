@@ -8,10 +8,8 @@ import api.webapi.actions.Relog;
 import api.webapi.actions.Restart;
 import api.webapi.actions.Update;
 import api.wrappers.staking.calculator.SPlayer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonNull;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
+import com.google.gson.*;
+import org.osbot.rs07.api.model.Item;
 import org.osbot.rs07.script.Script;
 
 import javax.imageio.ImageIO;
@@ -140,22 +138,58 @@ public class WebAPI extends ATMethodProvider {
      * Sends a screenshot of the inventory in Base64 string (JSON) to DB
      */
     public void sendInventoryScreenshot() {
-        try {
-            BufferedImage image = bot.getCanvas().getGameBuffer().getSubimage(552, 206, 731 - 552, 426 - 206);
-            //Save image to files
-            //ImageUtils.saveImage(image, "ss", TBot.getBot().getScriptHandler().getScript().getStorageDirectory() + File.separator);
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            ImageIO.write(image, "png", baos);
-            byte[] bytes = baos.toByteArray();
-            String data = new String(Base64Coder.encode(bytes));
-            JsonObject object = new JsonObject();
-            object.add("image", new JsonPrimitive(data));
-            JsonElement response = getWebConnection().sendJSON("bot/screenshot", "PUT", object);
-            baos.close();
-            System.out.println("Send Inventory Screenshot: " + response);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    BufferedImage image = bot.getCanvas().getGameBuffer().getSubimage(552, 206, 731 - 552, 426 - 206);
+                    //Save image to files
+                    //ImageUtils.saveImage(image, "ss", TBot.getBot().getScriptHandler().getScript().getStorageDirectory() + File.separator);
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    ImageIO.write(image, "png", baos);
+                    byte[] bytes = baos.toByteArray();
+                    String data = new String(Base64Coder.encode(bytes));
+                    JsonObject object = new JsonObject();
+                    object.add("image", new JsonPrimitive(data));
+                    JsonElement response = getWebConnection().sendJSON("bot/screenshot", "PUT", object);
+                    baos.close();
+                    System.out.println("Send Inventory Screenshot: " + response);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+
+    }
+
+    /**
+     * Sends the value of the bot's inventory
+     */
+    public void sendInventoryValue() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                JsonObject object = new JsonObject();
+                long cash = inventory.getAmount(995) + inventory.getAmount(13204) * 1000;
+                int value = (int)cash;
+                ArrayList<Integer> handled = new ArrayList<>();
+                JsonArray inv_items = new JsonArray();
+                for (Item i : inventory.getItems()) {
+                    if (i != null && i.getId() > 0 && !handled.contains(i.getId()) && i.getId() != 995 && i.getId() != 13204) {
+                        int amountInInv = (int)inventory.getAmount(i.getId());
+                        JsonArray single_item = new JsonArray();
+                        single_item.add(new JsonPrimitive(i.getId()));
+                        single_item.add(new JsonPrimitive(amountInInv));
+                        inv_items.add(single_item);
+                        value += grandExchange.getPrice(i.getId()) * amountInInv;
+                        handled.add(i.getId());
+                    }
+                }
+                object.add("inventory_value", new JsonPrimitive(value));
+                object.add("inventory_items", inv_items);
+                webAPI.getWebConnection().sendJSON("bot/inventory", "POST", object);
+            }
+        }, "InventoryValueThread").start();
     }
 
     /**

@@ -60,7 +60,7 @@ public class EndFight extends ATState<Staker> {
             final int loses = script.currentDuel.getMyRoundedMultiplied();
             rechallenge(wc, oldChallenge);
             if (!validateWidget(LOST_INTERFACE)) {
-                //sendResults(false, true);
+                script.currentDuel.sendResults(webAPI);
                 script.totalLosses += loses;
             }
         } else if (oldChallenge == null && challengeAgain.getElapsedTime() > 10000) {
@@ -96,46 +96,11 @@ public class EndFight extends ATState<Staker> {
                     return isMoving();
                 }
             });
+            script.resetValues();
             challengeAgain = new Timer(30000);
         }
         return isMoving();
     }
-
-    /*public static void sendResults(boolean won, boolean finished) {
-        if (WebAPI.isConnected()) {
-            //convert naar JSON before sending dis shit
-            JsonNull nul = JsonNull.INSTANCE;
-            JsonObject object = new JsonObject();
-            object.add("opponent_rsn", new JsonPrimitive(Staker.opponentName));
-            object.add("won", finished ? new JsonPrimitive(won) : new JsonPrimitive(false));
-            object.add("bot_stake_value", new JsonPrimitive(Second.myRoundedMultiplied > 0 ? Second.myRoundedMultiplied : 0));
-            object.add("opponent_stake_value", new JsonPrimitive(Second.otherExact > 0 ? Second.otherExact : 0));
-            JsonArray bet_items = new JsonArray();
-            Item[] items = Second.otherItems;
-            if (items != null && items.length > 0) {
-                for (Item i : items) {
-                    if (i != null && i.getID() > 0) {
-                        bet_items.add(i);
-                    }
-                }
-            }
-            object.add("opponent_stake_items", bet_items);
-            object.add("duration", new JsonPrimitive(Fight.fightTimer != null ?  (int)(Fight.fightTimer.getElapsedTime() / 1000) : 0));
-            Calculator calc = Staker.calcMap.get(Staker.opponentName);
-            double mult = calc != null ? calc.getMultiplier(StakeSettings.increasedModifier) : 1;
-            mult = mult >= 100 ? 1 : mult;
-            StakeSettings.increasedModifier = StakeSettings.increasedModifier > StakeSettings.modifier ? StakeSettings.increasedModifier : StakeSettings.modifier;
-            object.add("npid_odds", calc != null ? new JsonPrimitive(calc.getNoPidOdds()) : nul);
-            object.add("pid_odds", calc != null ? new JsonPrimitive(calc.getPidOdds()) : nul);
-            object.add("rnd_odds", calc != null ? new JsonPrimitive(calc.getRandomOdds()) : nul);
-            object.add("returnPercent", calc != null ? new JsonPrimitive(mult) : nul);
-            object.add("finished", new JsonPrimitive(finished));
-            JsonElement response = WebAPI.getWebConnection().sendJSON("bot/duel", "POST", object);
-            WebAPI.sendInventoryScreenshot();
-            StakeSettings.sendInventoryValue();
-            System.out.println("Send stake results: " + response);
-        }
-    }*/
 
     @Override
     public boolean validate() {
@@ -143,18 +108,21 @@ public class EndFight extends ATState<Staker> {
             System.out.println("Already back in stakescreen");
             challengeAgain = null;
             return false;
-        }
-        won = validateWidget(VICTORY_INTERFACE);
-        lost = validateWidget(LOST_INTERFACE);
-        if (won) {
-            this.name = "Accept Win";
-            return true;
-        } else if (lost) {
-            this.name = "Accept Defeat";
-            return true;
-        } else if (challengeAgain != null && !challengeAgain.isFinished()) {
-            this.name = "Re-challenge";
-            return true;
+        } else if (script.currentDuel != null) {
+            script.currentDuel.setWon(won = validateWidget(VICTORY_INTERFACE));
+            lost = validateWidget(LOST_INTERFACE);
+            if (won) {
+                script.currentDuel.setFinished(true);
+                this.name = "Accept Win";
+                return true;
+            } else if (lost) {
+                script.currentDuel.setFinished(true);
+                this.name = "Accept Defeat";
+                return true;
+            } else if (challengeAgain != null && !challengeAgain.isFinished()) {
+                this.name = "Re-challenge";
+                return true;
+            }
         }
         return false;
     }

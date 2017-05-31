@@ -4,6 +4,7 @@ import api.ATState;
 import api.util.Random;
 import org.osbot.rs07.utility.Condition;
 import staker.Staker;
+import staker.util.antiban.delays.AcceptThirdDuelScreenDelay;
 
 import static api.wrappers.staking.data.Data.ARENA_AREA;
 
@@ -20,8 +21,9 @@ public class Third extends ATState<Staker> {
     public int perform() throws InterruptedException {
         if (script.ruleSet.allGood(this) && stake.shouldAccept(script.currentDuel.getMyExact(), script.currentDuel.getOtherExact())) {
             stake.hitOnSecond = random(10) <= 2;
+            AcceptThirdDuelScreenDelay.execute();
             if (stake.acceptThirdScreen()) {
-                waitFor(10000, new Condition() {
+                waitFor(Random.nextGaussian(2000, 4000, 1000), new Condition() {
                     @Override
                     public boolean evaluate() {
                         return ARENA_AREA.contains(myPosition());
@@ -30,6 +32,8 @@ public class Third extends ATState<Staker> {
             }
         } else if (stake.declineThird()) {
             log("Declined on third interface, shit was a scam");
+            script.currentDuel.setCancelReason("scamming_3rd");
+            //TODO Make speciel timer for declining
             waitFor(2000, new Condition() {
                 @Override
                 public boolean evaluate() {

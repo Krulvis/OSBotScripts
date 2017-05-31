@@ -3,6 +3,7 @@ package staker.states;
 import api.ATState;
 import api.util.Random;
 import api.util.Timer;
+import staker.util.antiban.delays.AcceptChallengeDelay;
 import staker.util.antiban.delays.RelocateDelay;
 import api.wrappers.staking.calculator.SPlayer;
 import api.wrappers.staking.data.Settings;
@@ -132,14 +133,14 @@ public class Waiting extends ATState<Staker> {
                 int y = challengeMessageRect.y;
                 int max_y = challengeMessageRect.y + length;
                 final Point p = new Point(nextGaussian(x, max_w, x + (width / 2), (width / 2) / 2), nextGaussian(y, max_y, y + (length / 2), (length / 2) / 2));
-                //TODO MOVE MOUSE DELAY
+                AcceptChallengeDelay.execute();
                 if (mouse.move(new PointDestination(bot, p))) {
                     java.util.List<Option> menuItems = menu.getMenu();
                     if (challengeMessageRectangle.getBoundingBox().contains(mouse.getPosition())
                             && menuItems != null) {
                         //TODO DELAY
                         //Build in Challenge accept delay
-                        sleep(100, 500);
+                        sleep(100, 1000);
                         String leftClick = menuItems.size() > 0 ? menuItems.get(0).action : null;
                         if (distance(player) < maxDistance && leftClick != null && leftClick.contains("Accept challenge")) {
                             mouse.click(false);
