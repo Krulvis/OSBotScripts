@@ -10,6 +10,10 @@ public abstract class TimerHandler extends RNGHandler {
 
     public Timer timer;
 
+    public TimerHandler() {
+        this.handle();
+    }
+
     public void handle() {
         this.timer = new Timer((long) (1000 * NormalDistribution.generateWithBoundaries(this.getMin(), this.getMax(), this.getMean(), this.getSd(), this.isCastInt())));
     }
