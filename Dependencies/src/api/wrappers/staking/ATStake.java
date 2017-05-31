@@ -105,18 +105,18 @@ public class ATStake extends ATMethodProvider {
     }
 
     public boolean acceptSecondScreen() {
-        RS2Widget wc = widgets.get(DUEL_INTERFACE_2, ACCEPT_2);
+        RS2Widget wc = getWidgetChild(DUEL_INTERFACE_2, widget -> widget != null && (widget.getMessage().contains("Accept") || widget.getMessage().toLowerCase().contains("wait")));
         if (wc != null && wc.getMessage().toLowerCase().contains("wait")) {
             waitFor(3000, new Condition() {
                 @Override
                 public boolean evaluate() {
-                    RS2Widget wc = widgets.get(DUEL_INTERFACE_2, ACCEPT_2);
-                    return wc != null && !wc.getMessage().toLowerCase().contains("wait");
+                    RS2Widget wc = getWidgetChild(DUEL_INTERFACE_2, widget -> widget != null && widget.getMessage().contains("Accept"));
+                    return wc != null;
                 }
             });
         }
-        wc = widgets.get(DUEL_INTERFACE_2, ACCEPT_2);
-        return wc != null && !wc.getMessage().toLowerCase().contains("wait") && wc.interact();
+        wc = getWidgetChild(DUEL_INTERFACE_2, widget -> widget != null && widget.getMessage().contains("Accept"));
+        return wc != null && wc.interact();
     }
 
     public boolean acceptThirdScreen() {
@@ -439,7 +439,12 @@ public class ATStake extends ATMethodProvider {
     }
 
     public boolean declineSecond() {
-        RS2Widget closing = widgets.get(DUEL_INTERFACE_2, DECLINE_2);
+        RS2Widget closing = getWidgetChild(DUEL_INTERFACE_2, new Filter<RS2Widget>() {
+            @Override
+            public boolean match(RS2Widget widget) {
+                return widget != null && widget.getMessage().contains("Decline");
+            }
+        });
         if (closing != null && closing.isVisible() && closing.interact()) {
             waitFor(2000, new Condition() {
                 @Override

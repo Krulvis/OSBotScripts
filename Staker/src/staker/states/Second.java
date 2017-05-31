@@ -69,6 +69,7 @@ public class Second extends ATState<Staker> {
 
                 if (currentOffer != shouldOffer) {
                     if (shouldOffer < currentOffer) {
+                        //TODO DELAY TIMER FOR REMOVING BET
                         if (stake.remove(currentOffer - shouldOffer)) {
                             waitFor(3000, new Condition() {
                                 @Override
@@ -78,6 +79,7 @@ public class Second extends ATState<Staker> {
                             });
                         }
                     } else if (shouldOffer > currentOffer) {
+                        //TODO DELAY TIMER FOR ADDING BET
                         if (stake.offer(shouldOffer - currentOffer)) {
                             waitFor(2000, new Condition() {
                                 @Override
