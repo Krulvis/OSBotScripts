@@ -3,7 +3,6 @@ package api.wrappers.staking;
 
 import api.ATMethodProvider;
 import api.util.*;
-import api.util.Random;
 import api.util.Timer;
 import api.util.filter.TextFilter;
 import api.wrappers.grandexchange.GrandExchange;
@@ -514,7 +513,7 @@ public class ATStake extends ATMethodProvider {
                 int y = challengeMessageRect.y;
                 int max_y = challengeMessageRect.y + length;
                 final Point p = new Point(nextGaussian(x, max_w, x + (width / 2), (width / 2) / 2), nextGaussian(y, max_y, y + (length / 2), (length / 2) / 2));
-                //TODO MOVE MOUSE DELAY
+               // TODO AcceptChallengeDelay.execute();
                 if (mouse.move(new PointDestination(bot, p))) {
                     List<Option> menuItems = menu.getMenu();
                     if (challengeMessageRectangle.getBoundingBox().contains(mouse.getPosition())

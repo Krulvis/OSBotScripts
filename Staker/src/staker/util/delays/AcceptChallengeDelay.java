@@ -1,11 +1,11 @@
-package api.util.antiban.delays;
+package staker.util.delays;
 
 import api.util.antiban.DelayHandler;
 
 /**
  * Created by Tony on 31/05/2017.
  */
-public class RechallengeDelay extends DelayHandler{
+public class AcceptChallengeDelay extends DelayHandler{
 
     @Override
     protected double setMean() {
@@ -14,12 +14,12 @@ public class RechallengeDelay extends DelayHandler{
 
     @Override
     protected double setDeviation() {
-        return 1;
+        return 1.5;
     }
 
     @Override
     protected double setMin() {
-        return 0.5;
+        return 0.8;
     }
 
     @Override
@@ -28,7 +28,7 @@ public class RechallengeDelay extends DelayHandler{
     }
 
     public static void execute(){
-        DelayHandler delay = new RechallengeDelay();
+        DelayHandler delay = new AcceptChallengeDelay();
         delay.handle();
     }
 

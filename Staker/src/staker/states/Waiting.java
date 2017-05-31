@@ -3,6 +3,7 @@ package staker.states;
 import api.ATState;
 import api.util.Random;
 import api.util.Timer;
+import staker.util.delays.RelocateDelay;
 import api.wrappers.staking.calculator.SPlayer;
 import api.wrappers.staking.data.Settings;
 import org.osbot.rs07.api.model.Item;
@@ -37,7 +38,7 @@ public class Waiting extends ATState<Staker> {
         if (script.startPos == null && client.isLoggedIn()) {
             script.startPos = myPosition();
         } else if (script.startPos != null && script.walkBack && distance(script.startPos) > 0) {
-            //TODO WALK BACK DELAY
+            RelocateDelay.execute();
             walkPath(script.startPos);
         }
         Settings.Weapon w = script.ruleSet.getWeapon();

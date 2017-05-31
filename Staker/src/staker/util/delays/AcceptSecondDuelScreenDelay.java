@@ -1,11 +1,11 @@
-package api.util.antiban.delays;
+package staker.util.delays;
 
 import api.util.antiban.DelayHandler;
 
 /**
  * Created by Tony on 31/05/2017.
  */
-public class AcceptFirstDuelScreenDelay extends DelayHandler{
+public class AcceptSecondDuelScreenDelay extends DelayHandler{
 
     @Override
     protected double setMean() {
@@ -26,9 +26,8 @@ public class AcceptFirstDuelScreenDelay extends DelayHandler{
         return 10;
     }
 
-
     public static void execute(){
-        DelayHandler delay = new AcceptFirstDuelScreenDelay();
+        DelayHandler delay = new AcceptSecondDuelScreenDelay();
         delay.handle();
     }
 
