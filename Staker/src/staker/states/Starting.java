@@ -11,20 +11,21 @@ import staker.Staker;
  */
 public class Starting extends ATState<Staker> {
 
-	public Starting(Staker script) {
-		super("Starting", script);
-	}
+    public Starting(Staker script) {
+        super("Starting", script);
+    }
 
-	@Override
-	public int perform() throws InterruptedException {
-		if (script.myPlayer == null && client.isLoggedIn()) {
-			script.myPlayer = new SPlayer(myPlayer().getName(), new int[]{skills.getStatic(Skill.ATTACK), skills.getStatic(Skill.STRENGTH), skills.getStatic(Skill.DEFENCE), skills.getStatic(Skill.HITPOINTS), skills.getStatic(Skill.PRAYER)});
-		}
-		return Random.smallSleep();
-	}
+    @Override
+    public int perform() throws InterruptedException {
+        if (script.myPlayer == null && client.isLoggedIn()) {
+            script.addStatusUpdater();
+            script.myPlayer = new SPlayer(myPlayer().getName(), new int[]{skills.getStatic(Skill.ATTACK), skills.getStatic(Skill.STRENGTH), skills.getStatic(Skill.DEFENCE), skills.getStatic(Skill.HITPOINTS), skills.getStatic(Skill.PRAYER)});
+        }
+        return Random.smallSleep();
+    }
 
-	@Override
-	public boolean validate() {
-		return !script.isScriptRunning.get() || script.myPlayer == null;
-	}
+    @Override
+    public boolean validate() {
+        return !script.isScriptRunning.get() || script.myPlayer == null;
+    }
 }

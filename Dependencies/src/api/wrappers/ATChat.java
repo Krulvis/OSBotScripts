@@ -94,7 +94,7 @@ public class ATChat extends ATMethodProvider {
             System.out.println("Message same: " + (mes != null ? mes.equals(m) : "no"));
             System.out.println("Autoenabled: " + isAutochatEnabled());
             System.out.println("Current msg: " + mes + ", New msg: " + m);
-            if (isMessageSet() && mes.equalsIgnoreCase(m)) {
+            if (isMessageSet() && mes != null && mes.equalsIgnoreCase(m)) {
                 if (resumeChat()) {
                     waitFor(2000, new Condition() {
                         @Override
@@ -105,6 +105,7 @@ public class ATChat extends ATMethodProvider {
                     return isMessageSet() && getMessage().equalsIgnoreCase(m) && isAutochatEnabled();
                 }
             } else {
+                //TODO TYPE AUTOCHAT MESSAGE
                 RS2Widget wc = getMessageWidget();
                 RS2Widget publicTab = getPublicTab();
                 if (publicTab != null && (wc == null || !wc.isVisible())) {
