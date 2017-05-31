@@ -26,10 +26,10 @@ import java.util.LinkedList;
  * Created by Krulvis on 29-May-17.
  */
 
-@ScriptManifest(author = "Krulvis", version = 1.0D, logo = "", info = "", name = "Staker")
+@ScriptManifest(author = "Krulvis", version = 1.01D, logo = "", info = "", name = "Staker")
 public class Staker extends ATScript {
 
-    public boolean debug = false;
+    public boolean debug = true;
     public int totalGains = 0, totalLosses = 0;
 
     /**
@@ -78,18 +78,20 @@ public class Staker extends ATScript {
     public void onStart() {
         setPrivateVersion();
         useWebAPI();
-        webAPI.addAction(new ReloadSettings<>(this));
     }
 
     @Override
     protected void initialize(LinkedList<ATState> statesToAdd) {
         statesToAdd.add(new Starting(this));
         statesToAdd.add(new Fight(this));
-        statesToAdd.add(endFight = new EndFight(this));
+        statesToAdd.add(this.endFight = new EndFight(this));
         statesToAdd.add(new Third(this));
         statesToAdd.add(new Second(this));
         statesToAdd.add(new First(this));
         statesToAdd.add(new Waiting(this));
+
+        webAPI.addAction(new ReloadSettings<>(this));
+        getNewSettings();
     }
 
     @Override
@@ -105,11 +107,12 @@ public class Staker extends ATScript {
     public boolean resetValues() {
         if (currentDuel != null) {
             currentDuel.resetStakes();
-            if (getPreviousDuel(currentDuel.getPlayerName()) != null) {
+            if (getPreviousDuel(currentDuel.getPlayerName()) == null) {
                 duelList.add(currentDuel);
             }
             currentDuel = null;
         }
+        stake.canAttackPlayer = false;
         return true;
     }
 

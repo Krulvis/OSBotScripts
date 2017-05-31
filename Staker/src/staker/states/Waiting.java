@@ -4,6 +4,8 @@ import api.ATState;
 import api.util.Random;
 import api.util.Timer;
 import api.wrappers.staking.calculator.SPlayer;
+import api.wrappers.staking.data.Settings;
+import org.osbot.rs07.api.model.Item;
 import org.osbot.rs07.api.ui.RS2Widget;
 import org.osbot.rs07.api.ui.Skill;
 import org.osbot.rs07.input.mouse.RectangleDestination;
@@ -34,6 +36,24 @@ public class Waiting extends ATState<Staker> {
         }
         if (script.startPos == null && client.isLoggedIn()) {
             script.startPos = myPosition();
+        } else if (script.startPos != null && script.walkBack && distance(script.startPos) > 0) {
+            //TODO WALK BACK DELAY
+            walkPath(script.startPos);
+        }
+        Settings.Weapon w = script.ruleSet.getWeapon();
+        if (!w.isWearing(this) && !script.debug) {
+            Item invWeapon = inventory.getItem(w.itemId);
+            if (invWeapon != null && invWeapon.interact()) {
+                waitFor(1000, new Condition() {
+                    @Override
+                    public boolean evaluate() {
+                        return w.isWearing(script);
+                    }
+                });
+            } else if (invWeapon == null) {
+                log("Does not have correct weapon.");
+                stop();
+            }
         }
         if (logoutTimer == null) {
             logoutTimer = new Timer(Random.nextGaussian(30000, 240000, 20000));

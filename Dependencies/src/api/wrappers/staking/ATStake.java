@@ -346,7 +346,7 @@ public class ATStake extends ATMethodProvider {
             if (id <= 0 || ignoreList.contains(id)) {
                 continue;
             }
-            System.out.println("Item: " + id + ": " + amount);
+            //System.out.println("Item: " + id + ": " + amount);
             if (id == 995) {
                 other_amount += amount;
             } else if (id == 13204) {
@@ -567,45 +567,6 @@ public class ATStake extends ATMethodProvider {
         return null;
     }
 
-    public boolean attackOpponent() {
-        if (opponent == null) {
-            return false;
-        } else if (!canAttackPlayer) {
-            if (!checkAttackThread.isAlive()) {
-                checkAttackThread.start();
-            }
-        } else {
-            if (camera.getPitchAngle() < 93) {
-                camera.movePitch(random(94, 99));
-            }
-            Character<?> check = myPlayer().getInteracting();
-            if (check == null || !check.getName().equalsIgnoreCase(opponent.getName()) || !check.isHitBarVisible()) {
-                if (opponent.getPosition().isVisible(bot)) {
-                    Rectangle target = getCenterPoint(opponent);
-                    if (target != null && interact.interact(new RectangleDestination(bot, target), "Fight", opponent.getName(), false)) {
-                        waitFor(100, new Condition() {
-                            @Override
-                            public boolean evaluate() {
-                                final Character check = myPlayer().getInteracting();
-                                return check != null && check.getName().equalsIgnoreCase(opponent.getName());
-                            }
-                        });
-                    }
-                } else {
-                    camera.toPosition(opponent.getPosition());
-                }
-            }
-            try {
-                sleep(nextGaussian(50, 500, 200, 100));
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            final Character opp = myPlayer().getInteracting();
-            return opp != null && opp.getName().equalsIgnoreCase(opponent.getName());
-        }
-        return false;
-    }
-
     public boolean fight(Player p, final RuleSet mode) {
         if (p == null) {
             return false;
@@ -663,6 +624,64 @@ public class ATStake extends ATMethodProvider {
         }
         return false;
     }
+
+    public boolean attackOpponent() {
+        if (opponent == null) {
+            return false;
+        } else if (!canAttackPlayer) {
+            if (!checkAttackThread.isAlive()) {
+                checkAttackThread.start();
+            }
+        } else {
+            if (camera.getPitchAngle() < 93) {
+                camera.movePitch(random(94, 99));
+            }
+            Character<?> check = myPlayer().getInteracting();
+            if (check == null || !check.getName().equalsIgnoreCase(opponent.getName()) || !check.isHitBarVisible()) {
+                if (opponent.getPosition().isVisible(bot)) {
+                    Rectangle target = getCenterPoint(opponent);
+                    if (target != null && interact.interact(new RectangleDestination(bot, target), "Fight", opponent.getName(), false)) {
+                        waitFor(100, new Condition() {
+                            @Override
+                            public boolean evaluate() {
+                                final Character check = myPlayer().getInteracting();
+                                return check != null && check.getName().equalsIgnoreCase(opponent.getName());
+                            }
+                        });
+                    }
+                } else {
+                    camera.toPosition(opponent.getPosition());
+                }
+            }
+            final Character opp = myPlayer().getInteracting();
+            return opp != null && opp.getName().equalsIgnoreCase(opponent.getName());
+        }
+        return false;
+    }
+
+    public final Thread checkAttackThread = new Thread(new Runnable() {
+        @Override
+        public void run() {
+            Timer attackTimer = new Timer(5000);
+            while (!attackTimer.isFinished()) {
+                try {
+                    if (opponent != null) {
+                        String text = opponent.getHeadMessage();
+                        if (text.equals("1")) {
+                            //TODO Add delay to decide when to attack after "1"  is said
+                            Thread.sleep(nextGaussian(50, 150, 100, 50));
+                            break;
+                        }
+                    }
+                    Thread.sleep(nextGaussian(50, 150, 100, 50));
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            canAttackPlayer = true;
+        }
+    }, "CanAttackPlayer Thread");
+
 
     public int[] getOtherSkills() {
         return new int[]{Integer.parseInt(widgets.get(DUEL_INTERFACE_1, ATT_LEVEL_REAL).getMessage()), Integer.parseInt(widgets.get(DUEL_INTERFACE_1, STR_LEVEL_REAL).getMessage()),
@@ -754,27 +773,6 @@ public class ATStake extends ATMethodProvider {
         pricemap.put(id, (int) price);
         return (int) price;
     }
-
-    public final Thread checkAttackThread = new Thread(new Runnable() {
-        @Override
-        public void run() {
-            Timer attackTimer = new Timer(5000);
-            while (!attackTimer.isFinished()) {
-                try {
-                    if (opponent != null) {
-                        String text = opponent.getHeadMessage();
-                        if (text.equals("3")) {
-                            break;
-                        }
-                    }
-                    Thread.sleep(nextGaussian(50, 150, 100, 50));
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-            canAttackPlayer = true;
-        }
-    }, "CanAttackPlayer Thread");
 
     private void addToForbidden(int id) {
         ignoreList.add(id);

@@ -26,8 +26,8 @@ public class Fight extends ATState<Staker> {
     public int perform() throws InterruptedException {
         String ohText = myPlayer().getHeadMessage();
         script.endFight.challengeAgain = new Timer(30000);
-        if (ohText != null && ohText.contains("3") && glTimer == null) {
-            glTimer = new Timer(5000);
+        if (ohText != null && ohText.contains("1") && glTimer == null) {
+            glTimer = new Timer(1000);
         }
         if (glTimer != null && glTimer.isFinished()) {
             if (random(10) > 3) {
@@ -38,7 +38,11 @@ public class Fight extends ATState<Staker> {
         if (script.currentDuel != null) {
             Player opp = getPlayer(script.currentDuel.getPlayerName());
             if (opp != null) {
-                if (opp.isHitBarVisible() && opp.getHealthPercent() == 0) {
+                if (!opp.isHitBarVisible()) {
+                    startFightTimer = new Timer();
+                }
+                if ((opp.isHitBarVisible() && opp.getHealthPercent() == 0) || currentHealth() == 0) {
+                    System.out.println("Done fighting, " + (currentHealth() == 0 ? "I am" : "enemy is") + " dead");
                     startFightTimer.stop();
                     openInventory();
                 } else if (stake.fight(opp, script.ruleSet)) {

@@ -30,6 +30,7 @@ public class Second extends ATState<Staker> {
 
             final int shouldOffer = script.currentDuel.getMyRoundedMultiplied();
             final int currentOffer = stake.myOfferedAmount();
+            System.out.println("Other offer: " + otherExact + ", Should offer: " + shouldOffer + ", Curr Offer: " + currentOffer);
             if (shouldOffer > 0) {
                 if (tooLow) {
                     if (tooLowTimer == null) {
@@ -78,6 +79,8 @@ public class Second extends ATState<Staker> {
                         }
                     });
                 }
+            } else {
+                tooLowTimer = null;
             }
         }
         return Random.smallSleep();

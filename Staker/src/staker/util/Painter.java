@@ -28,7 +28,9 @@ public class Painter extends ATPainter<Staker> {
         ATState state = script.currentState;
         Duel duel = script.currentDuel;
         RuleSet ruleSet = script.ruleSet;
-        if (state instanceof Waiting) {
+        if (state instanceof Starting) {
+            drawString(g, "Connected with Web API: " + script.webAPI.isConnected(), 380, 325);
+        } else if (state instanceof Waiting) {
             drawString(g, "Waiting", 410, 325);
         } else if (state instanceof Fight) {
             drawString(g, "Fighting", 410, 325);

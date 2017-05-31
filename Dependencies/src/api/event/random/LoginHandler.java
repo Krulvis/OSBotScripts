@@ -68,9 +68,11 @@ public class LoginHandler extends ATState<RandomHandler> implements LoginRespons
                         sleep(Random.nextGaussian(200, 1000, 250));
                     }
                 }
-                if ((uiState = client.getLoginUIState()) == 2 && !needsToWait()) {
+                uiState = client.getLoginUIState();
+                if (uiState == 2 && !needsToWait()) {
                     System.out.println("Typing information");
                     if (hasUsernameTyped()) {
+                        mouse.click(new RectangleDestination(bot, 315, 248, 35, 12));
                         backSpace(true);
                     }
                     keyboard.typeString(account.getUsername(), true);
@@ -78,15 +80,15 @@ public class LoginHandler extends ATState<RandomHandler> implements LoginRespons
                     if (hasPasswordTyped()) {
                         backSpace(false);
                     }
-                    keyboard.typeString(account.getPassword(), true);
-
-                    sleep(Random.nextGaussian(2000, 3000, 1000));
-                    waitFor(2000, new Condition() {
-                        @Override
-                        public boolean evaluate() {
-                            return clickContinue();
-                        }
-                    });
+                    if (keyboard.typeString(account.getPassword(), true)) {
+                        sleep(Random.nextGaussian(2000, 3000, 1000));
+                        waitFor(2000, new Condition() {
+                            @Override
+                            public boolean evaluate() {
+                                return clickContinue();
+                            }
+                        });
+                    }
                 } else if (uiState == 3) {
                     System.out.println("Invalid login, Try Again");
                     mouse.click(new RectangleDestination(bot, 320, 260, 120, 30));
@@ -176,18 +178,18 @@ public class LoginHandler extends ATState<RandomHandler> implements LoginRespons
         }
     }
 
-    public boolean isMember(){
+    public boolean isMember() {
         return membershipDaysLeft > 0;
     }
 
-    public int getMembershipDaysLeft(){
+    public int getMembershipDaysLeft() {
         return membershipDaysLeft;
     }
 
     public void backSpace(boolean username) throws InterruptedException {
-        Timer backSpaceTimer = new Timer(Random.nextGaussian(4000, 6000, 1000));
+        Timer backSpaceTimer = new Timer(Random.nextGaussian(3000, 5000, 1000));
         keyboard.pressKey((char) KeyEvent.VK_BACK_SPACE);
-        while (!backSpaceTimer.isFinished() || (username ? !hasUsernameTyped() : !hasPasswordTyped())) {
+        while (!backSpaceTimer.isFinished() || (username ? hasUsernameTyped() : hasPasswordTyped())) {
             sleep(Random.nextGaussian(100, 250, 50));
             keyboard.pressKey((char) KeyEvent.VK_BACK_SPACE);
         }

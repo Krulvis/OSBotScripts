@@ -5,9 +5,7 @@ import api.webapi.actions.Restart;
 import api.webapi.actions.Update;
 import com.google.gson.*;
 
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -106,7 +104,7 @@ public class WebConnection {
         url.append((WebAPI.URL.charAt(WebAPI.URL.length() - 1) == '/' ? "" : "/"));
         if (location.contains("bot")) {
             url.append("bot/" + id);
-            url.append(location.substring(3));
+            url.append(location.length() > 3 ? location.substring(3) : "");
         } else {
             url.append(location);
         }
@@ -132,13 +130,13 @@ public class WebConnection {
             if (key != null) {
                 object.add("key", new JsonPrimitive(key));
             }
-            System.out.println("Send " + method + " Request to: " + location);
+            URL url = new URL(getURL(location, false).toString());
+            System.out.println("Send " + method.toUpperCase() + " Request to: " + url);
             if (object.toString().length() < 750) {
-                System.out.println(method.toUpperCase() + " Body: " + object.toString());
+                System.out.println("With Body: " + object.toString());
             }
             byte[] postData = object.toString().getBytes(StandardCharsets.UTF_8);
             int postDataLength = postData.length;
-            URL url = new URL(getURL(location, false).toString());
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod(method.toUpperCase());
             conn.setRequestProperty("Content-Type", "application/json");
@@ -153,6 +151,7 @@ public class WebConnection {
 
             JsonParser parser = new JsonParser();
             InputStreamReader ipr = new InputStreamReader(conn.getInputStream());
+            //dumpResponse(conn.getInputStream());
             JsonElement ele = parser.parse(ipr);
             if (ele != null && !ele.isJsonNull()) {
                 return ele;
@@ -163,6 +162,17 @@ public class WebConnection {
         return JsonNull.INSTANCE;
     }
 
+    private void dumpResponse(InputStream ips) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(ips));
+        String line;
+        System.out.println("Dumping response.......");
+        while ((line = br.readLine()) != null) {
+            System.out.println(line);
+        }
+        System.out.println("................");
+
+    }
+
     /**
      * Sends GET requests, returns JsonElement
      *
@@ -170,9 +180,9 @@ public class WebConnection {
      * @return
      */
     public JsonElement getJson(String location) {
-        System.out.println("Send GET Request to: " + location);
         try {
             URL url = new URL(getURLWithID(location).toString());
+            System.out.println("Send GET Request to: " + url);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
             //Content-Type doesn't really matter for GET requests since it won't be sending bodies anyways.

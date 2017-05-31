@@ -2,6 +2,8 @@ package api.webapi.actions;
 
 import api.ATMethodProvider;
 import api.webapi.WebAPI;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 
 /**
  * Created by Krulvis on 30-May-17.
@@ -20,7 +22,9 @@ public abstract class WebAction extends ATMethodProvider {
     public abstract boolean perform();
 
     public void sendComplete() {
-        //webAPI.getWebConnection().sendJSON("");
+        JsonObject obj = new JsonObject();
+        obj.addProperty("id", getId());
+        webAPI.getWebConnection().sendJSON("bot/action", "PUT", obj);
     }
 
     @Override

@@ -87,7 +87,7 @@ public class WebAPI extends ATMethodProvider {
             return logoutTab.logOut();
         } else if (currentAction != null) {
             if (currentAction.perform()) {
-
+                currentAction.sendComplete();
                 currentAction = null;
             } else {
                 return false;
@@ -117,7 +117,7 @@ public class WebAPI extends ATMethodProvider {
         object.add("status", new JsonPrimitive(status.toUpperCase().replaceAll(" ", "_")));
         Script s = bot.getScriptExecutor().getCurrent();
         object.add("script", new JsonPrimitive(s != null ? s.getName().toUpperCase().replaceAll(" ", "_") : "NONE"));
-        JsonElement output = getWebConnection().sendJSON("bot/status", "POST", object);
+        JsonElement output = getWebConnection().sendJSON("bot/activity", "POST", object);
     }
 
     /**
@@ -132,7 +132,7 @@ public class WebAPI extends ATMethodProvider {
         object.add("defense", new JsonPrimitive(sPlayer.defense));
         object.add("hitpoints", new JsonPrimitive(sPlayer.hitpoints));
         object.add("rsn", new JsonPrimitive(myPlayer().getName()));
-        JsonElement response = getWebConnection().sendJSON("bot/info", "PUT", object);
+        JsonElement response = getWebConnection().sendJSON("bot", "PUT", object);
         System.out.println("Response: " + response);
     }
 
@@ -244,7 +244,7 @@ public class WebAPI extends ATMethodProvider {
     public void getNewAccount() {
         if (getWebConnection().key != null) {
             new Thread(() -> {
-                JsonElement ele = getWebConnection().getJson("bot/info");
+                JsonElement ele = getWebConnection().getJson("bot");
                 if (ele == JsonNull.INSTANCE) {
                     return;
                 }
@@ -265,8 +265,8 @@ public class WebAPI extends ATMethodProvider {
                     } else {
                         JsonObject o = ele.getAsJsonObject();
                         JsonElement e = o.get("status");
-                        System.out.println("Response for 'bot/info': " + (e != null ? e.getAsString() : "No response found"));
-                        log("Requesting 'bot/info': " + (e != null ? e.getAsString() : "No response found"));
+                        System.out.println("Response for 'bot/': " + (e != null ? e.getAsString() : "No response found"));
+                        log("Requesting 'bot/': " + (e != null ? e.getAsString() : "No response found"));
                     }
                 } catch (IllegalStateException e) {
                     System.out.println("ERROR RESPONSE: " + ele.toString());
