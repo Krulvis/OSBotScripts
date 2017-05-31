@@ -16,7 +16,6 @@ import com.google.gson.JsonObject;
 import org.osbot.rs07.api.map.Position;
 import org.osbot.rs07.script.ScriptManifest;
 import staker.states.*;
-import staker.util.GUI;
 import staker.util.Painter;
 
 import java.util.ArrayList;
@@ -25,6 +24,7 @@ import java.util.LinkedList;
 /**
  * Created by Krulvis on 29-May-17.
  */
+
 @ScriptManifest(author = "Krulvis", version = 1.0D, logo = "", info = "", name = "Staker")
 public class Staker extends ATScript {
 

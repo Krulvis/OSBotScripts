@@ -26,4 +26,5 @@ public abstract class ATState<S extends ATScript> extends ATMethodProvider {
 	public String getName() {
 		return this.name;
 	}
+
 }
