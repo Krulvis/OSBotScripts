@@ -53,7 +53,7 @@ public class Waiting extends ATState<Staker> {
             walkPath(script.startPos);
         }
         Settings.Weapon w = script.ruleSet.getWeapon();
-        if (!w.isWearing(this) && !script.debug) {
+        /*if (!w.isWearing(this) && !script.debug) {
             Item invWeapon = inventory.getItem(w.itemId);
             if (invWeapon != null && invWeapon.interact()) {
                 waitFor(1000, new Condition() {
@@ -66,7 +66,7 @@ public class Waiting extends ATState<Staker> {
                 log("Does not have correct weapon.");
                 stop();
             }
-        }
+        }*/
         if (logoutTimer == null) {
             logoutTimer = new Timer(Random.nextGaussian(30000, 240000, 20000));
         } else if (logoutTimer.isFinished()) {
