@@ -310,7 +310,7 @@ public final class Random {
 		if (sum > 1.0 + EPSILON || sum < 1.0 - EPSILON)
 			throw new IllegalArgumentException("sum of array entries does not approximately equal 1.0: " + sum);
 
-		// the for loop may not return a value when both r is (nearly) 1.0 and when the
+		// the for perform may not return a value when both r is (nearly) 1.0 and when the
 		// cumulative sum is less than 1.0 (as a result of floating-point roundoff error)
 		while (true) {
 			double r = uniform();

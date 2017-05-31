@@ -2,6 +2,7 @@ package staker.states;
 
 import api.ATState;
 import api.util.Random;
+import api.util.Timer;
 import org.osbot.rs07.utility.Condition;
 import staker.Staker;
 
@@ -14,9 +15,12 @@ public class Second extends ATState<Staker> {
         super("Second", script);
     }
 
+    private Timer tooLowTimer;
+
     @Override
     public int perform() throws InterruptedException {
         if (script.currentDuel != null) {
+
             final int otherExact = stake.otherOfferedAmount();
             boolean tooLow = otherExact < script.minAmount;
             boolean tooHigh = otherExact > script.maxAmount;
@@ -28,16 +32,22 @@ public class Second extends ATState<Staker> {
             final int currentOffer = stake.myOfferedAmount();
             if (shouldOffer > 0) {
                 if (tooLow) {
-                    sleep(random(1000, 4000));
-                    log("Declined stake since opponents offer was too low");
-                    if (stake.declineSecond()) {
-                        waitFor(2000, new Condition() {
-                            @Override
-                            public boolean evaluate() {
-                                return !stake.isSecondScreenOpen();
-                            }
-                        });
+                    if (tooLowTimer == null) {
+                        tooLowTimer = new Timer(Random.nextGaussian(10000, 20000, 5000));
+                    } else if (tooLowTimer.isFinished()) {
+                        sleep(random(1000, 4000));
+                        log("Declined stake since opponents offer was too low");
+                        if (stake.declineSecond()) {
+                            waitFor(2000, new Condition() {
+                                @Override
+                                public boolean evaluate() {
+                                    return !stake.isSecondScreenOpen();
+                                }
+                            });
+                        }
                     }
+                } else {
+                    tooLowTimer = null;
                 }
 
                 if (currentOffer != shouldOffer) {

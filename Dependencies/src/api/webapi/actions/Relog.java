@@ -6,21 +6,21 @@ import api.webapi.WebAPI;
 /**
  * Created by Krulvis on 16-Feb-17.
  */
-public class Relog extends Action {
+public class Relog extends WebAction {
 
-    public Relog(WebAPI parent) {
-        super(parent);
+    public Relog(ATMethodProvider parent) {
+        super(parent, "RELOG");
     }
 
     @Override
-    public int loop() {
+    public boolean perform() {
         if (client.isLoggedIn()) {
             webAPI.getWebConnection().sendJSON("bot/logout", "POST", null);
             logoutTab.logOut();
         }
         if (!client.isLoggedIn()) {
-            return -1;
+            return true;
         }
-        return 500;
+        return false;
     }
 }

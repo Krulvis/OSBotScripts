@@ -17,6 +17,7 @@ import org.osbot.rs07.api.map.Position;
 import org.osbot.rs07.script.ScriptManifest;
 import staker.states.*;
 import staker.util.Painter;
+import staker.util.webapi.ReloadSettings;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -48,7 +49,7 @@ public class Staker extends ATScript {
     public int maxDistance = 2;
     public boolean trayMessage = false;
     public int declineTime = 120000;
-    public String autoChatMessage = "1";
+    public String autoChatMessage = "";
     public boolean walkBack = true;
 
     /**
@@ -77,6 +78,7 @@ public class Staker extends ATScript {
     public void onStart() {
         setPrivateVersion();
         useWebAPI();
+        webAPI.addAction(new ReloadSettings<>(this));
     }
 
     @Override

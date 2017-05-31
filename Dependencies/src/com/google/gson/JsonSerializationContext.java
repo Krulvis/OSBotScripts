@@ -39,7 +39,7 @@ public interface JsonSerializationContext {
      * Invokes default serialization on the specified object passing the specific type information.
      * It should never be invoked on the element received as a parameter of the
      * {@link JsonSerializer#serialize(Object, Type, JsonSerializationContext)} method. Doing
-     * so will result in an infinite loop since Gson will in-turn call the custom serializer again.
+     * so will result in an infinite perform since Gson will in-turn call the custom serializer again.
      *
      * @param src       the object that needs to be serialized.
      * @param typeOfSrc the actual genericized type of src object.

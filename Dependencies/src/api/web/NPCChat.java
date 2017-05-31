@@ -115,7 +115,7 @@ public class NPCChat {
      * If the NPC chat is open and "Click to continue" is ready to be clicked,
      * the client will click it. If, however, the "Click to continue" is not
      * present and instead you are faced with multiple chat options, the client
-     * will loop through the list of options you passed in the constructor and
+     * will perform through the list of options you passed in the constructor and
      * execute the first option that matches with the NPC option.
      *
      *

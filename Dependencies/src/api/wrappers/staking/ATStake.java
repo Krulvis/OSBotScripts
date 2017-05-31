@@ -3,6 +3,7 @@ package api.wrappers.staking;
 
 import api.ATMethodProvider;
 import api.util.*;
+import api.util.Random;
 import api.util.Timer;
 import api.util.filter.TextFilter;
 import api.wrappers.grandexchange.GrandExchange;
@@ -504,10 +505,8 @@ public class ATStake extends ATMethodProvider {
                         || (blacklist != null && blacklist.contains(username))
                         ) {
                     System.out.println("Ignore player " + (player == null ? "player is null" : "distance: " + distance(player) + "too long"));
-                    sleep(200, 250);
                     return false;
                 }
-                sleep(500, 1000);
                 int width = challengeMessageRect.width;
                 int x = challengeMessageRect.x;
                 int max_w = challengeMessageRect.x + width;
@@ -515,11 +514,13 @@ public class ATStake extends ATMethodProvider {
                 int y = challengeMessageRect.y;
                 int max_y = challengeMessageRect.y + length;
                 final Point p = new Point(nextGaussian(x, max_w, x + (width / 2), (width / 2) / 2), nextGaussian(y, max_y, y + (length / 2), (length / 2) / 2));
+                //TODO MOVE MOUSE DELAY
                 if (mouse.move(new PointDestination(bot, p))) {
                     List<Option> menuItems = menu.getMenu();
                     if (challengeMessageRectangle.getBoundingBox().contains(mouse.getPosition())
                             && menuItems != null) {
-                        //System.out.println("Challenge was found");
+                        //TODO DELAY
+                        //Build in Challenge accept delay
                         sleep(100, 500);
                         String leftClick = menuItems.size() > 0 ? menuItems.get(0).action : null;
                         if (distance(player) < maxDistance && leftClick != null && leftClick.contains("Accept challenge")) {

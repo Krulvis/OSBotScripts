@@ -1,5 +1,6 @@
 package api.webapi.actions;
 
+import api.ATMethodProvider;
 import api.webapi.WebAPI;
 
 import java.io.BufferedReader;
@@ -11,16 +12,16 @@ import java.io.InputStreamReader;
 /**
  * Created by Krulvis on 16-Feb-17.
  */
-public class Update extends Action {
+public class Update extends WebAction {
 
-    public Update(WebAPI parent) {
-        super(parent);
+    public Update(ATMethodProvider parent) {
+        super(parent, "UPDATE");
     }
 
     public String updateScripts = "sh ./Update.sh";
 
     @Override
-    public int loop() {
+    public boolean perform() {
 
         System.out.println("Updating script!");
         try {
@@ -45,7 +46,8 @@ public class Update extends Action {
             e.printStackTrace();
         }
 
-        return 0;
+        //Never return true since client should be shut down on this action
+        return false;
     }
 
     public static void main(String... args) {

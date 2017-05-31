@@ -32,7 +32,7 @@ public interface JsonDeserializationContext {
      * Invokes default deserialization on the specified object. It should never be invoked on
      * the element received as a parameter of the
      * {@link JsonDeserializer#deserialize(JsonElement, Type, JsonDeserializationContext)} method. Doing
-     * so will result in an infinite loop since Gson will in-turn call the custom deserializer again.
+     * so will result in an infinite perform since Gson will in-turn call the custom deserializer again.
      *
      * @param json    the parse tree.
      * @param typeOfT type of the expected return value.
