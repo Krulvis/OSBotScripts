@@ -203,7 +203,7 @@ public final class Random {
      * @return The generated pseudo-random integer.
      */
     public static int nextGaussian(final int min, final int max, final int mean, final int sd) {
-        if (min == max) {
+        if (min >= max) {
             return min;
         }
         int rand;
@@ -279,289 +279,289 @@ public final class Random {
         return Math.pow(1 - uniform(), -1.0 / alpha) - 1.0;
     }
 
-    /**
-     * Returns a random real number from the Cauchy distribution.
-     *
-     * @return a random real number from the Cauchy distribution.
-     */
-    public static double cauchy() {
-        return Math.tan(Math.PI * (uniform() - 0.5));
-    }
+	/**
+	 * Returns a random real number from the Cauchy distribution.
+	 *
+	 * @return a random real number from the Cauchy distribution.
+	 */
+	public static double cauchy() {
+		return Math.tan(Math.PI * (uniform() - 0.5));
+	}
 
-    /**
-     * Returns a random integer from the specified discrete distribution.
-     *
-     * @param probabilities the probability of occurrence of each integer
-     * @return a random integer from a discrete distribution:
-     * {@code i} with probability {@code probabilities[i]}
-     * @throws IllegalArgumentException if {@code probabilities} is {@code null}
-     * @throws IllegalArgumentException if sum of array entries is not (very nearly) equal to {@code 1.0}
-     * @throws IllegalArgumentException unless {@code probabilities[i] >= 0.0} for each index {@code i}
-     */
-    public static int discrete(double[] probabilities) {
-        if (probabilities == null) throw new IllegalArgumentException("argument array is null");
-        double EPSILON = 1E-14;
-        double sum = 0.0;
-        for (int i = 0; i < probabilities.length; i++) {
-            if (!(probabilities[i] >= 0.0))
-                throw new IllegalArgumentException("array entry " + i + " must be nonnegative: " + probabilities[i]);
-            sum += probabilities[i];
-        }
-        if (sum > 1.0 + EPSILON || sum < 1.0 - EPSILON)
-            throw new IllegalArgumentException("sum of array entries does not approximately equal 1.0: " + sum);
+	/**
+	 * Returns a random integer from the specified discrete distribution.
+	 *
+	 * @param probabilities the probability of occurrence of each integer
+	 * @return a random integer from a discrete distribution:
+	 * {@code i} with probability {@code probabilities[i]}
+	 * @throws IllegalArgumentException if {@code probabilities} is {@code null}
+	 * @throws IllegalArgumentException if sum of array entries is not (very nearly) equal to {@code 1.0}
+	 * @throws IllegalArgumentException unless {@code probabilities[i] >= 0.0} for each index {@code i}
+	 */
+	public static int discrete(double[] probabilities) {
+		if (probabilities == null) throw new IllegalArgumentException("argument array is null");
+		double EPSILON = 1E-14;
+		double sum = 0.0;
+		for (int i = 0; i < probabilities.length; i++) {
+			if (!(probabilities[i] >= 0.0))
+				throw new IllegalArgumentException("array entry " + i + " must be nonnegative: " + probabilities[i]);
+			sum += probabilities[i];
+		}
+		if (sum > 1.0 + EPSILON || sum < 1.0 - EPSILON)
+			throw new IllegalArgumentException("sum of array entries does not approximately equal 1.0: " + sum);
 
-        // the for perform may not return a value when both r is (nearly) 1.0 and when the
-        // cumulative sum is less than 1.0 (as a result of floating-point roundoff error)
-        while (true) {
-            double r = uniform();
-            sum = 0.0;
-            for (int i = 0; i < probabilities.length; i++) {
-                sum = sum + probabilities[i];
-                if (sum > r) return i;
-            }
-        }
-    }
+		// the for perform may not return a value when both r is (nearly) 1.0 and when the
+		// cumulative sum is less than 1.0 (as a result of floating-point roundoff error)
+		while (true) {
+			double r = uniform();
+			sum = 0.0;
+			for (int i = 0; i < probabilities.length; i++) {
+				sum = sum + probabilities[i];
+				if (sum > r) return i;
+			}
+		}
+	}
 
-    /**
-     * Returns a random integer from the specified discrete distribution.
-     *
-     * @param frequencies the frequency of occurrence of each integer
-     * @return a random integer from a discrete distribution:
-     * {@code i} with probability proportional to {@code frequencies[i]}
-     * @throws IllegalArgumentException if {@code frequencies} is {@code null}
-     * @throws IllegalArgumentException if all array entries are {@code 0}
-     * @throws IllegalArgumentException if {@code frequencies[i]} is negative for any index {@code i}
-     * @throws IllegalArgumentException if sum of frequencies exceeds {@code Integer.MAX_VALUE} (2<sup>31</sup> - 1)
-     */
-    public static int discrete(int[] frequencies) {
-        if (frequencies == null) throw new IllegalArgumentException("argument array is null");
-        long sum = 0;
-        for (int i = 0; i < frequencies.length; i++) {
-            if (frequencies[i] < 0)
-                throw new IllegalArgumentException("array entry " + i + " must be nonnegative: " + frequencies[i]);
-            sum += frequencies[i];
-        }
-        if (sum == 0)
-            throw new IllegalArgumentException("at least one array entry must be positive");
-        if (sum >= Integer.MAX_VALUE)
-            throw new IllegalArgumentException("sum of frequencies overflows an int");
+	/**
+	 * Returns a random integer from the specified discrete distribution.
+	 *
+	 * @param frequencies the frequency of occurrence of each integer
+	 * @return a random integer from a discrete distribution:
+	 * {@code i} with probability proportional to {@code frequencies[i]}
+	 * @throws IllegalArgumentException if {@code frequencies} is {@code null}
+	 * @throws IllegalArgumentException if all array entries are {@code 0}
+	 * @throws IllegalArgumentException if {@code frequencies[i]} is negative for any index {@code i}
+	 * @throws IllegalArgumentException if sum of frequencies exceeds {@code Integer.MAX_VALUE} (2<sup>31</sup> - 1)
+	 */
+	public static int discrete(int[] frequencies) {
+		if (frequencies == null) throw new IllegalArgumentException("argument array is null");
+		long sum = 0;
+		for (int i = 0; i < frequencies.length; i++) {
+			if (frequencies[i] < 0)
+				throw new IllegalArgumentException("array entry " + i + " must be nonnegative: " + frequencies[i]);
+			sum += frequencies[i];
+		}
+		if (sum == 0)
+			throw new IllegalArgumentException("at least one array entry must be positive");
+		if (sum >= Integer.MAX_VALUE)
+			throw new IllegalArgumentException("sum of frequencies overflows an int");
 
-        // pick index i with probabilitity proportional to frequency
-        double r = uniform((int) sum);
-        sum = 0;
-        for (int i = 0; i < frequencies.length; i++) {
-            sum += frequencies[i];
-            if (sum > r) return i;
-        }
+		// pick index i with probabilitity proportional to frequency
+		double r = uniform((int) sum);
+		sum = 0;
+		for (int i = 0; i < frequencies.length; i++) {
+			sum += frequencies[i];
+			if (sum > r) return i;
+		}
 
-        // can't reach here
-        assert false;
-        return -1;
-    }
+		// can't reach here
+		assert false;
+		return -1;
+	}
 
-    /**
-     * Returns a random real number from an exponential distribution
-     * with rate &lambda;.
-     *
-     * @param lambda the rate of the exponential distribution
-     * @return a random real number from an exponential distribution with
-     * rate {@code lambda}
-     * @throws IllegalArgumentException unless {@code lambda > 0.0}
-     */
-    public static double exp(double lambda) {
-        if (!(lambda > 0.0))
-            throw new IllegalArgumentException("lambda must be positive");
-        return -Math.log(1 - uniform()) / lambda;
-    }
+	/**
+	 * Returns a random real number from an exponential distribution
+	 * with rate &lambda;.
+	 *
+	 * @param lambda the rate of the exponential distribution
+	 * @return a random real number from an exponential distribution with
+	 * rate {@code lambda}
+	 * @throws IllegalArgumentException unless {@code lambda > 0.0}
+	 */
+	public static double exp(double lambda) {
+		if (!(lambda > 0.0))
+			throw new IllegalArgumentException("lambda must be positive");
+		return -Math.log(1 - uniform()) / lambda;
+	}
 
-    /**
-     * Rearranges the elements of the specified array in uniformly random order.
-     *
-     * @param a the array to shuffle
-     * @throws IllegalArgumentException if {@code a} is {@code null}
-     */
-    public static void shuffle(Object[] a) {
-        if (a == null) throw new IllegalArgumentException("argument array is null");
-        int n = a.length;
-        for (int i = 0; i < n; i++) {
-            int r = i + uniform(n - i);     // between i and n-1
-            Object temp = a[i];
-            a[i] = a[r];
-            a[r] = temp;
-        }
-    }
+	/**
+	 * Rearranges the elements of the specified array in uniformly random order.
+	 *
+	 * @param a the array to shuffle
+	 * @throws IllegalArgumentException if {@code a} is {@code null}
+	 */
+	public static void shuffle(Object[] a) {
+		if (a == null) throw new IllegalArgumentException("argument array is null");
+		int n = a.length;
+		for (int i = 0; i < n; i++) {
+			int r = i + uniform(n - i);     // between i and n-1
+			Object temp = a[i];
+			a[i] = a[r];
+			a[r] = temp;
+		}
+	}
 
-    /**
-     * Rearranges the elements of the specified array in uniformly random order.
-     *
-     * @param a the array to shuffle
-     * @throws IllegalArgumentException if {@code a} is {@code null}
-     */
-    public static void shuffle(double[] a) {
-        if (a == null) throw new IllegalArgumentException("argument array is null");
-        int n = a.length;
-        for (int i = 0; i < n; i++) {
-            int r = i + uniform(n - i);     // between i and n-1
-            double temp = a[i];
-            a[i] = a[r];
-            a[r] = temp;
-        }
-    }
+	/**
+	 * Rearranges the elements of the specified array in uniformly random order.
+	 *
+	 * @param a the array to shuffle
+	 * @throws IllegalArgumentException if {@code a} is {@code null}
+	 */
+	public static void shuffle(double[] a) {
+		if (a == null) throw new IllegalArgumentException("argument array is null");
+		int n = a.length;
+		for (int i = 0; i < n; i++) {
+			int r = i + uniform(n - i);     // between i and n-1
+			double temp = a[i];
+			a[i] = a[r];
+			a[r] = temp;
+		}
+	}
 
-    /**
-     * Rearranges the elements of the specified array in uniformly random order.
-     *
-     * @param a the array to shuffle
-     * @throws IllegalArgumentException if {@code a} is {@code null}
-     */
-    public static void shuffle(int[] a) {
-        if (a == null) throw new IllegalArgumentException("argument array is null");
-        int n = a.length;
-        for (int i = 0; i < n; i++) {
-            int r = i + uniform(n - i);     // between i and n-1
-            int temp = a[i];
-            a[i] = a[r];
-            a[r] = temp;
-        }
-    }
+	/**
+	 * Rearranges the elements of the specified array in uniformly random order.
+	 *
+	 * @param a the array to shuffle
+	 * @throws IllegalArgumentException if {@code a} is {@code null}
+	 */
+	public static void shuffle(int[] a) {
+		if (a == null) throw new IllegalArgumentException("argument array is null");
+		int n = a.length;
+		for (int i = 0; i < n; i++) {
+			int r = i + uniform(n - i);     // between i and n-1
+			int temp = a[i];
+			a[i] = a[r];
+			a[r] = temp;
+		}
+	}
 
-    /**
-     * Rearranges the elements of the specified array in uniformly random order.
-     *
-     * @param a the array to shuffle
-     * @throws IllegalArgumentException if {@code a} is {@code null}
-     */
-    public static void shuffle(char[] a) {
-        if (a == null) throw new IllegalArgumentException("argument array is null");
-        int n = a.length;
-        for (int i = 0; i < n; i++) {
-            int r = i + uniform(n - i);     // between i and n-1
-            char temp = a[i];
-            a[i] = a[r];
-            a[r] = temp;
-        }
-    }
+	/**
+	 * Rearranges the elements of the specified array in uniformly random order.
+	 *
+	 * @param a the array to shuffle
+	 * @throws IllegalArgumentException if {@code a} is {@code null}
+	 */
+	public static void shuffle(char[] a) {
+		if (a == null) throw new IllegalArgumentException("argument array is null");
+		int n = a.length;
+		for (int i = 0; i < n; i++) {
+			int r = i + uniform(n - i);     // between i and n-1
+			char temp = a[i];
+			a[i] = a[r];
+			a[r] = temp;
+		}
+	}
 
-    /**
-     * Rearranges the elements of the specified subarray in uniformly random order.
-     *
-     * @param a  the array to shuffle
-     * @param lo the left endpoint (inclusive)
-     * @param hi the right endpoint (exclusive)
-     * @throws IllegalArgumentException  if {@code a} is {@code null}
-     * @throws IndexOutOfBoundsException unless {@code (0 <= lo) && (lo < hi) && (hi <= a.length)}
-     */
-    public static void shuffle(Object[] a, int lo, int hi) {
-        if (a == null) throw new IllegalArgumentException("argument array is null");
-        if (lo < 0 || lo >= hi || hi > a.length) {
-            throw new IndexOutOfBoundsException("invalid subarray range: [" + lo + ", " + hi + ")");
-        }
-        for (int i = lo; i < hi; i++) {
-            int r = i + uniform(hi - i);     // between i and hi-1
-            Object temp = a[i];
-            a[i] = a[r];
-            a[r] = temp;
-        }
-    }
+	/**
+	 * Rearranges the elements of the specified subarray in uniformly random order.
+	 *
+	 * @param a  the array to shuffle
+	 * @param lo the left endpoint (inclusive)
+	 * @param hi the right endpoint (exclusive)
+	 * @throws IllegalArgumentException  if {@code a} is {@code null}
+	 * @throws IndexOutOfBoundsException unless {@code (0 <= lo) && (lo < hi) && (hi <= a.length)}
+	 */
+	public static void shuffle(Object[] a, int lo, int hi) {
+		if (a == null) throw new IllegalArgumentException("argument array is null");
+		if (lo < 0 || lo >= hi || hi > a.length) {
+			throw new IndexOutOfBoundsException("invalid subarray range: [" + lo + ", " + hi + ")");
+		}
+		for (int i = lo; i < hi; i++) {
+			int r = i + uniform(hi - i);     // between i and hi-1
+			Object temp = a[i];
+			a[i] = a[r];
+			a[r] = temp;
+		}
+	}
 
-    /**
-     * Rearranges the elements of the specified subarray in uniformly random order.
-     *
-     * @param a  the array to shuffle
-     * @param lo the left endpoint (inclusive)
-     * @param hi the right endpoint (exclusive)
-     * @throws IllegalArgumentException  if {@code a} is {@code null}
-     * @throws IndexOutOfBoundsException unless {@code (0 <= lo) && (lo < hi) && (hi <= a.length)}
-     */
-    public static void shuffle(double[] a, int lo, int hi) {
-        if (a == null) throw new IllegalArgumentException("argument array is null");
-        if (lo < 0 || lo >= hi || hi > a.length) {
-            throw new IndexOutOfBoundsException("invalid subarray range: [" + lo + ", " + hi + ")");
-        }
-        for (int i = lo; i < hi; i++) {
-            int r = i + uniform(hi - i);     // between i and hi-1
-            double temp = a[i];
-            a[i] = a[r];
-            a[r] = temp;
-        }
-    }
+	/**
+	 * Rearranges the elements of the specified subarray in uniformly random order.
+	 *
+	 * @param a  the array to shuffle
+	 * @param lo the left endpoint (inclusive)
+	 * @param hi the right endpoint (exclusive)
+	 * @throws IllegalArgumentException  if {@code a} is {@code null}
+	 * @throws IndexOutOfBoundsException unless {@code (0 <= lo) && (lo < hi) && (hi <= a.length)}
+	 */
+	public static void shuffle(double[] a, int lo, int hi) {
+		if (a == null) throw new IllegalArgumentException("argument array is null");
+		if (lo < 0 || lo >= hi || hi > a.length) {
+			throw new IndexOutOfBoundsException("invalid subarray range: [" + lo + ", " + hi + ")");
+		}
+		for (int i = lo; i < hi; i++) {
+			int r = i + uniform(hi - i);     // between i and hi-1
+			double temp = a[i];
+			a[i] = a[r];
+			a[r] = temp;
+		}
+	}
 
-    /**
-     * Rearranges the elements of the specified subarray in uniformly random order.
-     *
-     * @param a  the array to shuffle
-     * @param lo the left endpoint (inclusive)
-     * @param hi the right endpoint (exclusive)
-     * @throws IllegalArgumentException  if {@code a} is {@code null}
-     * @throws IndexOutOfBoundsException unless {@code (0 <= lo) && (lo < hi) && (hi <= a.length)}
-     */
-    public static void shuffle(int[] a, int lo, int hi) {
-        if (a == null) throw new IllegalArgumentException("argument array is null");
-        if (lo < 0 || lo >= hi || hi > a.length) {
-            throw new IndexOutOfBoundsException("invalid subarray range: [" + lo + ", " + hi + ")");
-        }
-        for (int i = lo; i < hi; i++) {
-            int r = i + uniform(hi - i);     // between i and hi-1
-            int temp = a[i];
-            a[i] = a[r];
-            a[r] = temp;
-        }
-    }
+	/**
+	 * Rearranges the elements of the specified subarray in uniformly random order.
+	 *
+	 * @param a  the array to shuffle
+	 * @param lo the left endpoint (inclusive)
+	 * @param hi the right endpoint (exclusive)
+	 * @throws IllegalArgumentException  if {@code a} is {@code null}
+	 * @throws IndexOutOfBoundsException unless {@code (0 <= lo) && (lo < hi) && (hi <= a.length)}
+	 */
+	public static void shuffle(int[] a, int lo, int hi) {
+		if (a == null) throw new IllegalArgumentException("argument array is null");
+		if (lo < 0 || lo >= hi || hi > a.length) {
+			throw new IndexOutOfBoundsException("invalid subarray range: [" + lo + ", " + hi + ")");
+		}
+		for (int i = lo; i < hi; i++) {
+			int r = i + uniform(hi - i);     // between i and hi-1
+			int temp = a[i];
+			a[i] = a[r];
+			a[r] = temp;
+		}
+	}
 
-    /**
-     * Returns a uniformly random permutation of <em>n</em> elements
-     *
-     * @param n number of elements
-     * @return an array of length {@code n} that is a uniformly random permutation
-     * of {@code 0}, {@code 1}, ..., {@code n-1}
-     * @throws IllegalArgumentException if {@code n} is negative
-     */
-    public static int[] permutation(int n) {
-        if (n < 0) throw new IllegalArgumentException("argument is negative");
-        int[] perm = new int[n];
-        for (int i = 0; i < n; i++)
-            perm[i] = i;
-        shuffle(perm);
-        return perm;
-    }
+	/**
+	 * Returns a uniformly random permutation of <em>n</em> elements
+	 *
+	 * @param n number of elements
+	 * @return an array of length {@code n} that is a uniformly random permutation
+	 * of {@code 0}, {@code 1}, ..., {@code n-1}
+	 * @throws IllegalArgumentException if {@code n} is negative
+	 */
+	public static int[] permutation(int n) {
+		if (n < 0) throw new IllegalArgumentException("argument is negative");
+		int[] perm = new int[n];
+		for (int i = 0; i < n; i++)
+			perm[i] = i;
+		shuffle(perm);
+		return perm;
+	}
 
-    /**
-     * Returns a uniformly random permutation of <em>k</em> of <em>n</em> elements
-     *
-     * @param n number of elements
-     * @param k number of elements to select
-     * @return an array of length {@code k} that is a uniformly random permutation
-     * of {@code k} of the elements from {@code 0}, {@code 1}, ..., {@code n-1}
-     * @throws IllegalArgumentException if {@code n} is negative
-     * @throws IllegalArgumentException unless {@code 0 <= k <= n}
-     */
-    public static int[] permutation(int n, int k) {
-        if (n < 0) throw new IllegalArgumentException("argument is negative");
-        if (k < 0 || k > n) throw new IllegalArgumentException("k must be between 0 and n");
-        int[] perm = new int[k];
-        for (int i = 0; i < k; i++) {
-            int r = uniform(i + 1);    // between 0 and i
-            perm[i] = perm[r];
-            perm[r] = i;
-        }
-        for (int i = k; i < n; i++) {
-            int r = uniform(i + 1);    // between 0 and i
-            if (r < k) perm[r] = i;
-        }
-        return perm;
-    }
+	/**
+	 * Returns a uniformly random permutation of <em>k</em> of <em>n</em> elements
+	 *
+	 * @param n number of elements
+	 * @param k number of elements to select
+	 * @return an array of length {@code k} that is a uniformly random permutation
+	 * of {@code k} of the elements from {@code 0}, {@code 1}, ..., {@code n-1}
+	 * @throws IllegalArgumentException if {@code n} is negative
+	 * @throws IllegalArgumentException unless {@code 0 <= k <= n}
+	 */
+	public static int[] permutation(int n, int k) {
+		if (n < 0) throw new IllegalArgumentException("argument is negative");
+		if (k < 0 || k > n) throw new IllegalArgumentException("k must be between 0 and n");
+		int[] perm = new int[k];
+		for (int i = 0; i < k; i++) {
+			int r = uniform(i + 1);    // between 0 and i
+			perm[i] = perm[r];
+			perm[r] = i;
+		}
+		for (int i = k; i < n; i++) {
+			int r = uniform(i + 1);    // between 0 and i
+			if (r < k) perm[r] = i;
+		}
+		return perm;
+	}
 
-    public static int smallSleep() {
-        return Random.nextGaussian(100, 250, 50);
-    }
+	public static int smallSleep() {
+		return Random.nextGaussian(100, 250, 50);
+	}
 
-    public static int medSleep() {
-        return Random.nextGaussian(500, 1000, 250);
-    }
+	public static int medSleep() {
+		return Random.nextGaussian(500, 1000, 250);
+	}
 
-    public static int bigSleep() {
-        return Random.nextGaussian(2000, 5000, 1500);
-    }
+	public static int bigSleep() {
+		return Random.nextGaussian(2000, 5000, 1500);
+	}
 }
 
 
