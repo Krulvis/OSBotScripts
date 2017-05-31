@@ -3,7 +3,7 @@ package api.util.antiban;
 import api.util.statistics.Distributions.NormalDistribution;
 
 /**
- * Created by Krulvis on 31-May-17.
+ * Created by Arthur on 31-May-17.
  */
 public abstract class DelayHandler {
 
@@ -44,7 +44,6 @@ public abstract class DelayHandler {
     public void handle() {
         double delay = NormalDistribution.generateWithBoundaries(this.min, this.max, this.mean, this.sd, this.castInt);
         try {
-            System.out.println("Performing delay action: waiting " + delay + " seconds");
             Thread.sleep((long) delay * 1000);
         } catch (Exception e) {
         }

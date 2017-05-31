@@ -5,7 +5,7 @@ import api.util.antiban.DelayHandler;
 /**
  * Created by Tony on 31/05/2017.
  */
-public class TypeAutoChatMessageDelay extends DelayHandler{
+public class TypeAutoChatMessageDelay extends DelayHandler {
 
     @Override
     protected double setMean() {
@@ -27,9 +27,8 @@ public class TypeAutoChatMessageDelay extends DelayHandler{
         return 10;
     }
 
-    public static void execute(){
+    public static void execute() {
         DelayHandler delay = new TypeAutoChatMessageDelay();
         delay.handle();
     }
-
 }
