@@ -68,6 +68,7 @@ public class Staker extends ATScript {
      * States
      */
     public EndFight endFight;
+    public Fight fight;
 
     @Override
     public void update() {
@@ -83,7 +84,7 @@ public class Staker extends ATScript {
     @Override
     protected void initialize(LinkedList<ATState> statesToAdd) {
         statesToAdd.add(new Starting(this));
-        statesToAdd.add(new Fight(this));
+        statesToAdd.add(this.fight = new Fight(this));
         statesToAdd.add(this.endFight = new EndFight(this));
         statesToAdd.add(new Third(this));
         statesToAdd.add(new Second(this));
@@ -112,7 +113,7 @@ public class Staker extends ATScript {
             }
             currentDuel = null;
         }
-        stake.canAttackPlayer = false;
+        this.fight.canAttackPlayer = false;
         return true;
     }
 

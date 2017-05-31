@@ -1,6 +1,5 @@
 package staker.util.webapi;
 
-import api.ATMethodProvider;
 import api.webapi.actions.WebAction;
 import staker.Staker;
 
@@ -10,6 +9,7 @@ import staker.Staker;
 public class ReloadSettings<S extends Staker> extends WebAction {
 
     private S staker;
+
     public ReloadSettings(S s) {
         super(s, "RELOAD_SETTINGS");
         this.staker = s;

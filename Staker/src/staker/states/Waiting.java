@@ -7,11 +7,20 @@ import staker.util.delays.RelocateDelay;
 import api.wrappers.staking.calculator.SPlayer;
 import api.wrappers.staking.data.Settings;
 import org.osbot.rs07.api.model.Item;
+import org.osbot.rs07.api.model.Player;
+import org.osbot.rs07.api.ui.Option;
 import org.osbot.rs07.api.ui.RS2Widget;
 import org.osbot.rs07.api.ui.Skill;
+import org.osbot.rs07.input.mouse.PointDestination;
 import org.osbot.rs07.input.mouse.RectangleDestination;
 import org.osbot.rs07.utility.Condition;
 import staker.Staker;
+
+import java.awt.*;
+import java.util.*;
+
+import static api.util.Random.nextGaussian;
+import static api.wrappers.staking.data.Data.DUEL_INTERFACE_1;
 
 /**
  * Created by Krulvis on 29-May-17.
@@ -20,6 +29,7 @@ public class Waiting extends ATState<Staker> {
 
     public Waiting(Staker script) {
         super("Waiting", script);
+        challengeMessageRectangle = new RectangleDestination(bot, challengeMessageRect);
     }
 
     public Timer logoutTimer;
@@ -74,7 +84,7 @@ public class Waiting extends ATState<Staker> {
 
         chat.setMessage(script.autoChatMessage, true);
 
-        if (stake.acceptChallenge(script.maxDistance + 1, null)) {
+        if (acceptChallenge(script.maxDistance + 1, null)) {
             script.resetValues();
             if (script.trayMessage) {
                 trayMessage(myPlayer().getName(), "Has a challenge!");
@@ -88,6 +98,65 @@ public class Waiting extends ATState<Staker> {
             });
         }
         return Random.smallSleep();
+    }
+
+    private final Rectangle challengeMessageRect = new Rectangle(11, 443, 100, 10);
+    public final RectangleDestination challengeMessageRectangle;
+
+    public boolean acceptChallenge(int maxDistance, ArrayList<String> blacklist) {
+        RS2Widget w = widgets.get(162, 43);
+        if (w != null) {
+            RS2Widget[] lines = w.getChildWidgets();
+            String lastMessage = "";
+            for (int i = 0; i < lines.length; i++) {
+                if (!lines[i].getMessage().equals("")) {
+                    lastMessage = lines[i].getMessage();
+                    break;
+                }
+            }
+            if (stake.isChallenge(lastMessage)) {
+                String username = lastMessage.replaceAll("<[^>]*>", "").replaceAll(" wishes to duel with you.", "").replaceAll("\u00A0", " ").trim();
+                Player player = getPlayer(username);
+                System.out.println("Username: " + username + ", player null: " + (player == null));
+                if (player == null
+                        || distance(player) > maxDistance
+                        || (blacklist != null && blacklist.contains(username))
+                        ) {
+                    System.out.println("Ignore player " + (player == null ? "player is null" : "distance: " + distance(player) + "too long"));
+                    return false;
+                }
+                int width = challengeMessageRect.width;
+                int x = challengeMessageRect.x;
+                int max_w = challengeMessageRect.x + width;
+                int length = challengeMessageRect.height;
+                int y = challengeMessageRect.y;
+                int max_y = challengeMessageRect.y + length;
+                final Point p = new Point(nextGaussian(x, max_w, x + (width / 2), (width / 2) / 2), nextGaussian(y, max_y, y + (length / 2), (length / 2) / 2));
+                //TODO MOVE MOUSE DELAY
+                if (mouse.move(new PointDestination(bot, p))) {
+                    java.util.List<Option> menuItems = menu.getMenu();
+                    if (challengeMessageRectangle.getBoundingBox().contains(mouse.getPosition())
+                            && menuItems != null) {
+                        //TODO DELAY
+                        //Build in Challenge accept delay
+                        sleep(100, 500);
+                        String leftClick = menuItems.size() > 0 ? menuItems.get(0).action : null;
+                        if (distance(player) < maxDistance && leftClick != null && leftClick.contains("Accept challenge")) {
+                            mouse.click(false);
+                            waitFor(1000, new Condition() {
+                                @Override
+                                public boolean evaluate() {
+                                    //check if it's being lured
+                                    return validateWidget(DUEL_INTERFACE_1);
+                                }
+                            });
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     @Override

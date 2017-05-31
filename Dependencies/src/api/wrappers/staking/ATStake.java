@@ -3,6 +3,7 @@ package api.wrappers.staking;
 
 import api.ATMethodProvider;
 import api.util.*;
+import api.util.Random;
 import api.util.Timer;
 import api.util.filter.TextFilter;
 import api.wrappers.grandexchange.GrandExchange;
@@ -53,12 +54,9 @@ public class ATStake extends ATMethodProvider {
     public ATStake(ATMethodProvider parent) {
         init(parent);
         this.parent = parent;
-        challengeMessageRectangle = new RectangleDestination(bot, challengeMessageRect);
         pricemap.put(13204, 1000);
         pricemapNames.put("platinum token", 1000);
     }
-
-    public boolean canAttackPlayer = false;
 
     public boolean isFirstScreenOpen() {
         return validateWidget(DUEL_INTERFACE_1);
@@ -481,69 +479,6 @@ public class ATStake extends ATMethodProvider {
         return accept;
     }
 
-    private final Rectangle challengeMessageRect = new Rectangle(11, 443, 100, 10);
-    public final RectangleDestination challengeMessageRectangle;
-
-    public boolean acceptChallenge(int maxDistance, ArrayList<String> blacklist) {
-        RS2Widget w = widgets.get(162, 43);
-        if (w != null) {
-            RS2Widget[] lines = w.getChildWidgets();
-            String lastMessage = "";
-            for (int i = 0; i < lines.length; i++) {
-                if (!lines[i].getMessage().equals("")) {
-                    lastMessage = lines[i].getMessage();
-                    break;
-                }
-            }
-            if (isChallenge(lastMessage)) {
-                String username = lastMessage.replaceAll("<[^>]*>", "").replaceAll(" wishes to duel with you.", "").replaceAll("\u00A0", " ").trim();
-                Player player = getPlayer(username);
-                System.out.println("Username: " + username + ", player null: " + (player == null));
-                if (player == null
-                        || distance(player) > maxDistance
-                        || (blacklist != null && blacklist.contains(username))
-                        ) {
-                    System.out.println("Ignore player " + (player == null ? "player is null" : "distance: " + distance(player) + "too long"));
-                    return false;
-                }
-                int width = challengeMessageRect.width;
-                int x = challengeMessageRect.x;
-                int max_w = challengeMessageRect.x + width;
-                int length = challengeMessageRect.height;
-                int y = challengeMessageRect.y;
-                int max_y = challengeMessageRect.y + length;
-                final Point p = new Point(nextGaussian(x, max_w, x + (width / 2), (width / 2) / 2), nextGaussian(y, max_y, y + (length / 2), (length / 2) / 2));
-               // TODO AcceptChallengeDelay.execute();
-                if (mouse.move(new PointDestination(bot, p))) {
-                    List<Option> menuItems = menu.getMenu();
-                    if (challengeMessageRectangle.getBoundingBox().contains(mouse.getPosition())
-                            && menuItems != null) {
-                        //TODO DELAY
-                        //Build in Challenge accept delay
-                        sleep(100, 500);
-                        String leftClick = menuItems.size() > 0 ? menuItems.get(0).action : null;
-                        if (distance(player) < maxDistance && leftClick != null && leftClick.contains("Accept challenge")) {
-                            mouse.click(false);
-                            waitFor(1000, new Condition() {
-                                @Override
-                                public boolean evaluate() {
-                                    //check if it's being lured
-                                    return validateWidget(DUEL_INTERFACE_1);
-                                }
-                            });
-                            return true;
-                        }
-                    }
-                }
-            }
-        }
-        return false;
-    }
-
-    public boolean isChallenge(String text) {
-        return text.startsWith("<col=7e3200>");
-    }
-
 
     public Player getClosePlayer(final String n) {
         final String name = n.replaceAll("\u00A0", " ");
@@ -565,121 +500,6 @@ public class ATStake extends ATMethodProvider {
         }
         return null;
     }
-
-    public boolean fight(Player p, final RuleSet mode) {
-        if (p == null) {
-            return false;
-        }
-        opponent = p;
-        if (mode == RuleSet.DDS && atCombat.getSpecialAttack() >= 25) {
-            if (!Settings.Weapon.DRAGON_DAGGER.isWearing(this)) {
-                openInventory();
-                if (Settings.Weapon.DRAGON_DAGGER.equip(this)) {
-                    waitFor(1000, new Condition() {
-                        @Override
-                        public boolean evaluate() {
-                            return Settings.Weapon.DRAGON_DAGGER.isWearing(parent);
-                        }
-                    });
-                }
-            } else if (tabs.getOpen() != Tab.ATTACK) {
-                if (tabs.open(Tab.ATTACK)) {
-                    waitFor(1000, new Condition() {
-                        @Override
-                        public boolean evaluate() {
-                            return tabs.getOpen() == Tab.ATTACK;
-                        }
-                    });
-                }
-            }
-            if (Settings.Weapon.DRAGON_DAGGER.isWearing(this) && tabs.getOpen() == Tab.ATTACK) {
-                if (!combat.isSpecialActivated()) {
-                    combat.toggleSpecialAttack(true);
-                    waitFor(1000, new Condition() {
-                        @Override
-                        public boolean evaluate() {
-                            return combat.isSpecialActivated();
-                        }
-                    });
-                }
-                if (combat.isSpecialActivated()) {
-                    return attackOpponent();
-                }
-            }
-        } else {
-            if (!mode.getWeapon().isWearing(this)) {
-                if (mode.getWeapon().equip(this)) {
-                    waitFor(2000, new Condition() {
-                        @Override
-                        public boolean evaluate() {
-                            return mode.getWeapon().isWearing(parent);
-                        }
-                    });
-                }
-            }
-            if (mode.getWeapon().isWearing(this)) {
-                return attackOpponent();
-            }
-        }
-        return false;
-    }
-
-    public boolean attackOpponent() {
-        if (opponent == null) {
-            return false;
-        } else if (!canAttackPlayer) {
-            if (!checkAttackThread.isAlive()) {
-                checkAttackThread.start();
-            }
-        } else {
-            if (camera.getPitchAngle() < 93) {
-                camera.movePitch(random(94, 99));
-            }
-            Character<?> check = myPlayer().getInteracting();
-            if (check == null || !check.getName().equalsIgnoreCase(opponent.getName()) || !check.isHitBarVisible()) {
-                if (opponent.getPosition().isVisible(bot)) {
-                    Rectangle target = getCenterPoint(opponent);
-                    if (target != null && interact.interact(new RectangleDestination(bot, target), "Fight", opponent.getName(), false)) {
-                        waitFor(100, new Condition() {
-                            @Override
-                            public boolean evaluate() {
-                                final Character check = myPlayer().getInteracting();
-                                return check != null && check.getName().equalsIgnoreCase(opponent.getName());
-                            }
-                        });
-                    }
-                } else {
-                    camera.toPosition(opponent.getPosition());
-                }
-            }
-            final Character opp = myPlayer().getInteracting();
-            return opp != null && opp.getName().equalsIgnoreCase(opponent.getName());
-        }
-        return false;
-    }
-
-    public final Thread checkAttackThread = new Thread(new Runnable() {
-        @Override
-        public void run() {
-            Timer attackTimer = new Timer(5000);
-            while (!attackTimer.isFinished()) {
-                try {
-                    if (opponent != null) {
-                        String text = opponent.getHeadMessage();
-                        if (text.equals("1")) {
-                            //TODO Add delay to decide when to attack after "1"  is said
-                            Thread.sleep(nextGaussian(50, 150, 100, 50));
-                            break;
-                        }
-                    }
-                    Thread.sleep(nextGaussian(50, 150, 100, 50));
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-            canAttackPlayer = true;
-        }
-    }, "CanAttackPlayer Thread");
 
 
     public int[] getOtherSkills() {
@@ -782,5 +602,10 @@ public class ATStake extends ATMethodProvider {
 
         ItemDefinition def = ItemDefinition.forId(id);
         System.out.println("Added To Forbidden: " + (def != null ? def.getName() : id));
+    }
+
+
+    public boolean isChallenge(String text) {
+        return text.startsWith("<col=7e3200>");
     }
 }
