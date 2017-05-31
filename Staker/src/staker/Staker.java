@@ -68,8 +68,9 @@ public class Staker extends ATScript {
     /**
      * States
      */
-    public EndFight endFight;
     public Fight fight;
+    public Second second;
+    public EndFight endFight;
 
     @Override
     public void update() {
@@ -88,7 +89,7 @@ public class Staker extends ATScript {
         statesToAdd.add(this.fight = new Fight(this));
         statesToAdd.add(this.endFight = new EndFight(this));
         statesToAdd.add(new Third(this));
-        statesToAdd.add(new Second(this));
+        statesToAdd.add(this.second = new Second(this));
         statesToAdd.add(new First(this));
         statesToAdd.add(new Waiting(this));
 
@@ -108,6 +109,7 @@ public class Staker extends ATScript {
 
     public boolean resetValues() {
         if (currentDuel != null) {
+            currentDuel.sendResults(webAPI);
             currentDuel.resetStakes();
             if (getPreviousDuel(currentDuel.getPlayerName()) == null) {
                 duelList.add(currentDuel);
@@ -115,13 +117,14 @@ public class Staker extends ATScript {
             currentDuel = null;
         }
         this.fight.canAttackPlayer = false;
+        this.second.tooLowTimer = null;
         return true;
     }
 
     @Override
-    public void onMessage(Message m){
+    public void onMessage(Message m) {
         if (m.getTypeId() == 102 && m.getMessage() != null && m.getMessage().contains("cancelled") && currentDuel != null) {
-            currentDuel.sendResults(webAPI);
+            currentDuel.setFinished(false);
         }
     }
 

@@ -17,7 +17,7 @@ public class Second extends ATState<Staker> {
         super("Second", script);
     }
 
-    private Timer tooLowTimer;
+    public Timer tooLowTimer;
 
     @Override
     public int perform() throws InterruptedException {

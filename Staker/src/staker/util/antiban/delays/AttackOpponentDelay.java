@@ -24,7 +24,7 @@ public class AttackOpponentDelay extends DelayHandler{
 
     @Override
     protected double setMax() {
-        return 0.8;
+        return 0.5;
     }
 
     public static void execute(){

@@ -56,7 +56,7 @@ public class Fight extends ATState<Staker> {
                     script.currentDuel.stopFightTimer();
                     openInventory();
                 } else {
-                    System.out.println("Fight");
+                    //System.out.println("Fight");
                     fight(script.ruleSet);
                 }
             }
