@@ -46,12 +46,12 @@ public class Second extends ATState<Staker> {
                         }
                     });
                 }
-            } else if (shouldOffer > 0) {
+            } else if (otherExact > 0) {
                 if (tooLow) {
                     if (tooLowTimer == null) {
                         tooLowTimer = new Timer(Random.nextGaussian(10000, 20000, 5000));
                     } else if (tooLowTimer.isFinished()) {
-                        sleep(random(1000, 4000));
+                        //TODO ADD DELAY FOR TOO LOW OFFER
                         log("Declined stake since opponents offer was too low");
                         if (stake.declineSecond()) {
                             script.currentDuel.setCancelReason("offer_too_low_2nd");
@@ -69,7 +69,7 @@ public class Second extends ATState<Staker> {
 
                 if (currentOffer != shouldOffer) {
                     if (shouldOffer < currentOffer) {
-                        //TODO DELAY TIMER FOR REMOVING BET
+                        //TODO DELAY FOR REMOVING BET
                         if (stake.remove(currentOffer - shouldOffer)) {
                             waitFor(3000, new Condition() {
                                 @Override
@@ -79,7 +79,7 @@ public class Second extends ATState<Staker> {
                             });
                         }
                     } else if (shouldOffer > currentOffer) {
-                        //TODO DELAY TIMER FOR ADDING BET
+                        //TODO DELAY FOR ADDING BET
                         if (stake.offer(shouldOffer - currentOffer)) {
                             waitFor(2000, new Condition() {
                                 @Override

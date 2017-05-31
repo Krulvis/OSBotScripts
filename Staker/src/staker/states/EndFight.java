@@ -50,7 +50,6 @@ public class EndFight extends ATState<Staker> {
             final int wons = script.currentDuel.getOtherExact();
             rechallenge(wc, oldChallenge);
             if (!validateWidget(VICTORY_INTERFACE)) {
-                //sendResults(true, true);
                 script.totalGains += wons;
             }
         } else if (lost) {
@@ -60,7 +59,6 @@ public class EndFight extends ATState<Staker> {
             final int loses = script.currentDuel.getMyRoundedMultiplied();
             rechallenge(wc, oldChallenge);
             if (!validateWidget(LOST_INTERFACE)) {
-                script.currentDuel.sendResults(webAPI);
                 script.totalLosses += loses;
             }
         } else if (oldChallenge == null && challengeAgain.getElapsedTime() > 10000) {
@@ -96,6 +94,7 @@ public class EndFight extends ATState<Staker> {
                     return isMoving();
                 }
             });
+            script.currentDuel.sendResults(webAPI);
             script.resetValues();
             challengeAgain = new Timer(30000);
         }

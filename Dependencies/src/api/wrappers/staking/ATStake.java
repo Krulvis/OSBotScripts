@@ -473,14 +473,10 @@ public class ATStake extends ATMethodProvider {
         int myAmount = myOfferedAmountThird();
         int otherAmount = otherOfferedAmountThird();
 
-        boolean accept;
-        //System.out.println("my amount: " + myAmount + ", required: " + myRequired);
-        //System.out.println("other amount: " + otherAmount + ", required: " + otherRequired);
-
-        accept = (myRequired == -1 && otherRequired == -1 && myAmount <= otherAmount)
-                || (myRequired != -1 && otherRequired != -1 && myAmount <= myRequired && otherAmount >= otherRequired);//accept if he offers more
-
-        //System.out.println("should accept: " + accept);
+        boolean accept = (myRequired == -1 && otherRequired == -1 && myAmount <= otherAmount)
+                || (myRequired != -1 && otherRequired != -1 && myAmount <= myRequired && otherAmount >= otherRequired);
+        System.out.println("my amount: " + myAmount + ", required: " + myRequired);
+        System.out.println("other amount: " + otherAmount + ", required: " + otherRequired);
         return accept;
     }
 

@@ -55,8 +55,9 @@ public class Fight extends ATState<Staker> {
                     System.out.println("Done fighting, " + (currentHealth() == 0 ? "I am" : "enemy is") + " dead");
                     script.currentDuel.stopFightTimer();
                     openInventory();
-                } else if (fight(script.ruleSet)) {
-
+                } else {
+                    System.out.println("Fight");
+                    fight(script.ruleSet);
                 }
             }
         }
@@ -111,6 +112,7 @@ public class Fight extends ATState<Staker> {
                 }
             }
             if (mode.getWeapon().isWearing(this)) {
+                System.out.println("Accking opponent");
                 return attackOpponent();
             }
         }
@@ -131,6 +133,7 @@ public class Fight extends ATState<Staker> {
             if (check == null || !check.getName().equalsIgnoreCase(opponent.getName()) || !check.isHitBarVisible()) {
                 if (opponent.getPosition().isVisible(bot)) {
                     Rectangle target = stake.getCenterPoint(opponent);
+                    System.out.println("Clicking target");
                     if (target != null && interact.interact(new RectangleDestination(bot, target), "Fight", opponent.getName(), false)) {
                         waitFor(100, new Condition() {
                             @Override

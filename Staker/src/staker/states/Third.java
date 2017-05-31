@@ -30,16 +30,18 @@ public class Third extends ATState<Staker> {
                     }
                 });
             }
-        } else if (stake.declineThird()) {
-            log("Declined on third interface, shit was a scam");
-            script.currentDuel.setCancelReason("scamming_3rd");
-            //TODO Make speciel timer for declining
-            waitFor(2000, new Condition() {
-                @Override
-                public boolean evaluate() {
-                    return !stake.isStakeScreenOpen();
-                }
-            });
+        } else {
+            //TODO Make special delay for declining
+            if (stake.declineThird()) {
+                log("Declined on third interface, shit was a scam");
+                script.currentDuel.setCancelReason("scamming_3rd");
+                waitFor(2000, new Condition() {
+                    @Override
+                    public boolean evaluate() {
+                        return !stake.isStakeScreenOpen();
+                    }
+                });
+            }
         }
         return Random.smallSleep();
     }
