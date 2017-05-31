@@ -36,8 +36,8 @@ public class Fight extends ATState<Staker> {
     public int perform() throws InterruptedException {
         String ohText = myPlayer().getHeadMessage();
         script.endFight.challengeAgain = new Timer(30000);
-        if (ohText != null && ohText.contains("1") && glTimer == null) {
-            glTimer = new Timer(1000);
+        if (ohText != null && ohText.contains("3") && glTimer == null) {
+            glTimer = new Timer(Random.nextGaussian(500, 1000, 200));
         }
         if (glTimer != null && glTimer.isFinished()) {
             if (random(10) > 3) {
@@ -111,10 +111,8 @@ public class Fight extends ATState<Staker> {
                     });
                 }
             }
-            if (mode.getWeapon().isWearing(this)) {
-                System.out.println("Accking opponent");
-                return attackOpponent();
-            }
+            //System.out.println("Accking opponent");
+            return attackOpponent();
         }
         return false;
     }
@@ -133,7 +131,7 @@ public class Fight extends ATState<Staker> {
             if (check == null || !check.getName().equalsIgnoreCase(opponent.getName()) || !check.isHitBarVisible()) {
                 if (opponent.getPosition().isVisible(bot)) {
                     Rectangle target = stake.getCenterPoint(opponent);
-                    System.out.println("Clicking target");
+                    //System.out.println("Clicking target");
                     if (target != null && interact.interact(new RectangleDestination(bot, target), "Fight", opponent.getName(), false)) {
                         waitFor(100, new Condition() {
                             @Override
@@ -164,7 +162,7 @@ public class Fight extends ATState<Staker> {
                     try {
                         if (opponent != null) {
                             String text = opponent.getHeadMessage();
-                            if (text.equals("1")) {
+                            if (text.equals("2")) {
                                 AttackOpponentDelay.execute();
                                 break;
                             }
