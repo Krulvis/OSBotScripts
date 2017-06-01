@@ -47,8 +47,8 @@ public class First extends ATState<Staker> {
                 if (!script.debug && odds <= 30 && odds > 0.0) {
                     System.out.println("Declining duel, odds: " + odds + " too " + "Low");
                     //TODO Make speciel timer for declining
+                    script.currentDuel.setCancelReason("odds_too_low_1st");
                     if (stake.declineFirst()) {
-                        script.currentDuel.setCancelReason("odds_too_low_1st");
                         waitFor(2000, new Condition() {
                             @Override
                             public boolean evaluate() {
@@ -62,8 +62,8 @@ public class First extends ATState<Staker> {
             if (script.currentDuel.shouldDecline()) {
                 log("Declined challenge, opponent taking too long.");
                 //TODO Make speciel timer for declining
+                script.currentDuel.setCancelReason("took_too_long_1st");
                 if (stake.declineFirst()) {
-                    script.currentDuel.setCancelReason("took_too_long_1st");
                     waitFor(2000, new Condition() {
                         @Override
                         public boolean evaluate() {

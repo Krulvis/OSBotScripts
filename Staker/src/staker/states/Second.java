@@ -37,8 +37,8 @@ public class Second extends ATState<Staker> {
                 log("Opponent took to long to offer 2nd duel");
                 //TODO Make speciel timer for declining
                 AcceptChallengeDelay.execute();
+                script.currentDuel.setCancelReason("took_too_long_2nd");
                 if (stake.declineSecond()) {
-                    script.currentDuel.setCancelReason("took_too_long_2nd");
                     waitFor(2000, new Condition() {
                         @Override
                         public boolean evaluate() {
@@ -53,8 +53,8 @@ public class Second extends ATState<Staker> {
                     } else if (tooLowTimer.isFinished()) {
                         //TODO ADD DELAY FOR TOO LOW OFFER
                         log("Declined stake since opponents offer was too low");
+                        script.currentDuel.setCancelReason("offer_too_low_2nd");
                         if (stake.declineSecond()) {
-                            script.currentDuel.setCancelReason("offer_too_low_2nd");
                             waitFor(2000, new Condition() {
                                 @Override
                                 public boolean evaluate() {

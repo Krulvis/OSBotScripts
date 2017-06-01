@@ -32,9 +32,9 @@ public class Third extends ATState<Staker> {
             }
         } else {
             //TODO Make special delay for declining
+            script.currentDuel.setCancelReason("scamming_3rd");
             if (stake.declineThird()) {
-                log("Declined on third interface, shit was a scam");
-                script.currentDuel.setCancelReason("scamming_3rd");
+                System.out.println("Declined on third interface, shit was a scam");
                 waitFor(2000, new Condition() {
                     @Override
                     public boolean evaluate() {
