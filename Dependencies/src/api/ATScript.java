@@ -6,8 +6,12 @@ import api.util.Random;
 import api.util.Timer;
 import api.util.Updater;
 import api.util.gui.GUIWrapper;
+import api.webapi.actions.Relog;
+import api.webapi.actions.Restart;
+import api.webapi.actions.Update;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -53,9 +57,12 @@ public abstract class ATScript extends ATMethodProvider {
                 isScriptRunning.set(true);
             }
             if (this.useWebAPI) {
-                //Start WebAPI connection
-                webAPI.connect();
                 randomHandler = new RandomHandler(this);
+                webAPI.addAction(webAPI.relog = new Relog(this));
+                webAPI.addAction(webAPI.restart = new Restart(this));
+                webAPI.addAction(webAPI.update = new Update(this));
+                //Done last
+                webAPI.connect();
             }
         }
         return Random.medSleep();

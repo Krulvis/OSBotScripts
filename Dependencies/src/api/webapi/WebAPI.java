@@ -55,9 +55,6 @@ public class WebAPI extends ATMethodProvider {
     public WebAPI(ATMethodProvider parent) {
         init(parent);
         actions = new ArrayList<>();
-        actions.add(relog = new Relog(this));
-        actions.add(restart = new Restart(this));
-        actions.add(update = new Update(this));
     }
 
     /**
