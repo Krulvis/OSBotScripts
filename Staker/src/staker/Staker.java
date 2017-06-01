@@ -125,6 +125,7 @@ public class Staker extends ATScript {
     public void onMessage(Message m) {
         if (m.getTypeId() == 102 && m.getMessage() != null && m.getMessage().contains("cancelled") && currentDuel != null) {
             currentDuel.setFinished(false);
+            resetValues();
         }
     }
 

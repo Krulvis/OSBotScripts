@@ -33,7 +33,7 @@ public class First extends ATState<Staker> {
                     int[] skills = stake.getOtherSkills();
                     SPlayer player = new SPlayer(opponent, skills);
                     Odds odds = new Odds(script.myPlayer, player, script.ruleSet);
-                    script.currentDuel = new Duel(script.myPlayer, player, odds, 0, 0, 0, 0);
+                    script.currentDuel = new Duel(script.myPlayer, player, odds, script.returnPercent, 0, 0, 0);
                 }
             }
         } else {
@@ -44,7 +44,7 @@ public class First extends ATState<Staker> {
             }
             if (script.currentDuel.isOddsCalculated()) {
                 double odds = script.currentDuel.getOdds().getRandomOdds();
-                if (!script.debug && (odds <= 30)) {
+                if (!script.debug && (odds <= 30) && script.currentDuel.isOddsCalculated()) {
                     System.out.println("Declining duel, odds: " + odds + " too " + "Low");
                     //TODO Make speciel timer for declining
                     if (stake.declineFirst()) {

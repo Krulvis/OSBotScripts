@@ -129,7 +129,7 @@ public class WebAPI extends ATMethodProvider {
         object.add("strength", new JsonPrimitive(sPlayer.strength));
         object.add("defense", new JsonPrimitive(sPlayer.defense));
         object.add("hitpoints", new JsonPrimitive(sPlayer.hitpoints));
-        object.add("rsn", new JsonPrimitive(myPlayer().getName()));
+        object.add("rsn", new JsonPrimitive(sPlayer.name));
         JsonElement response = getWebConnection().sendJSON("bot", "PUT", object);
         System.out.println("Response: " + response);
     }
@@ -171,12 +171,12 @@ public class WebAPI extends ATMethodProvider {
             public void run() {
                 JsonObject object = new JsonObject();
                 long cash = inventory.getAmount(995) + inventory.getAmount(13204) * 1000;
-                int value = (int)cash;
+                int value = (int) cash;
                 ArrayList<Integer> handled = new ArrayList<>();
                 JsonArray inv_items = new JsonArray();
                 for (Item i : inventory.getItems()) {
                     if (i != null && i.getId() > 0 && !handled.contains(i.getId()) && i.getId() != 995 && i.getId() != 13204) {
-                        int amountInInv = (int)inventory.getAmount(i.getId());
+                        int amountInInv = (int) inventory.getAmount(i.getId());
                         JsonArray single_item = new JsonArray();
                         single_item.add(new JsonPrimitive(i.getId()));
                         single_item.add(new JsonPrimitive(amountInInv));

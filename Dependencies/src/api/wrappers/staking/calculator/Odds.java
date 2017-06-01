@@ -75,7 +75,7 @@ public class Odds {
 
         double winLosses = randomOdds / (100D - randomOdds);
         double xing = returnRate / (100D - returnRate);
-        int rounded = (int) Math.round(winLosses / xing) * 100;
+        int rounded = (int) (Math.round(winLosses / xing * 100));
         double normalized = rounded / 100D;
         //System.out.println("Winlosses: " + winLosses + ", xing: " + xing + ", rounded: " + rounded + ", normalized: " + normalized);
         return normalized;

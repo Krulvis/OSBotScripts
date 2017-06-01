@@ -18,7 +18,7 @@ import static api.util.ATPainter.*;
 public class Duel {
 
     private final int yy = 10;
-    private int increaedReturn;
+    private int increaedReturn, returnPercent;
     private int myExact;
     private int otherExact;
     private int myRoundedMultiplied;
@@ -31,11 +31,11 @@ public class Duel {
     private String cancelReason = null;
     private boolean won, finished;
 
-    public Duel(SPlayer me, SPlayer opponent, Odds odds, int increasedModifier, int myExact, int otherExact, int myRoundedMultiplied) {
+    public Duel(SPlayer me, SPlayer opponent, Odds odds, int returnPercent, int myExact, int otherExact, int myRoundedMultiplied) {
         this.me = me;
         this.opponent = opponent;
         this.odds = odds;
-        this.increaedReturn = increasedModifier;
+        this.returnPercent = returnPercent;
         this.myExact = myExact;
         this.otherExact = otherExact;
         this.myRoundedMultiplied = myRoundedMultiplied;
@@ -133,11 +133,11 @@ public class Duel {
         }
     }
 
-    public void calculateMyOffer(int returnPercent, boolean equalOffersAtHighOdds) {
+    public void calculateMyOffer(boolean equalOffersAtHighOdds) {
         int difference = (int) Math.abs(odds.getRandomOdds() - returnPercent);
         increaedReturn = difference > 4.5 ? (int) Math.abs(difference / 4.5) + returnPercent : returnPercent;
         multiplier = odds.getMultiplier(increaedReturn);
-        System.out.println("X ing with: " + multiplier + ", returnPercent: " + returnPercent);
+        //System.out.println("X ing with: " + multiplier + ", returnPercent: " + returnPercent);
         myExact = (int) Math.round(otherExact * (equalOffersAtHighOdds && odds.getRandomOdds() >= increaedReturn ? 1 : multiplier));
         myRoundedMultiplied = (int) (myExact > 100000 ? Math.floor((myExact / 100000) * 100000) : Math.floor(myExact));
     }
