@@ -111,6 +111,7 @@ public class EndFight extends ATState<Staker> {
             lost = validateWidget(LOST_INTERFACE);
             if (won) {
                 script.currentDuel.setFinished(true);
+                script.currentDuel.setWon(true);
                 this.name = "Accept Win";
                 return true;
             } else if (lost) {

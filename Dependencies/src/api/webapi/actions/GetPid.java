@@ -21,19 +21,31 @@ public class GetPid extends WebAction {
     @Override
     public boolean perform() {
         if (isLoggedIn()) {
-            List<Player> ps = players.getAll();
-            List<Player> nearMe = new ArrayList<>();
-            if (ps.size() > 10) {
-                for (Player p : ps) {
-                    if (p != null && distance(p) <= 3) {
-                        nearMe.add(p);
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        Thread.sleep(5000);
+                        List<Player> ps = players.getAll();
+                        List<Player> nearMe = new ArrayList<>();
+                        if (ps.size() > 10) {
+                            for (Player p : ps) {
+                                if (p != null && distance(p) <= 3) {
+                                    nearMe.add(p);
+                                }
+                            }
+                        }
+                        JsonObject object = new JsonObject();
+                        object.add("index", new JsonPrimitive(nearMe.indexOf(myPlayer())));
+                        object.add("length", new JsonPrimitive(nearMe.size()));
+                        webAPI.getWebConnection().sendJSON("bot/pid", "POST", object);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
                     }
+
+
                 }
-            }
-            JsonObject object = new JsonObject();
-            object.add("index", new JsonPrimitive(nearMe.indexOf(myPlayer())));
-            object.add("length", new JsonPrimitive(nearMe.size()));
-            webAPI.getWebConnection().sendJSON("bot/pid", "POST", object);
+            }).start();
             return true;
         }
         return false;

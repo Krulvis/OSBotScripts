@@ -53,6 +53,7 @@ public class Fight extends ATState<Staker> {
                 }
                 if ((opponent.isHitBarVisible() && opponent.getHealthPercent() == 0) || currentHealth() == 0) {
                     System.out.println("Done fighting, " + (currentHealth() == 0 ? "I am" : "enemy is") + " dead");
+                    script.currentDuel.setWon(opponent.getHealthPercent() == 0);
                     script.currentDuel.stopFightTimer();
                     openInventory();
                 } else {
