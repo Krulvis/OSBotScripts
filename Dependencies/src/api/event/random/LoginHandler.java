@@ -53,8 +53,14 @@ public class LoginHandler extends ATState<RandomHandler> implements LoginRespons
                     return widget.getMessage().contains("CLICK HERE");
                 }
             });
-            sleep(Random.bigSleep());
             if (validateWidget(button) && button.interact()) {
+                sleep(Random.bigSleep());
+                waitFor(3000, new Condition() {
+                    @Override
+                    public boolean evaluate() {
+                        return validateWidget(button);
+                    }
+                });
                 return -1;
             }
         } else {
