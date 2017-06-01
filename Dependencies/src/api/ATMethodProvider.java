@@ -85,6 +85,7 @@ public class ATMethodProvider extends Script {
             this.logger = parent.logger;
             this.tabs = parent.tabs;
             this.store = parent.store;
+            this.walking = parent.walking;
 
             //Needs to be initialized
             this.localPathFinder = parent.localPathFinder;
