@@ -165,12 +165,11 @@ public class Fight extends ATState<Staker> {
                     try {
                         if (opponent != null) {
                             String text = opponent.getHeadMessage();
-                            if (text.equals("2")) {
-                                AttackOpponentDelay.execute();
+                            if (text.equals("1") || text.equals("2") ||text.equals("3")) {
                                 break;
                             }
                         }
-                        Thread.sleep(nextGaussian(50, 150, 100, 50));
+                        Thread.sleep(nextGaussian(20, 50, 25, 10));
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
