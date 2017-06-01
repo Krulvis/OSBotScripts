@@ -28,7 +28,7 @@ import java.util.LinkedList;
  * Created by Krulvis on 29-May-17.
  */
 
-@ScriptManifest(author = "Krulvis", version = 1.01D, logo = "", info = "", name = "Staker")
+@ScriptManifest(author = "Krulvis", version = 1.02D, logo = "", info = "", name = "Staker")
 public class Staker extends ATScript {
 
     public boolean debug = false;
