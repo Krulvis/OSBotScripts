@@ -30,6 +30,7 @@ public class Duel {
     private Item[] otherItems;
     private String cancelReason = null;
     private boolean won, finished;
+    private boolean sendResults = false;
 
     public Duel(SPlayer me, SPlayer opponent, Odds odds, int returnPercent, int myExact, int otherExact, int myRoundedMultiplied) {
         this.me = me;
@@ -165,6 +166,7 @@ public class Duel {
         this.won = false;
         this.finished = false;
         this.fightTimer = null;
+        this.sendResults = false;
     }
 
     public SPlayer getMe() {
@@ -187,7 +189,7 @@ public class Duel {
         drawString(g, "" + getOdds().getRandomOdds(), oddsX, oddsY += yy);
         drawString(g, "" + getOdds().getPidOdds(), oddsX, oddsY += yy);
         drawString(g, "" + getOdds().getNoPidOdds(), oddsX, oddsY += yy);
-        drawString(g, "" + getOdds().getMultiplier(getIncreaedReturn()), oddsX, oddsY += yy);
+        drawString(g, "" + multiplier, oddsX, oddsY += yy);
     }
 
     public void drawMoney(Graphics g) {
@@ -286,6 +288,15 @@ public class Duel {
             webAPI.sendInventoryScreenshot();
             webAPI.sendInventoryValue();
             System.out.println("Send stake results: " + response);
+            setSendResults(true);
         }
+    }
+
+    public boolean hasSendResults() {
+        return sendResults;
+    }
+
+    public void setSendResults(boolean sendResults) {
+        this.sendResults = sendResults;
     }
 }

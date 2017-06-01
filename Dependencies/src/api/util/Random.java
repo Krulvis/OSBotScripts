@@ -552,7 +552,7 @@ public final class Random {
 	}
 
 	public static int smallSleep() {
-		return Random.nextGaussian(100, 250, 50);
+		return Random.nextGaussian(150, 250, 50);
 	}
 
 	public static int medSleep() {

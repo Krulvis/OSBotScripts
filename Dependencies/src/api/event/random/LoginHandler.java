@@ -3,11 +3,9 @@ package api.event.random;
 import api.ATState;
 import api.util.Random;
 import api.util.Timer;
-import api.webapi.WebAPI;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import org.osbot.rs07.api.Client;
-import org.osbot.rs07.api.Keyboard;
 import org.osbot.rs07.api.filter.Filter;
 import org.osbot.rs07.api.ui.RS2Widget;
 import org.osbot.rs07.constants.ResponseCode;
@@ -55,7 +53,7 @@ public class LoginHandler extends ATState<RandomHandler> implements LoginRespons
                     return widget.getMessage().contains("CLICK HERE");
                 }
             });
-            sleep(Random.medSleep());
+            sleep(Random.bigSleep());
             if (validateWidget(button) && button.interact()) {
                 return -1;
             }
@@ -87,7 +85,7 @@ public class LoginHandler extends ATState<RandomHandler> implements LoginRespons
                         waitFor(2000, new Condition() {
                             @Override
                             public boolean evaluate() {
-                                return clickContinue();
+                                return canClickContinue();
                             }
                         });
                     }
@@ -113,10 +111,10 @@ public class LoginHandler extends ATState<RandomHandler> implements LoginRespons
 
     @Override
     public boolean validate() {
-        return client.getLoginState() == Client.LoginState.LOGGED_OUT || clickContinue();
+        return client.getLoginState() == Client.LoginState.LOGGED_OUT || canClickContinue();
     }
 
-    public boolean clickContinue() {
+    public boolean canClickContinue() {
         final RS2Widget clickNextWidget = widgets.get(378, 0);
         if (validateWidget(clickNextWidget)) {
             final RS2Widget button = getWidgetChild(378, new Filter<RS2Widget>() {

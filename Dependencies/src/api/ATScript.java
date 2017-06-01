@@ -2,6 +2,7 @@ package api;
 
 import api.event.random.RandomHandler;
 import api.util.ATPainter;
+import api.util.Random;
 import api.util.Timer;
 import api.util.Updater;
 import api.util.gui.GUIWrapper;
@@ -57,7 +58,7 @@ public abstract class ATScript extends ATMethodProvider {
                 randomHandler = new RandomHandler(this);
             }
         }
-        return 100;
+        return Random.medSleep();
     }
 
     /**
@@ -74,7 +75,7 @@ public abstract class ATScript extends ATMethodProvider {
             if (randomHandler != null && (sleep = randomHandler.onLoop()) > 0) {
                 return sleep;
             } else if (states.isEmpty()) {
-                return 100;
+                return 500;
             } else {
                 update();
                 currentState = getState();
@@ -90,7 +91,7 @@ public abstract class ATScript extends ATMethodProvider {
             System.err.println(" --------- ERROR ON SCRIPT --------- ");
             e.printStackTrace();
         }
-        return random(50, 150);
+        return Random.smallSleep();
     }
 
     public ATState<? extends ATScript> getState() {

@@ -99,9 +99,9 @@ public class NPCChat {
     }
 
     /**
-     * Getter method for clickContinue that has been passed in the constructor.
+     * Getter method for canClickContinue that has been passed in the constructor.
      *
-     * @return clickContinue
+     * @return canClickContinue
      */
     public boolean doesClickContinue() {
         return clickContinue;

@@ -8,13 +8,10 @@ import api.util.gui.GUIWrapper;
 import api.webapi.WebAPI;
 import api.webapi.actions.GetPid;
 import api.wrappers.staking.Duel;
-import api.wrappers.staking.calculator.Calculator;
-import api.wrappers.staking.calculator.Odds;
 import api.wrappers.staking.calculator.SPlayer;
 import api.wrappers.staking.data.RuleSet;
 import com.google.gson.*;
 import org.osbot.rs07.api.map.Position;
-import org.osbot.rs07.api.model.Item;
 import org.osbot.rs07.api.ui.Message;
 import org.osbot.rs07.script.ScriptManifest;
 import staker.states.*;
@@ -28,7 +25,7 @@ import java.util.LinkedList;
  * Created by Krulvis on 29-May-17.
  */
 
-@ScriptManifest(author = "Krulvis", version = 1.03D, logo = "", info = "", name = "Staker")
+@ScriptManifest(author = "Krulvis", version = 1.04D, logo = "", info = "", name = "Staker")
 public class Staker extends ATScript {
 
     public boolean debug = false;
@@ -112,7 +109,9 @@ public class Staker extends ATScript {
 
     public boolean resetValues() {
         if (currentDuel != null) {
-            currentDuel.sendResults(webAPI);
+            if (!currentDuel.hasSendResults()) {
+                currentDuel.sendResults(webAPI);
+            }
             currentDuel.resetStakes();
             if (getPreviousDuel(currentDuel.getPlayerName()) == null) {
                 duelList.add(currentDuel);

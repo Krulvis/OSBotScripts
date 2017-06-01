@@ -30,7 +30,7 @@ public class Fight extends ATState<Staker> {
     private Timer glTimer;
     private Player opponent;
     public boolean canAttackPlayer = false;
-    private String[] gls = new String[]{"gl", "glgl", "gl mate", "good luck"};
+    private String[] gls = new String[]{"gl", "glgl", "gl mate", "good luck", "gg", "aye"};
 
     @Override
     public int perform() throws InterruptedException {
@@ -40,10 +40,8 @@ public class Fight extends ATState<Staker> {
             glTimer = new Timer(Random.nextGaussian(500, 1000, 200));
         }
         if (glTimer != null && glTimer.isFinished()) {
-            if (random(10) > 3) {
-                keyboard.typeString(gls[random(0, 3)], true);
-                glTimer = null;
-            }
+            keyboard.typeString(gls[random(0, 3)], true);
+            glTimer = null;
         }
         if (script.currentDuel != null) {
             opponent = getPlayer(script.currentDuel.getPlayerName());
@@ -54,7 +52,11 @@ public class Fight extends ATState<Staker> {
                 if ((opponent.isHitBarVisible() && opponent.getHealthPercent() == 0) || currentHealth() == 0) {
                     System.out.println("Done fighting, " + (currentHealth() == 0 ? "I am" : "enemy is") + " dead");
                     script.currentDuel.setWon(opponent.getHealthPercent() == 0);
+                    script.currentDuel.setFinished(true);
                     script.currentDuel.stopFightTimer();
+                    if (!script.currentDuel.hasSendResults()) {
+                        script.currentDuel.sendResults(webAPI);
+                    }
                     openInventory();
                 } else {
                     //System.out.println("Fight");
