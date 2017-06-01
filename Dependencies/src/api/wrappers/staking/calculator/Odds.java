@@ -8,7 +8,7 @@ import api.wrappers.staking.data.Settings;
  */
 public class Odds {
 
-    private double randomOdds = 0, pidOdds, noPidOdds, multiplier;
+    private double randomOdds = 0.001, pidOdds, noPidOdds, multiplier;
     private Settings.Weapon weapon;
     private Settings.Style style;
     private RuleSet set;
@@ -99,6 +99,6 @@ public class Odds {
     }
 
     public boolean isCalculated() {
-        return calculated;
+        return calculated && randomOdds > 0.001;
     }
 }

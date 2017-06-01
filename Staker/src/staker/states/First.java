@@ -44,7 +44,7 @@ public class First extends ATState<Staker> {
             }
             if (script.currentDuel.isOddsCalculated()) {
                 double odds = script.currentDuel.getOdds().getRandomOdds();
-                if (!script.debug && (odds <= 30) && script.currentDuel.isOddsCalculated()) {
+                if (!script.debug && odds <= 30 && odds > 0.0) {
                     System.out.println("Declining duel, odds: " + odds + " too " + "Low");
                     //TODO Make speciel timer for declining
                     if (stake.declineFirst()) {
