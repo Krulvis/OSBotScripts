@@ -1,6 +1,7 @@
 package staker.states;
 
 import api.ATState;
+import api.event.random.RandomHandler;
 import api.util.Random;
 import api.util.Timer;
 import staker.util.antiban.delays.AcceptChallengeDelay;
@@ -41,6 +42,12 @@ public class Waiting extends ATState<Staker> {
             return Random.bigSleep();
         } else if (!webAPI.handleWebActions()) {
             return Random.smallSleep();
+        }
+        RandomHandler randomHandler = script.getRandomHandler();
+        if (randomHandler != null && !randomHandler.getLoginHandler().checkedPid) {
+            if (script.getPid.perform()) {
+                randomHandler.getLoginHandler().checkedPid = true;
+            }
         }
         if (script.myPlayer == null && client.isLoggedIn()) {
             script.myPlayer = new SPlayer(myPlayer().getName(), new int[]{skills.getStatic(Skill.ATTACK), skills.getStatic(Skill.STRENGTH), skills.getStatic(Skill.DEFENCE), skills.getStatic(Skill.HITPOINTS), skills.getStatic(Skill.PRAYER)});

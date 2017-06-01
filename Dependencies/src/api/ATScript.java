@@ -156,6 +156,9 @@ public abstract class ATScript extends ATMethodProvider {
         isPrivateVersion = true;
     }
 
+    public RandomHandler getRandomHandler() {
+        return this.randomHandler;
+    }
 
     @Override
     public void onExit() {

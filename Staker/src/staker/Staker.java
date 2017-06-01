@@ -6,6 +6,7 @@ import api.util.ATPainter;
 import api.util.Timer;
 import api.util.gui.GUIWrapper;
 import api.webapi.WebAPI;
+import api.webapi.actions.GetPid;
 import api.wrappers.staking.Duel;
 import api.wrappers.staking.calculator.Calculator;
 import api.wrappers.staking.calculator.Odds;
@@ -64,6 +65,7 @@ public class Staker extends ATScript {
      */
     public Timer lastUpdateTimer;
     public ATState prevState;
+    public GetPid getPid;
 
     /**
      * States
@@ -94,6 +96,7 @@ public class Staker extends ATScript {
         statesToAdd.add(new Waiting(this));
 
         webAPI.addAction(new ReloadSettings<>(this));
+        webAPI.addAction(getPid = new GetPid(this));
         getNewSettings();
     }
 

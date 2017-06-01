@@ -14,70 +14,75 @@ import java.util.LinkedList;
  */
 public class RandomHandler extends ATScript {
 
-	private boolean active = false;
+    private boolean active = false;
+    private LoginHandler loginHandler;
 
-	public RandomHandler(ATMethodProvider parent) {
-		init(parent);
-		initialize(states);
-	}
+    public RandomHandler(ATMethodProvider parent) {
+        init(parent);
+        initialize(states);
+    }
 
-	@Override
-	public int onLoop() throws InterruptedException {
-		int sleep = -1;
-		currentState = getState();
-		if (currentState != null) {
-			active = true;
-			sleep = currentState.perform();
-		} else {
-			active = false;
-		}
-		return sleep;
-	}
+    @Override
+    public int onLoop() throws InterruptedException {
+        int sleep = -1;
+        currentState = getState();
+        if (currentState != null) {
+            active = true;
+            sleep = currentState.perform();
+        } else {
+            active = false;
+        }
+        return sleep;
+    }
 
 
-	@Override
-	public void update() {
+    @Override
+    public void update() {
 
-	}
+    }
 
-	@Override
-	public void onPaint(Graphics2D g2) {
-		ATState random = this.currentState;
-		if (random != null) {
-			Color c = g2.getColor();
-			Font f = g2.getFont();
-			g2.setFont(ATPainter.BIG20);
-			g2.setColor(Color.CYAN);
-			g2.drawString("Solving Random: " + random.getName(), 200, 200);
-			g2.setColor(c);
-			g2.setFont(f);
-		} else {
-			g2.drawString("No current Random", 200, 200);
-		}
-	}
+    @Override
+    public void onPaint(Graphics2D g2) {
+        ATState random = this.currentState;
+        if (random != null) {
+            Color c = g2.getColor();
+            Font f = g2.getFont();
+            g2.setFont(ATPainter.BIG20);
+            g2.setColor(Color.CYAN);
+            g2.drawString("Solving Random: " + random.getName(), 200, 200);
+            g2.setColor(c);
+            g2.setFont(f);
+        } else {
+            g2.drawString("No current Random", 200, 200);
+        }
+    }
 
-	public Account getAccount() {
-		return webAPI.getCurrentAccount();
-	}
+    public Account getAccount() {
+        return webAPI.getCurrentAccount();
+    }
 
-	@Override
-	protected void initialize(LinkedList<ATState> statesToAdd) {
-		LoginHandler loginHandler = new LoginHandler(this);
-		bot.addLoginListener(loginHandler);
-		statesToAdd.add(loginHandler);
-	}
+    @Override
+    protected void initialize(LinkedList<ATState> statesToAdd) {
+        this.loginHandler = new LoginHandler(this);
+        bot.addLoginListener(loginHandler);
+        statesToAdd.add(loginHandler);
+    }
 
-	@Override
-	protected Class<? extends ATPainter> getPainterClass() {
-		return null;
-	}
+    public LoginHandler getLoginHandler() {
+        return this.loginHandler;
+    }
 
-	@Override
-	protected Class<? extends GUIWrapper> getGUI() {
-		return null;
-	}
+    @Override
+    protected Class<? extends ATPainter> getPainterClass() {
+        return null;
+    }
 
-	public boolean isActive() {
-		return active;
-	}
+    @Override
+    protected Class<? extends GUIWrapper> getGUI() {
+        return null;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
 }

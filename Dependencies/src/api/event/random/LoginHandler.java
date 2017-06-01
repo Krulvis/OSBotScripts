@@ -29,6 +29,7 @@ public class LoginHandler extends ATState<RandomHandler> implements LoginRespons
 
     private Timer tooManyLogins;
     private int membershipDaysLeft = -1;
+    public boolean checkedPid = false;
 
     @Override
     public void onResponseCode(int i) throws InterruptedException {
@@ -61,6 +62,7 @@ public class LoginHandler extends ATState<RandomHandler> implements LoginRespons
         } else {
             Account account = script.getAccount();
             if (account != null && webAPI.isActive()) {
+                checkedPid = false;
                 int uiState = client.getLoginUIState();
                 if (uiState == 0) {
                     System.out.println("Clicking 'Existing User'");

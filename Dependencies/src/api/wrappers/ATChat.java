@@ -6,8 +6,11 @@ import api.util.Timer;
 import api.util.antiban.delays.ResumeAutochatDelay;
 import api.util.antiban.timers.AutoChatMessageTimer;
 import org.osbot.rs07.api.filter.Filter;
+import org.osbot.rs07.api.model.Player;
 import org.osbot.rs07.api.ui.RS2Widget;
 import org.osbot.rs07.utility.Condition;
+
+import java.util.List;
 
 /**
  * Created by Krulvis on 20-Apr-17.
@@ -202,5 +205,20 @@ public class ATChat extends ATMethodProvider {
         }
         return PUBLIC > -1 ? widgets.get(MAIN, PUBLIC) : null;
     }
+
+    public int pidDistancePlayers = 3;
+
+    public int higherPidCountNearMe() {
+        final Player me = myPlayer();
+        List<Player> all = players.getAll();
+        int beforeMe = 0;
+        for (Player p : all) {
+            if (p != null && !p.getName().equals(me.getName()) && distance(p) <= pidDistancePlayers) {
+                beforeMe++;
+            }
+        }
+        return beforeMe;
+    }
+
 
 }
