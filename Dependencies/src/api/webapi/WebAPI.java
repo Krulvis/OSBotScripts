@@ -34,7 +34,7 @@ public class WebAPI extends ATMethodProvider {
     public Relog relog;
     public Update update;
     public Restart restart;
-    public static String URL = "http://beta.api.rsbots.org/";
+    public static String URL = "http://api.rsbots.org/";
 
     public void disconnect() {
         if (getWebConnection() != null) {

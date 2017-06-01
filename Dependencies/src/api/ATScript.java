@@ -45,7 +45,7 @@ public abstract class ATScript extends ATMethodProvider {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
+            Thread.currentThread().setName("ScriptLoopThread");
             super.init(this);
             isScriptInitialized = true;
             this.initialize(states);

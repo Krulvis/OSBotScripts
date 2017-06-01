@@ -44,7 +44,7 @@ public class CreateAccount {
                 JsonObject object = new JsonObject();
                 object.add("login_name", new JsonPrimitive(email));
                 object.add("password", new JsonPrimitive(password));
-                Updater.sendJSON("http://beta.api.rsbots.org/bot/create", "POST", object);
+                Updater.sendJSON("http://api.rsbots.org/bot/create", "POST", object);
             } else if (response.contains("Sorry, that character name is not available.")) {
                 System.out.println("Dsiplayname: " + displayName + " already exists: " + email);
                 i--;
