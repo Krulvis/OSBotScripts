@@ -60,6 +60,7 @@ public class LoginHandler extends ATState<RandomHandler> implements LoginRespons
                         return !validateWidget(button);
                     }
                 });
+                sleep(Random.medSleep());
                 return -1;
             }
         } else {
