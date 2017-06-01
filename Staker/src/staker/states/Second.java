@@ -49,7 +49,7 @@ public class Second extends ATState<Staker> {
             } else if (otherExact > 0) {
                 if (tooLow) {
                     if (tooLowTimer == null) {
-                        tooLowTimer = new Timer(Random.nextGaussian(10000, 20000, 5000));
+                        tooLowTimer = new Timer(Random.nextGaussian(5000, 10000, 5000));
                     } else if (tooLowTimer.isFinished()) {
                         //TODO ADD DELAY FOR TOO LOW OFFER
                         log("Declined stake since opponents offer was too low");
@@ -65,39 +65,38 @@ public class Second extends ATState<Staker> {
                     }
                 } else {
                     tooLowTimer = null;
-                }
-
-                if (currentOffer != shouldOffer) {
-                    if (shouldOffer < currentOffer) {
-                        //TODO DELAY FOR REMOVING BET
-                        if (stake.remove(currentOffer - shouldOffer)) {
-                            waitFor(3000, new Condition() {
-                                @Override
-                                public boolean evaluate() {
-                                    return stake.myOfferedAmount() == shouldOffer;
-                                }
-                            });
-                        }
-                    } else if (shouldOffer > currentOffer) {
-                        //TODO DELAY FOR ADDING BET
-                        if (stake.offer(shouldOffer - currentOffer)) {
-                            waitFor(2000, new Condition() {
-                                @Override
-                                public boolean evaluate() {
-                                    return stake.myOfferedAmount() == shouldOffer;
-                                }
-                            });
-                        }
-                    }
-                } else if (!stake.isSecondScreenAccepted()) {
-                    AcceptSecondDuelScreenDelay.execute();
-                    if (stake.acceptSecondScreen()) {
-                        waitFor(10000, new Condition() {
-                            @Override
-                            public boolean evaluate() {
-                                return otherExact != stake.otherOfferedAmount() || stake.isThirdScreenOpen();
+                    if (currentOffer != shouldOffer) {
+                        if (shouldOffer < currentOffer) {
+                            //TODO DELAY FOR REMOVING BET
+                            if (stake.remove(currentOffer - shouldOffer)) {
+                                waitFor(3000, new Condition() {
+                                    @Override
+                                    public boolean evaluate() {
+                                        return stake.myOfferedAmount() == shouldOffer;
+                                    }
+                                });
                             }
-                        });
+                        } else if (shouldOffer > currentOffer) {
+                            //TODO DELAY FOR ADDING BET
+                            if (stake.offer(shouldOffer - currentOffer)) {
+                                waitFor(2000, new Condition() {
+                                    @Override
+                                    public boolean evaluate() {
+                                        return stake.myOfferedAmount() == shouldOffer;
+                                    }
+                                });
+                            }
+                        }
+                    } else if (!stake.isSecondScreenAccepted()) {
+                        AcceptSecondDuelScreenDelay.execute();
+                        if (stake.acceptSecondScreen()) {
+                            waitFor(10000, new Condition() {
+                                @Override
+                                public boolean evaluate() {
+                                    return otherExact != stake.otherOfferedAmount() || stake.isThirdScreenOpen();
+                                }
+                            });
+                        }
                     }
                 }
             } else {

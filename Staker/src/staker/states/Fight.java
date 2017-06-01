@@ -38,7 +38,7 @@ public class Fight extends ATState<Staker> {
         if (script.currentDuel != null) {
             if (!script.currentDuel.saidGL()) {
                 if (glTimer == null) {
-                    glTimer = new Timer(Random.nextGaussian(1500, 2500, 500));
+                    glTimer = new Timer(Random.nextGaussian(1000, 1500, 500));
                 } else if (glTimer.isFinished()) {
                     script.currentDuel.setSaidGL(true);
                     glTimer = null;
@@ -161,7 +161,7 @@ public class Fight extends ATState<Staker> {
         return new Thread(new Runnable() {
             @Override
             public void run() {
-                Timer attackTimer = new Timer(3000);
+                Timer attackTimer = new Timer(2000);
                 while (!attackTimer.isFinished()) {
                     try {
                         if (opponent != null) {
