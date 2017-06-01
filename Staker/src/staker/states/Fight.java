@@ -27,7 +27,7 @@ public class Fight extends ATState<Staker> {
         super("Fight", script);
     }
 
-    private Timer glTimer;
+    public Timer glTimer;
     private Player opponent;
     public boolean canAttackPlayer = false;
     private String[] gls = new String[]{"gl", "glgl", "gl mate", "good luck", "gg", "aye"};
@@ -37,13 +37,13 @@ public class Fight extends ATState<Staker> {
         String ohText = myPlayer().getHeadMessage();
         script.endFight.challengeAgain = new Timer(30000);
         if (ohText != null && ohText.contains("3") && glTimer == null) {
-            glTimer = new Timer(Random.nextGaussian(500, 1000, 200));
+            glTimer = new Timer(Random.nextGaussian(1200, 1500, 200));
         }
         if (glTimer != null && glTimer.isFinished()) {
-            keyboard.typeString(gls[random(0, 3)], true);
             glTimer = null;
+            keyboard.typeString(gls[random(0, 3)], true);
         }
-        if (script.currentDuel != null) {
+        if (script.currentDuel != null && glTimer == null) {
             opponent = getPlayer(script.currentDuel.getPlayerName());
             if (opponent != null) {
                 if (!opponent.isHitBarVisible()) {
@@ -165,7 +165,7 @@ public class Fight extends ATState<Staker> {
                     try {
                         if (opponent != null) {
                             String text = opponent.getHeadMessage();
-                            if (text.equals("1") || text.equals("2") ||text.equals("3")) {
+                            if (text.equals("1") || text.equals("2") ||text.toUpperCase().contains("FIGHT")) {
                                 break;
                             }
                         }
