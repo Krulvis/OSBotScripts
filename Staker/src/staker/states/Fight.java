@@ -160,12 +160,12 @@ public class Fight extends ATState<Staker> {
         return new Thread(new Runnable() {
             @Override
             public void run() {
-                Timer attackTimer = new Timer(5000);
+                Timer attackTimer = new Timer(3000);
                 while (!attackTimer.isFinished()) {
                     try {
                         if (opponent != null) {
                             String text = opponent.getHeadMessage();
-                            if (text.equals("1") || text.equals("2") ||text.toUpperCase().contains("FIGHT")) {
+                            if (text.equals("1") || text.equals("2") || text.toUpperCase().contains("FIGHT")) {
                                 break;
                             }
                         }
