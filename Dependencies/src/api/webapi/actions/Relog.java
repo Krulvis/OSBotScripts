@@ -15,6 +15,7 @@ public class Relog extends WebAction {
     @Override
     public boolean perform() {
         if (client.isLoggedIn()) {
+            System.out.println("WebAPI: " + (webAPI != null ? webAPI.isConnected() ? "connected" : "disconnected" : "null"));
             webAPI.getWebConnection().sendJSON("bot/logout", "POST", null);
             logoutTab.logOut();
         }

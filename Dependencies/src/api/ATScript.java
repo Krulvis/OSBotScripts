@@ -151,6 +151,7 @@ public abstract class ATScript extends ATMethodProvider {
                 painter.paint(g2);
             }
         }
+        ATPainter.drawString(g2, "V: " + getVersion(), 10, 50);
     }
 
     public void setPrivateVersion() {
