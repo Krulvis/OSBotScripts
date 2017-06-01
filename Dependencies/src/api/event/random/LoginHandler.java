@@ -54,11 +54,10 @@ public class LoginHandler extends ATState<RandomHandler> implements LoginRespons
                 }
             });
             if (validateWidget(button) && button.interact()) {
-                sleep(Random.bigSleep());
                 waitFor(3000, new Condition() {
                     @Override
                     public boolean evaluate() {
-                        return validateWidget(button);
+                        return !validateWidget(button);
                     }
                 });
                 return -1;
