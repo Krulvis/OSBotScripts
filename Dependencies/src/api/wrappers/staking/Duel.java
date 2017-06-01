@@ -31,6 +31,7 @@ public class Duel {
     private String cancelReason = null;
     private boolean won, finished;
     private boolean sendResults = false;
+    private boolean saidGL = false;
 
     public Duel(SPlayer me, SPlayer opponent, Odds odds, int returnPercent, int myExact, int otherExact, int myRoundedMultiplied) {
         this.me = me;
@@ -134,6 +135,22 @@ public class Duel {
         }
     }
 
+    public boolean hasSendResults() {
+        return sendResults;
+    }
+
+    public void setSendResults(boolean sendResults) {
+        this.sendResults = sendResults;
+    }
+
+    public boolean saidGL() {
+        return saidGL;
+    }
+
+    public void setSaidGL(boolean saidGL) {
+        this.saidGL = saidGL;
+    }
+
     public void calculateMyOffer(boolean equalOffersAtHighOdds) {
         int difference = (int) Math.abs(odds.getRandomOdds() - returnPercent);
         increaedReturn = difference > 4.5 ? (int) Math.abs(difference / 4.5) + returnPercent : returnPercent;
@@ -155,7 +172,7 @@ public class Duel {
         return getOdds() != null && getOdds().isCalculated();
     }
 
-    public void resetStakes() {
+    public void resetVars() {
         this.myExact = 0;
         this.otherExact = 0;
         this.myRoundedMultiplied = 0;
@@ -167,6 +184,7 @@ public class Duel {
         this.finished = false;
         this.fightTimer = null;
         this.sendResults = false;
+        this.saidGL = false;
     }
 
     public SPlayer getMe() {
@@ -290,13 +308,5 @@ public class Duel {
             System.out.println("Send stake results: " + response);
             setSendResults(true);
         }
-    }
-
-    public boolean hasSendResults() {
-        return sendResults;
-    }
-
-    public void setSendResults(boolean sendResults) {
-        this.sendResults = sendResults;
     }
 }

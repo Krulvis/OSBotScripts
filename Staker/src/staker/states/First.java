@@ -28,7 +28,7 @@ public class First extends ATState<Staker> {
                 Duel previous = script.getPreviousDuel(opponent);
                 if (previous != null) {
                     script.currentDuel = previous;
-                    script.currentDuel.resetStakes();
+                    script.currentDuel.resetVars();
                 } else {
                     int[] skills = stake.getOtherSkills();
                     SPlayer player = new SPlayer(opponent, skills);

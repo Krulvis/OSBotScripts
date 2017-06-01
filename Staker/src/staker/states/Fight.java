@@ -34,16 +34,17 @@ public class Fight extends ATState<Staker> {
 
     @Override
     public int perform() throws InterruptedException {
-        String ohText = myPlayer().getHeadMessage();
         script.endFight.challengeAgain = new Timer(30000);
-        if (ohText != null && ohText.contains("3") && glTimer == null) {
-            glTimer = new Timer(Random.nextGaussian(1200, 1500, 200));
-        }
-        if (glTimer != null && glTimer.isFinished()) {
-            glTimer = null;
-            keyboard.typeString(gls[random(0, 3)], true);
-        }
-        if (script.currentDuel != null && glTimer == null) {
+        if (script.currentDuel != null) {
+            if (!script.currentDuel.saidGL()) {
+                if (glTimer == null) {
+                    glTimer = new Timer(Random.nextGaussian(1500, 2500, 500));
+                } else if (glTimer.isFinished()) {
+                    script.currentDuel.setSaidGL(true);
+                    glTimer = null;
+                    keyboard.typeString(gls[random(0, 3)], true);
+                }
+            }
             opponent = getPlayer(script.currentDuel.getPlayerName());
             if (opponent != null) {
                 if (!opponent.isHitBarVisible()) {
@@ -169,7 +170,7 @@ public class Fight extends ATState<Staker> {
                                 break;
                             }
                         }
-                        Thread.sleep(nextGaussian(20, 50, 25, 10));
+                        Thread.sleep(nextGaussian(50, 75, 5));
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
