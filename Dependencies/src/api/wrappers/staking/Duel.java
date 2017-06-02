@@ -1,6 +1,7 @@
 package api.wrappers.staking;
 
 import api.util.Timer;
+import api.util.antiban.chats.StartFightChat;
 import api.webapi.WebAPI;
 import api.wrappers.staking.calculator.Odds;
 import api.wrappers.staking.calculator.SPlayer;
@@ -31,7 +32,8 @@ public class Duel {
     private String cancelReason = null;
     private boolean won, finished;
     private boolean sendResults = false;
-    private boolean saidGL = false;
+
+    private StartFightChat startFightChat;
 
     public Duel(SPlayer me, SPlayer opponent, Odds odds, int returnPercent, int myExact, int otherExact, int myRoundedMultiplied) {
         this.me = me;
@@ -41,6 +43,7 @@ public class Duel {
         this.myExact = myExact;
         this.otherExact = otherExact;
         this.myRoundedMultiplied = myRoundedMultiplied;
+        this.startFightChat = new StartFightChat();
     }
 
     public void checkTimer(int declineTime) {
@@ -135,20 +138,16 @@ public class Duel {
         }
     }
 
+    public StartFightChat getStartFightChat() {
+        return startFightChat;
+    }
+
     public boolean hasSendResults() {
         return sendResults;
     }
 
     public void setSendResults(boolean sendResults) {
         this.sendResults = sendResults;
-    }
-
-    public boolean saidGL() {
-        return saidGL;
-    }
-
-    public void setSaidGL(boolean saidGL) {
-        this.saidGL = saidGL;
     }
 
     public void calculateMyOffer(boolean equalOffersAtHighOdds) {
@@ -184,7 +183,7 @@ public class Duel {
         this.finished = false;
         this.fightTimer = null;
         this.sendResults = false;
-        this.saidGL = false;
+        this.startFightChat = new StartFightChat();
     }
 
     public SPlayer getMe() {

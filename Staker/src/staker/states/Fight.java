@@ -11,40 +11,26 @@ import org.osbot.rs07.api.ui.Tab;
 import org.osbot.rs07.input.mouse.RectangleDestination;
 import org.osbot.rs07.utility.Condition;
 import staker.Staker;
-import staker.util.antiban.delays.AttackOpponentDelay;
 
 import java.awt.*;
 
 import static api.util.Random.nextGaussian;
 import static api.wrappers.staking.data.Data.ARENA_AREA;
 
-/**
- * Created by s120619 on 28-4-2017.
- */
 public class Fight extends ATState<Staker> {
 
     public Fight(Staker script) {
         super("Fight", script);
     }
 
-    public Timer glTimer;
     private Player opponent;
     public boolean canAttackPlayer = false;
-    private String[] gls = new String[]{"gl", "glgl", "gl mate", "good luck", "gg", "aye"};
 
     @Override
     public int perform() throws InterruptedException {
         script.endFight.challengeAgain = new Timer(30000);
         if (script.currentDuel != null) {
-            if (!script.currentDuel.saidGL()) {
-                if (glTimer == null) {
-                    glTimer = new Timer(Random.nextGaussian(1000, 1500, 500));
-                } else if (glTimer.isFinished()) {
-                    script.currentDuel.setSaidGL(true);
-                    glTimer = null;
-                    keyboard.typeString(gls[random(0, 3)], true);
-                }
-            }
+            script.currentDuel.getStartFightChat().sayMessage(keyboard);
             opponent = getPlayer(script.currentDuel.getPlayerName());
             if (opponent != null) {
                 if (!opponent.isHitBarVisible()) {

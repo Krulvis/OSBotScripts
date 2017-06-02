@@ -119,7 +119,6 @@ public class Staker extends ATScript {
             currentDuel = null;
         }
         this.fight.canAttackPlayer = false;
-        this.fight.glTimer = null;
         this.second.tooLowTimer = null;
         return true;
     }

@@ -3,16 +3,11 @@ package api.util.antiban.chats;
 import api.util.Random;
 import api.util.Timer;
 import api.util.antiban.ChatHandler;
-import org.osbot.rs07.api.Keyboard;
 
 /**
  * Created by Tony on 2/06/2017.
  */
 public class StartFightChat extends ChatHandler {
-
-    public StartFightChat(Keyboard keyboard) {
-        super(keyboard);
-    }
 
     @Override
     protected Timer setTimer() {
@@ -21,10 +16,16 @@ public class StartFightChat extends ChatHandler {
 
     @Override
     protected String[] setMessages() {
-        return new String[]{"gl", "glgl", "gl mate", "good luck", "gg", "aye"};
+
+        return new String[]
+                {"gl", "glgl", "gl mate", "good luck", "gg", "aye",
+                        "hope I win", "there we go", "gl bro", "stank and tank",
+                        "lets win", "cmon streak", "hit hard", "gl hf",
+                        "have fun", "lets hit", "hit hard plz", "gl dude",
+                        "good luck", "lets go"};
     }
 
-    protected double setProcessOdds(){
-        return 0.2;
+    protected double setProcessOdds() {
+        return 0.1;
     }
 }
