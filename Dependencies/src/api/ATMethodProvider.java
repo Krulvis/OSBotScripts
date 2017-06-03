@@ -87,7 +87,7 @@ public class ATMethodProvider extends Script {
             this.store = parent.store;
             this.walking = parent.walking;
             this.logoutTab = parent.logoutTab;
-            
+
             //Needs to be initialized
             this.localPathFinder = parent.localPathFinder;
 
@@ -442,7 +442,8 @@ public class ATMethodProvider extends Script {
     }
 
     public boolean walkPath(Position p, boolean checkRun) {
-        if (p == null || distance(p) == 0) {
+        int distance = 0;
+        if (p == null || (distance = distance(p)) == 0) {
             return false;
         } else {
             checkRun();

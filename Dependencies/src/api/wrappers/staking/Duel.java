@@ -303,8 +303,6 @@ public class Duel {
                 object.add("cancelled_reason", new JsonPrimitive(cancelReason));
             }
             JsonElement response = webAPI.getWebConnection().sendJSON("bot/duel", "POST", object);
-            webAPI.sendInventoryScreenshot();
-            webAPI.sendInventoryValue();
             System.out.println("Send stake results: " + response);
             setSendResults(true);
         }

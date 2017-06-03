@@ -94,7 +94,6 @@ public class EndFight extends ATState<Staker> {
                     return isMoving();
                 }
             });
-            script.resetValues();
             challengeAgain = new Timer(30000);
         }
         return isMoving();
