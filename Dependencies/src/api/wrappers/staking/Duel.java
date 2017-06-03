@@ -150,13 +150,14 @@ public class Duel {
         this.sendResults = sendResults;
     }
 
-    public void calculateMyOffer(boolean equalOffersAtHighOdds) {
+    public void calculateMyOffer(boolean equalOffersAtHighOdds, int maxStakeValue) {
         int difference = (int) Math.abs(odds.getRandomOdds() - returnPercent);
         increaedReturn = difference > 4.5 ? (int) Math.abs(difference / 4.5) + returnPercent : returnPercent;
         multiplier = odds.getMultiplier(increaedReturn);
         //System.out.println("X ing with: " + multiplier + ", returnPercent: " + returnPercent);
         myExact = (int) Math.round(otherExact * (equalOffersAtHighOdds && odds.getRandomOdds() >= increaedReturn ? 1 : multiplier));
         myRoundedMultiplied = (int) (myExact > 100000 ? Math.floor((myExact / 100000) * 100000) : Math.floor(myExact));
+        myRoundedMultiplied = myRoundedMultiplied > maxStakeValue ? maxStakeValue : myRoundedMultiplied;
     }
 
     public int getMyRoundedMultiplied() {

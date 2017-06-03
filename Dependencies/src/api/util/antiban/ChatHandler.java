@@ -24,9 +24,9 @@ abstract public class ChatHandler {
 
     public void sayMessage(Keyboard keyboard) {
         if (!isProcessed() && this.willprocess) {
-            if (this.timer == null)
+            if (this.timer == null) {
                 this.timer = this.setTimer();
-
+            }
             if (this.timer != null && this.timer.isFinished()) {
                 this.setProcessed();
                 keyboard.typeString(this.chooseRandomMessage(), true);

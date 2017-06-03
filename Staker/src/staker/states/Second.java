@@ -24,11 +24,10 @@ public class Second extends ATState<Staker> {
         if (script.currentDuel != null) {
             final int otherExact = stake.otherOfferedAmount();
             boolean tooLow = otherExact < script.minAmount;
-            boolean tooHigh = otherExact > script.maxAmount;
 
-            script.currentDuel.setOtherExact(tooHigh ? script.maxAmount : otherExact);
+            script.currentDuel.setOtherExact(otherExact);
             script.currentDuel.setOtherItems(stake.otherOfferedItems());
-            script.currentDuel.calculateMyOffer(script.equalOfferAtHighOdds);
+            script.currentDuel.calculateMyOffer(script.equalOfferAtHighOdds, script.maxAmount);
 
             final int shouldOffer = script.currentDuel.getMyRoundedMultiplied();
             final int currentOffer = stake.myOfferedAmount();
