@@ -36,7 +36,7 @@ public class Fight extends ATState<Staker> {
                 if (!opponent.isHitBarVisible()) {
                     script.currentDuel.resetFightTimer();
                 }
-                if ((opponent.isHitBarVisible() && opponent.getHealthPercent() == 0) || currentHealth() == 0) {
+                if (!script.currentDuel.isFinished() && ((opponent.isHitBarVisible() && opponent.getHealthPercent() == 0) || currentHealth() == 0)) {
                     System.out.println("Done fighting, " + (currentHealth() == 0 ? "I am" : "enemy is") + " dead");
                     script.currentDuel.setWon(opponent.getHealthPercent() == 0);
                     script.currentDuel.setFinished(true);
@@ -46,7 +46,6 @@ public class Fight extends ATState<Staker> {
                     }
                     openInventory();
                 } else {
-                    //System.out.println("Fight");
                     fight(script.ruleSet);
                 }
             }

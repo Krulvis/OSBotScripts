@@ -44,12 +44,12 @@ public class EndFight extends ATState<Staker> {
         }
         openInventory();
         if (won) {
-            sleep(Random.nextGaussian(5000, 7500, 6000, 3000));
+            sleep(Random.nextGaussian(1000, 5000, 3000, 1000));
             System.out.println("Won!");
             final RS2Widget wc = getWidgetChild(VICTORY_INTERFACE, new TextFilter("Claim!"));
             rechallenge(wc, oldChallenge);
         } else if (lost) {
-            sleep(Random.nextGaussian(5000, 7500, 6000, 3000));
+            sleep(Random.nextGaussian(1000, 5000, 3000, 1000));
             System.out.println("Lost!");
             final RS2Widget wc = getWidgetChild(LOST_INTERFACE, new TextFilter("Close"));
             rechallenge(wc, oldChallenge);
@@ -61,14 +61,14 @@ public class EndFight extends ATState<Staker> {
 
     private void rechallenge(RS2Widget wc, RS2Widget oldChallenge) {
         if (oldChallenge != null && clickRechallenge(oldChallenge) && isMoving()) {
-            waitFor(15000, new Condition() {
+            waitFor(Random.nextGaussian(4000, 15000, 8500, 1500), new Condition() {
                 @Override
                 public boolean evaluate() {
                     return validateWidget(DUEL_INTERFACE_1);
                 }
             });
         } else if (wc != null && wc.isVisible() && wc.interact()) {
-            waitFor(2000, new Condition() {
+            waitFor(Random.nextGaussian(4000, 15000, 8500, 1500), new Condition() {
                 @Override
                 public boolean evaluate() {
                     return !validateWidget(LOST_INTERFACE) && !validateWidget(VICTORY_INTERFACE);
@@ -99,6 +99,7 @@ public class EndFight extends ATState<Staker> {
             return false;
         } else {
             lost = validateWidget(LOST_INTERFACE);
+            won = validateWidget(VICTORY_INTERFACE);
             if (won) {
                 this.name = "Accept Win";
                 return true;

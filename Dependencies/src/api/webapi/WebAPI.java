@@ -139,6 +139,7 @@ public class WebAPI extends ATMethodProvider {
             @Override
             public void run() {
                 try {
+                    System.out.println("Sending Inventory Screenshot...");
                     BufferedImage image = bot.getCanvas().getGameBuffer().getSubimage(552, 206, 731 - 552, 426 - 206);
                     //Save image to files
                     //ImageUtils.saveImage(image, "ss", TBot.getBot().getScriptHandler().getScript().getStorageDirectory() + File.separator);
