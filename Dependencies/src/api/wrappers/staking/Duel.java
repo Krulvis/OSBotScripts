@@ -124,6 +124,10 @@ public class Duel {
         this.finished = finished;
     }
 
+    public boolean isFinished() {
+        return this.finished;
+    }
+
     public Timer getFightTimer() {
         return fightTimer;
     }

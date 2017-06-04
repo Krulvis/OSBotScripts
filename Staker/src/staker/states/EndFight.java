@@ -47,20 +47,12 @@ public class EndFight extends ATState<Staker> {
             sleep(Random.nextGaussian(5000, 7500, 6000, 3000));
             System.out.println("Won!");
             final RS2Widget wc = getWidgetChild(VICTORY_INTERFACE, new TextFilter("Claim!"));
-            final int wons = script.currentDuel.getOtherExact();
             rechallenge(wc, oldChallenge);
-            if (!validateWidget(VICTORY_INTERFACE)) {
-                script.totalGains += wons;
-            }
         } else if (lost) {
             sleep(Random.nextGaussian(5000, 7500, 6000, 3000));
             System.out.println("Lost!");
             final RS2Widget wc = getWidgetChild(LOST_INTERFACE, new TextFilter("Close"));
-            final int loses = script.currentDuel.getMyRoundedMultiplied();
             rechallenge(wc, oldChallenge);
-            if (!validateWidget(LOST_INTERFACE)) {
-                script.totalLosses += loses;
-            }
         } else if (oldChallenge == null && challengeAgain.getElapsedTime() > 10000) {
             challengeAgain = null;
         }
@@ -105,15 +97,12 @@ public class EndFight extends ATState<Staker> {
             System.out.println("Already back in stakescreen");
             challengeAgain = null;
             return false;
-        } else if (script.currentDuel != null) {
-            script.currentDuel.setWon(won = validateWidget(VICTORY_INTERFACE));
+        } else {
             lost = validateWidget(LOST_INTERFACE);
             if (won) {
-                script.currentDuel.setFinished(true);
                 this.name = "Accept Win";
                 return true;
             } else if (lost) {
-                script.currentDuel.setFinished(true);
                 this.name = "Accept Defeat";
                 return true;
             } else if (challengeAgain != null && !challengeAgain.isFinished()) {

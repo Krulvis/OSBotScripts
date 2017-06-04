@@ -49,6 +49,9 @@ public class Waiting extends ATState<Staker> {
                 randomHandler.getLoginHandler().checkedPid = true;
             }
         }
+        if (script.currentDuel != null && script.currentDuel.isFinished()) {
+            script.resetValues();
+        }
         if (script.myPlayer == null && client.isLoggedIn()) {
             script.myPlayer = new SPlayer(myPlayer().getName(), new int[]{skills.getStatic(Skill.ATTACK), skills.getStatic(Skill.STRENGTH), skills.getStatic(Skill.DEFENCE), skills.getStatic(Skill.HITPOINTS), skills.getStatic(Skill.PRAYER)});
         }
