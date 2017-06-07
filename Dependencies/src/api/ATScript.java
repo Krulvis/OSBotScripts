@@ -1,5 +1,8 @@
 package api;
 
+import api.event.listener.EventHandler;
+import api.event.listener.inventory.InventoryHandler;
+import api.event.listener.inventory.InventoryListener;
 import api.event.random.RandomHandler;
 import api.util.ATPainter;
 import api.util.Random;
@@ -29,6 +32,7 @@ public abstract class ATScript extends ATMethodProvider {
     private boolean isPrivateVersion = false, useWebAPI = false;
     private GUIWrapper<? extends ATScript> guiWrapper;
     private RandomHandler randomHandler;
+    private ArrayList<EventHandler> eventHandlers = new ArrayList<>();
 
     @Override
     public int onLoop() throws InterruptedException {
@@ -40,22 +44,24 @@ public abstract class ATScript extends ATMethodProvider {
             if (isPrivateVersion) {
                 updater.checkAllowed();
             }
+            super.init(this);
             try {
                 Class<? extends ATPainter> painterClass = getPainterClass();
                 this.painter = painterClass == null ? null : painterClass.getConstructor(this.getClass()).newInstance(this);
                 Class<? extends GUIWrapper> guiClass = getGUI();
                 this.guiWrapper = guiClass == null ? null : guiClass.getConstructor(this.getClass()).newInstance(this);
-
             } catch (Exception e) {
                 e.printStackTrace();
             }
             Thread.currentThread().setName("ScriptLoopThread");
-            super.init(this);
-            isScriptInitialized = true;
             this.initialize(states);
             if (this.guiWrapper == null) {
                 isScriptRunning.set(true);
             }
+            if (this instanceof InventoryListener) {
+                eventHandlers.add(new InventoryHandler(this));
+            }
+            startEventHandlers();
             if (this.useWebAPI) {
                 randomHandler = new RandomHandler(this);
                 webAPI.addAction(webAPI.relog = new Relog(this));
@@ -64,6 +70,7 @@ public abstract class ATScript extends ATMethodProvider {
                 //Done last
                 webAPI.connect();
             }
+            isScriptInitialized = true;
         }
         return Random.medSleep();
     }
@@ -176,6 +183,24 @@ public abstract class ATScript extends ATMethodProvider {
 
     public void useWebAPI() {
         this.useWebAPI = true;
+    }
+
+    public void startEventHandlers() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (bot.getScriptExecutor().getCurrent() != null) {
+                    for (EventHandler eventHandler : eventHandlers) {
+                        eventHandler.handle();
+                    }
+                    try {
+                        Thread.sleep(200);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }, "Event Handler Thread");
     }
 
 }

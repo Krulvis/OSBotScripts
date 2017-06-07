@@ -11,6 +11,7 @@ import api.webapi.WebAPI;
 import api.wrappers.*;
 import api.wrappers.friendslist.ATFriendsList;
 import api.wrappers.grandexchange.GrandExchange;
+import api.wrappers.grandexchange.Prices;
 import api.wrappers.staking.ATStake;
 import org.osbot.rs07.api.filter.Filter;
 import org.osbot.rs07.api.filter.NameFilter;
@@ -52,8 +53,10 @@ public class ATMethodProvider extends Script {
     public ATFood food;
     public ATChat chat;
     public ATStake stake;
+    public ATShop shop;
     public ATEmotes emotes;
     public GrandExchange grandExchange;
+    public Prices prices;
     public ImageUtils imageUtils;
     public WebAPI webAPI;
 
@@ -104,6 +107,8 @@ public class ATMethodProvider extends Script {
             this.chat = parent.chat;
             this.imageUtils = parent.imageUtils;
             this.webAPI = parent.webAPI;
+            this.shop = parent.shop;
+            this.prices = parent.prices;
         } else {
             //Highest level, therefore initialize customs
             this.localPathFinder = new LocalPathFinder(getBot());
@@ -118,6 +123,8 @@ public class ATMethodProvider extends Script {
             this.chat = new ATChat(this);
             this.imageUtils = new ImageUtils(this);
             this.webAPI = new WebAPI(this);
+            this.shop = new ATShop(this);
+            this.prices = new Prices(this);
         }
     }
 
@@ -185,8 +192,50 @@ public class ATMethodProvider extends Script {
         return mouse.click(new RectangleDestination(bot, rect));
     }
 
+    public boolean deselectItem() {
+        if (inventory.isItemSelected() && inventory.deselectItem()) {
+            waitFor(Random.nextGaussian(1000, 2000, 500), new Condition() {
+                @Override
+                public boolean evaluate() {
+                    return !inventory.isItemSelected();
+                }
+            });
+        }
+        return !inventory.isItemSelected();
+    }
+
+    public boolean deselectSpell() {
+        if (magic.isSpellSelected() && magic.deselectSpell()) {
+            waitFor(Random.nextGaussian(1000, 2000, 500), new Condition() {
+                @Override
+                public boolean evaluate() {
+                    return !magic.isSpellSelected();
+                }
+            });
+        }
+        return !magic.isSpellSelected();
+    }
+
+    public boolean deselectEverything() {
+        return deselectItem() && deselectSpell();
+    }
+
     public boolean spaceBar() {
         return keyboard.typeString(" ", false);
+    }
+
+    public void backSpace() {
+        Timer backSpaceTimer = new Timer(Random.nextGaussian(3000, 5000, 1000));
+        keyboard.pressKey((char) KeyEvent.VK_BACK_SPACE);
+        while (!backSpaceTimer.isFinished()) {
+            try {
+                sleep(Random.nextGaussian(100, 250, 50));
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            keyboard.pressKey((char) KeyEvent.VK_BACK_SPACE);
+        }
+        keyboard.releaseKey((char) KeyEvent.VK_BACK_SPACE);
     }
 
     public boolean isOutOfAny(final int... ids) {
@@ -316,6 +365,33 @@ public class ATMethodProvider extends Script {
 
     public RS2Widget getWidgetChild(int parent, Filter<RS2Widget> filter) {
         return widgets.singleFilter(parent, filter);
+    }
+
+    public RS2Widget getWidgetWithText(final int parent, final String text) {
+        return getWidgetChild(parent, new Filter<RS2Widget>() {
+            @Override
+            public boolean match(RS2Widget widget) {
+                return widget != null && widget.getMessage().toLowerCase().contains(text.toLowerCase());
+            }
+        });
+    }
+
+    public RS2Widget getWidgetWithText(final RS2Widget parent, final String text) {
+        return getWidgetChild(parent, new Filter<RS2Widget>() {
+            @Override
+            public boolean match(RS2Widget widget) {
+                return widget != null && widget.getMessage().toLowerCase().contains(text.toLowerCase());
+            }
+        });
+    }
+
+    public RS2Widget getWidgetWithAction(final RS2Widget parent, final String action) {
+        return getWidgetChild(parent, new Filter<RS2Widget>() {
+            @Override
+            public boolean match(RS2Widget widget) {
+                return widget != null && Arrays.asList(widget.getInteractActions()).contains(action);
+            }
+        });
     }
 
     public RS2Widget getWidgetChild(int parent, int second, Filter<RS2Widget> filter) {
