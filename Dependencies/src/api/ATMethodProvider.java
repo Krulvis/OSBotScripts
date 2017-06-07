@@ -169,7 +169,7 @@ public class ATMethodProvider extends Script {
     }
 
     public int currentHealth() {
-        return skills.getDynamic(Skill.HITPOINTS);
+        return myPlayer().getHealthPercent();
     }
 
     public boolean isMoving() {
