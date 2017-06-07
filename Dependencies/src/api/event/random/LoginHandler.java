@@ -77,16 +77,16 @@ public class LoginHandler extends ATState<RandomHandler> implements LoginRespons
                 uiState = client.getLoginUIState();
                 if (uiState == 2 && !needsToWait()) {
                     System.out.println("Typing information");
-                    if (hasUsernameTyped()) {
+                    if (hasUsernameTyped() && tooManyLogins == null) {
                         mouse.click(new RectangleDestination(bot, 315, 248, 35, 12));
                         backSpace(true);
                     }
-                    keyboard.typeString(account.getUsername(), true);
+                    keyboard.typeString(tooManyLogins != null ? "" : account.getUsername(), true);
                     sleep(Random.nextGaussian(250, 500, 200));
-                    if (hasPasswordTyped()) {
+                    if (hasPasswordTyped() && tooManyLogins == null) {
                         backSpace(false);
                     }
-                    if (keyboard.typeString(account.getPassword(), true)) {
+                    if (keyboard.typeString(tooManyLogins != null ? "" : account.getPassword(), true)) {
                         sleep(Random.nextGaussian(2000, 3000, 1000));
                         waitFor(2000, new Condition() {
                             @Override
@@ -94,6 +94,7 @@ public class LoginHandler extends ATState<RandomHandler> implements LoginRespons
                                 return canClickContinue();
                             }
                         });
+                        tooManyLogins = null;
                     }
                 } else if (uiState == 3) {
                     System.out.println("Invalid login, Try Again");
@@ -143,9 +144,11 @@ public class LoginHandler extends ATState<RandomHandler> implements LoginRespons
     private boolean hasUsernameTyped() {
         Point p = new Point(316, 260);
         Point p2 = new Point(318, 261);
+        Point p3 = new Point(313, 261);
         Color c = colorPicker.colorAt(p);
         Color c2 = colorPicker.colorAt(p2);
-        return isLetter(c, c2);
+        Color c3 = colorPicker.colorAt(p3);
+        return isLetter(c, c2, c3);
     }
 
     private boolean isLetter(Color... colors) {

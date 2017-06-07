@@ -61,14 +61,14 @@ public class EndFight extends ATState<Staker> {
 
     private void rechallenge(RS2Widget wc, RS2Widget oldChallenge) {
         if (oldChallenge != null && clickRechallenge(oldChallenge) && isMoving()) {
-            waitFor(Random.nextGaussian(4000, 15000, 8500, 1500), new Condition() {
+            waitFor(Random.nextGaussian(4000, 8500, 5000, 1500), new Condition() {
                 @Override
                 public boolean evaluate() {
                     return validateWidget(DUEL_INTERFACE_1);
                 }
             });
         } else if (wc != null && wc.isVisible() && wc.interact()) {
-            waitFor(Random.nextGaussian(4000, 15000, 8500, 1500), new Condition() {
+            waitFor(Random.nextGaussian(4000, 8500, 5000, 1500), new Condition() {
                 @Override
                 public boolean evaluate() {
                     return !validateWidget(LOST_INTERFACE) && !validateWidget(VICTORY_INTERFACE);
