@@ -45,7 +45,7 @@ public class Fight extends ATState<Staker> {
                         script.currentDuel.sendResults(webAPI);
                     }
                     openInventory();
-                } else {
+                } else if (!script.currentDuel.isFinished()) {
                     fight(script.ruleSet);
                 }
             }
