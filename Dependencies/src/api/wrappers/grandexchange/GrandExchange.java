@@ -32,7 +32,7 @@ import static org.osbot.rs07.api.GrandExchange.*;
 public class GrandExchange extends ATMethodProvider {
 
     public final ATMethodProvider parent;
-    public final static String RSBOTS_API_URL = "http://rsbots.org/api/item/";
+    public final static String RSBOTS_API_URL = "http://api.rsbots.org/item/";
     public static final String GE_API_URL_BASE = "http://services.runescape.com/m=itemdb_oldschool/api/catalogue/detail.json?item=";
     public static HashMap<Integer, Integer> onlinePriceMap = new HashMap<>(), highAlchPrice = new HashMap<>();
     public HashMap<Integer, Integer> buyTries = new HashMap<>();
