@@ -36,6 +36,9 @@ public class First extends ATState<Staker> {
                     script.currentDuel = new Duel(script.myPlayer, player, odds, script.returnPercent, 0, 0, 0);
                 }
             }
+        } else if (script.currentDuel.isFinished()) {
+            //Came here directly after rechallenging
+            script.resetValues();
         } else {
             script.currentDuel.checkTimer(script.declineTime);
             Player player = getPlayer(script.currentDuel.getPlayerName());
