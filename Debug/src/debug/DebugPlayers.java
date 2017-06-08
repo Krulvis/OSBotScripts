@@ -56,6 +56,6 @@ public class DebugPlayers extends ATScript {
 
     @Override
     public void onPaint(Graphics2D g2) {
-
+        g2.drawString("Esc closing thing: " + isEscCloseInterface(), 10, 100);
     }
 }

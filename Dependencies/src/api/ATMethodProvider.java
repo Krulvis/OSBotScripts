@@ -622,8 +622,13 @@ public class ATMethodProvider extends Script {
         return null;
     }
 
+    public boolean isEscCloseInterface(){
+        int config = configs.get(1224);
+        return (config & 0b10000000000000000000000000000000) ==  0b10000000000000000000000000000000;
+    }
+
     public boolean openInventory() {
-        return tabs.getOpen() == Tab.INVENTORY || keyboard.typeKey((char) KeyEvent.VK_ESCAPE);
+        return tabs.getOpen() == Tab.INVENTORY || (isEscCloseInterface() ? interact.interact(new RectangleDestination(bot, new Rectangle(629, 170, 25, 27))) : keyboard.typeKey((char) KeyEvent.VK_ESCAPE));
     }
 
     public void trayMessage(String title, String message) {

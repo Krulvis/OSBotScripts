@@ -96,6 +96,7 @@ public class Waiting extends ATState<Staker> {
 
         if (acceptChallenge(script.maxDistance + 1, null)) {
             script.resetValues();
+            script.sendInventoryValue();
             if (script.trayMessage) {
                 trayMessage(myPlayer().getName(), "Has a challenge!");
             }

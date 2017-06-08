@@ -61,6 +61,7 @@ public class EndFight extends ATState<Staker> {
 
     private void rechallenge(RS2Widget wc, RS2Widget oldChallenge) {
         if (oldChallenge != null && clickRechallenge(oldChallenge) && isMoving()) {
+
             waitFor(Random.nextGaussian(4000, 8500, 5000, 1500), new Condition() {
                 @Override
                 public boolean evaluate() {
@@ -68,6 +69,7 @@ public class EndFight extends ATState<Staker> {
                 }
             });
         } else if (wc != null && wc.isVisible() && wc.interact()) {
+            script.sendInventoryValue();
             waitFor(Random.nextGaussian(4000, 8500, 5000, 1500), new Condition() {
                 @Override
                 public boolean evaluate() {
@@ -80,6 +82,7 @@ public class EndFight extends ATState<Staker> {
     private boolean clickRechallenge(final RS2Widget wc) {
         if (wc != null && wc.interact()) {
             System.out.println("Rechallenging");
+            script.sendInventoryValue();
             waitFor(1000, new Condition() {
                 @Override
                 public boolean evaluate() {

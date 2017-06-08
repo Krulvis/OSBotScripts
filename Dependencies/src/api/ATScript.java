@@ -8,6 +8,7 @@ import api.util.ATPainter;
 import api.util.Random;
 import api.util.Timer;
 import api.util.Updater;
+import api.util.cache.Cache;
 import api.util.gui.GUIWrapper;
 import api.webapi.actions.Relog;
 import api.webapi.actions.Restart;
@@ -33,6 +34,7 @@ public abstract class ATScript extends ATMethodProvider {
     private GUIWrapper<? extends ATScript> guiWrapper;
     private RandomHandler randomHandler;
     private ArrayList<EventHandler> eventHandlers = new ArrayList<>();
+    private Cache cacheReader;
 
     @Override
     public int onLoop() throws InterruptedException {

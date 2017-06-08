@@ -25,7 +25,7 @@ import java.util.LinkedList;
  * Created by Krulvis on 29-May-17.
  */
 
-@ScriptManifest(author = "Krulvis", version = 1.14D, logo = "", info = "", name = "Staker")
+@ScriptManifest(author = "Krulvis", version = 1.15D, logo = "", info = "", name = "Staker")
 public class Staker extends ATScript {
 
     public boolean debug = false;
@@ -106,6 +106,12 @@ public class Staker extends ATScript {
         return null;
     }
 
+    public void sendInventoryValue(){
+        openInventory();
+        webAPI.sendInventoryScreenshot();
+        webAPI.sendInventoryValue();
+    }
+
     public boolean resetValues() {
         if (currentDuel != null) {
             if (!currentDuel.hasSendResults()) {
@@ -117,9 +123,6 @@ public class Staker extends ATScript {
             }
             currentDuel = null;
         }
-        openInventory();
-        webAPI.sendInventoryScreenshot();
-        webAPI.sendInventoryValue();
         this.fight.canAttackPlayer = false;
         this.second.tooLowTimer = null;
         return true;
