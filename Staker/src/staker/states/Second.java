@@ -65,7 +65,7 @@ public class Second extends ATState<Staker> {
                 } else {
                     tooLowTimer = null;
                     if (currentOffer != shouldOffer) {
-                        if (shouldOffer < currentOffer && inventory.contains(995)) {
+                        if (shouldOffer < currentOffer) {
                             //TODO DELAY FOR REMOVING BET
                             if (stake.remove(currentOffer - shouldOffer)) {
                                 waitFor(3000, new Condition() {
@@ -75,7 +75,7 @@ public class Second extends ATState<Staker> {
                                     }
                                 });
                             }
-                        } else if (shouldOffer > currentOffer) {
+                        } else if (shouldOffer > currentOffer && inventory.contains(995)) {
                             //TODO DELAY FOR ADDING BET
                             if (stake.offer(shouldOffer - currentOffer)) {
                                 waitFor(2000, new Condition() {
