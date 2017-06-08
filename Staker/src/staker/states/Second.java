@@ -65,7 +65,7 @@ public class Second extends ATState<Staker> {
                 } else {
                     tooLowTimer = null;
                     if (currentOffer != shouldOffer) {
-                        if (shouldOffer < currentOffer) {
+                        if (shouldOffer < currentOffer && inventory.contains(995)) {
                             //TODO DELAY FOR REMOVING BET
                             if (stake.remove(currentOffer - shouldOffer)) {
                                 waitFor(3000, new Condition() {
