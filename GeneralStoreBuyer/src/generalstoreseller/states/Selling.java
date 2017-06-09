@@ -22,7 +22,7 @@ public class Selling extends ATState<GeneralStoreSeller> {
 
     @Override
     public boolean validate() {
-        return !Buying.resupply && script.sellables != null && script.sellables.getSellables() != null && script.hasSellables();
+        return !script.buyingState.resupply && script.sellables != null && script.sellables.getSellables() != null && script.hasSellables();
     }
 
     @Override

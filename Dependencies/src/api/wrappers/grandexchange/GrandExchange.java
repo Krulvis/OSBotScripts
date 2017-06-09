@@ -224,7 +224,7 @@ public class GrandExchange extends ATMethodProvider {
                 addBuyTry(id);
                 final int price = getPrice(id);
                 buyPricePercentMap.put(id, price < 100 ? percent + 40 : price < 1000 ? (percent + 10) : (percent + 5));
-                System.out.println("Increasing " + id + "price: " + buyPricePercentMap.get(id) + ", buyTries: " + getBuyTries(id));
+                System.out.println("Increasing " + id + ", price: " + buyPricePercentMap.get(id) + ", buyTries: " + getBuyTries(id));
             }
         }
         return (int) inventory.getAmount(ids) >= amount;
@@ -502,6 +502,10 @@ public class GrandExchange extends ATMethodProvider {
     }
 
     public boolean abortOffer(final GrandExchangeOffer offer) {
+        if (offer == null) {
+            return false;
+        }
+        System.out.println("Aborting offer: " + offer.getItemDef().getName() + ", Slot: " + offer.getSlot());
         if (!isMainScreenOpen()) {
             openMainScreen();
             sleep(200, 300);
@@ -563,7 +567,7 @@ public class GrandExchange extends ATMethodProvider {
         return getOffer(new Filter<GrandExchangeOffer>() {
             @Override
             public boolean match(GrandExchangeOffer go) {
-                return go != null && go.getItemID() == itemId && go.isBuyOffer();
+                return go != null && go.getItemID() == itemId && (buy == go.isBuyOffer());
             }
         });
     }

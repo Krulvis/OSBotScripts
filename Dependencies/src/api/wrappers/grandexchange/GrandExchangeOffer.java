@@ -10,7 +10,7 @@ import org.osbot.rs07.api.def.ItemDefinition;
  */
 public class GrandExchangeOffer extends ATMethodProvider {
 
-    private int slot;
+    private int slot = -1;
     private GrandExchange.Box box;
 
     public GrandExchangeOffer(final int slot, ATMethodProvider parent) {
@@ -24,6 +24,26 @@ public class GrandExchangeOffer extends ATMethodProvider {
     }
 
     public int getSlot() {
+        if (slot == -1) {
+            switch (this.box) {
+                case BOX_1:
+                    return slot = 0;
+                case BOX_2:
+                    return slot = 1;
+                case BOX_3:
+                    return slot = 2;
+                case BOX_4:
+                    return slot = 3;
+                case BOX_5:
+                    return slot = 4;
+                case BOX_6:
+                    return slot = 5;
+                case BOX_7:
+                    return slot = 6;
+                case BOX_8:
+                    return slot = 7;
+            }
+        }
         return slot;
     }
 
@@ -82,21 +102,21 @@ public class GrandExchangeOffer extends ATMethodProvider {
         }
         switch (this.slot) {
             case 0:
-                return GrandExchange.Box.BOX_1;
+                return box = GrandExchange.Box.BOX_1;
             case 1:
-                return GrandExchange.Box.BOX_2;
+                return box = GrandExchange.Box.BOX_2;
             case 2:
-                return GrandExchange.Box.BOX_3;
+                return box = GrandExchange.Box.BOX_3;
             case 3:
-                return GrandExchange.Box.BOX_4;
+                return box = GrandExchange.Box.BOX_4;
             case 4:
-                return GrandExchange.Box.BOX_5;
+                return box = GrandExchange.Box.BOX_5;
             case 5:
-                return GrandExchange.Box.BOX_6;
+                return box = GrandExchange.Box.BOX_6;
             case 6:
-                return GrandExchange.Box.BOX_7;
+                return box = GrandExchange.Box.BOX_7;
             case 7:
-                return GrandExchange.Box.BOX_8;
+                return box = GrandExchange.Box.BOX_8;
             default:
                 return null;
         }

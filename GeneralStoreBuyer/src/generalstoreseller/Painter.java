@@ -17,10 +17,13 @@ public class Painter extends ATPainter<GeneralStoreSeller> {
     @Override
     public void paint(Graphics2D g) {
         int y = this.y;
-        drawString(g, "Runtime: " + script.timer, x, y += yy);
         ATState s = script.currentState;
         drawString(g, "State: " + (s != null ? s.getName() : "Checking prices"), x, y += yy);
 
+        if(script.sellables != null && script.sellables.isChecking()){
+            drawString(g, "Checking online prices...", x, y+=yy);
+        }
+        drawPerHour(g, "Resupplying: ", script.turnOver, script.timer.getPerHour(script.turnOver), x, y += yy);
         drawPerHour(g, "Turnover: ", script.turnOver, script.timer.getPerHour(script.turnOver), x, y += yy);
         if (script.costs > 0) {
             drawPerHour(g, "Costs: ", script.costs, script.timer.getPerHour(script.costs), x, y += yy);

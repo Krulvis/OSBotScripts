@@ -14,8 +14,8 @@ public class Buying extends ATState<GeneralStoreSeller> {
         super("Buying", script);
     }
 
-    public static boolean resupply = false, isBuying = true;
-    public static int startCash = -1;
+    public boolean resupply = false, isBuying = true;
+    public int startCash = -1;
 
     @Override
     public boolean validate() {
@@ -40,7 +40,6 @@ public class Buying extends ATState<GeneralStoreSeller> {
         } else if (!buyTeleports()) {
             return Random.smallSleep();
         } else if (isBuying && !hasAllSellables() && !inventory.isFull() && (sellables = script.sellables.getSellables()) != null) {
-            System.out.println();
             int[] restockAmounts = script.sellables.getAmounts();
             for (int i = 0; i < sellables.length; i++) {
                 final int id = sellables[i];

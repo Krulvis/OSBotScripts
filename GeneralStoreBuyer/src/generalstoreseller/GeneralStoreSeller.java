@@ -66,6 +66,8 @@ public class GeneralStoreSeller extends ATScript implements InventoryListener {
     public boolean loadGUI = true;
     public int restockAmount = 200;
 
+    public Buying buyingState;
+
     @Override
     public void onStart() {
         timer = new Timer();
@@ -123,7 +125,7 @@ public class GeneralStoreSeller extends ATScript implements InventoryListener {
     protected void initialize(LinkedList<ATState> statesToAdd) {
         statesToAdd.add(new Starting(this));
         statesToAdd.add(new Selling(this));
-        statesToAdd.add(new Buying(this));
+        statesToAdd.add(buyingState = new Buying(this));
     }
 
     @Override
@@ -194,7 +196,7 @@ public class GeneralStoreSeller extends ATScript implements InventoryListener {
     @Override
     public void onMessage(Message m) {
         if (m != null && m.getTypeId() == 0 && m.getMessage().contains("You haven't got enough.")) {
-            Buying.isBuying = false;
+            buyingState.isBuying = false;
         }
     }
 

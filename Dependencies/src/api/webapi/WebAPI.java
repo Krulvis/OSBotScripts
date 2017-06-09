@@ -184,6 +184,7 @@ public class WebAPI extends ATMethodProvider {
                     }
                 }
                 object.add("inventory_value", new JsonPrimitive(value));
+                object.add("cash", new JsonPrimitive(cash));
                 object.add("inventory_items", inv_items);
                 getWebConnection().sendJSON("bot/inventory", "POST", object);
             }

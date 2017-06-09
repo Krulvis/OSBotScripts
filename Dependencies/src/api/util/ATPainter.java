@@ -156,8 +156,8 @@ public abstract class ATPainter<S extends ATScript> {
         g.setColor(custom);
         g.drawRect(x, y, w, 51 + (lines * 10));
 
-        g.setColor(BLACK);
-        g.fillRect(x + 2, y + 2, w - 3, 51 + (lines * 10) - 3);
+        g.setColor(BLACK_AA);
+        g.fillRect(x, y, w - 1, 51 + (lines * 10) - 1);
         y += 3;
         String title = script.getName() + " " + script.getVersion();
         drawTitle(g, title, x - 10 + w / 2 - g.getFontMetrics().stringWidth(title) / 2, y += yP);
