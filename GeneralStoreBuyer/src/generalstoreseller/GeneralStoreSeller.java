@@ -19,8 +19,12 @@ import org.osbot.rs07.listener.MessageListener;
 import org.osbot.rs07.script.ScriptManifest;
 
 import java.awt.*;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.Properties;
 
 /**
  * Created by Krulvis on 16-Feb-17.
@@ -59,11 +63,55 @@ public class GeneralStoreSeller extends ATScript implements InventoryListener {
     public int startWorld = -1;
     public int turnOver = 0, costs = 0;
     public Timer firstWorldTimer = null;
+    public boolean loadGUI = true;
+    public int restockAmount = 200;
 
     @Override
     public void onStart() {
         timer = new Timer();
-        new GUI(this);
+        String param = getParameters();
+        if (param != null) {
+            if (param.contains("load")) {
+                System.out.println("Found parameter LOAD");
+                loadGUI = false;
+            }
+        }
+    }
+
+    public void loadSettings() {
+        System.out.println("Loading settings using params");
+        sellables = new SellableItems(this);
+        try {
+            File file = new File(getSettingsFolder() + "settings.properties");
+            Properties p = new Properties();
+            p.load(new FileReader(file));
+            restockWhenOneGone = Boolean.parseBoolean(p.getProperty("quick_restock", "true"));
+            restockAmount = Integer.parseInt(p.getProperty("restock_amount", "200"));
+            //Initiate standard
+            for (int i = 0; i < GeneralStoreSeller.startSellables.length; i++) {
+                int id = GeneralStoreSeller.startSellables[i];
+                sellables.addSellable(new SellableItem(id, restockAmount, this));
+            }
+            for (String key : p.stringPropertyNames()) {
+                if (key.contains("item_")) {
+                    String prop = p.getProperty(key);
+                    if (prop != null) {
+                        try {
+                            int id = Integer.parseInt(prop.contains(",") ? prop.substring(0, prop.indexOf(",")) : prop);
+                            int amount = prop.contains(",") ? Integer.parseInt(prop.substring(prop.indexOf(",") + 1)) : restockAmount;
+                            SellableItem si = new SellableItem(id, amount, this);
+                            System.out.println("Added custom: " + si.getId() + ", " + si.getAmount());
+                            sellables.addSellable(si);
+                        } catch (NumberFormatException e) {
+                            System.out.println("Wrong number format: " + prop);
+                        }
+                    }
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        sellables.reCheckSellables();
     }
 
     @Override
@@ -85,7 +133,7 @@ public class GeneralStoreSeller extends ATScript implements InventoryListener {
 
     @Override
     protected Class<? extends GUIWrapper> getGUI() {
-        return GUI.class;
+        return loadGUI ? GUI.class : null;
     }
 
     public Item[] getInvSellables() {

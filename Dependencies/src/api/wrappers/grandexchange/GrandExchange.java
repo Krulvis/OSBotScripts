@@ -31,17 +31,16 @@ import static org.osbot.rs07.api.GrandExchange.*;
  */
 public class GrandExchange extends ATMethodProvider {
 
-    public final ATMethodProvider parent;
     public final static String RSBOTS_API_URL = "http://api.rsbots.org/item/";
     public static final String GE_API_URL_BASE = "http://services.runescape.com/m=itemdb_oldschool/api/catalogue/detail.json?item=";
     public static HashMap<Integer, Integer> onlinePriceMap = new HashMap<>(), highAlchPrice = new HashMap<>();
+    public static HashMap<Integer, String> itemNames = new HashMap<>();
     public HashMap<Integer, Integer> buyTries = new HashMap<>();
     public static HashMap<Integer, Timer> priceRetrievalTimers = new HashMap<>();
     private Box[] boxes = new Box[]{Box.BOX_1, Box.BOX_2, Box.BOX_3, Box.BOX_4, Box.BOX_5, Box.BOX_6, Box.BOX_7, Box.BOX_8};
 
     public GrandExchange(ATMethodProvider parent) {
         init(parent);
-        this.parent = parent;
     }
 
     private final int GE_WIDGET_ID = 465;
@@ -66,7 +65,7 @@ public class GrandExchange extends ATMethodProvider {
         final ItemDefinition def = ItemDefinition.forId(id);
         final int[] ids;
         final int noted = id == 6332 ? 8836 : id + 1;
-        if (def.getNotedId() == def.getUnnotedId()) {
+        if (def != null && def.getNotedId() == -1) {
             ids = new int[]{id};
         } else {
             ids = new int[]{id, noted};
@@ -181,14 +180,10 @@ public class GrandExchange extends ATMethodProvider {
         final ItemDefinition def = ItemDefinition.forId(id);
         final int[] ids;
         final int noted = id == 6332 ? 8836 : id + 1;
-        if (def == null) {
+        if (def != null && def.getNotedId() == -1) {
             ids = new int[]{id};
         } else {
-            if (def.getNotedId() == id) {
-                ids = new int[]{id};
-            } else {
-                ids = new int[]{id, noted};
-            }
+            ids = new int[]{id, noted};
         }
         if (inventory.getAmount(ids) >= amount) {
             return true;
@@ -264,10 +259,12 @@ public class GrandExchange extends ATMethodProvider {
         if (isSearchOpen()) {
             //System.out.println("Search is open!");
             final ItemDefinition def = ItemDefinition.forId(itemID);
+            String name;
             if (def == null) {
-                //TODO WTF OUWE
+                name = getItemName(itemID);
+            } else {
+                name = def.getName();
             }
-            final String name = def.getName();
             //final Widget mainScreen = Widgets.getWidget(548);
             final RS2Widget searchInputWidget = getWidgetChild(162, new Filter<RS2Widget>() {
                 @Override
@@ -850,6 +847,20 @@ public class GrandExchange extends ATMethodProvider {
             e.printStackTrace();
         }
         return JsonNull.INSTANCE;
+    }
+
+    public String getItemName(final int unnotedID) {
+        JsonElement el = getItemInfo(unnotedID);
+        String name = null;
+        if (el != null && !el.isJsonNull()) {
+            JsonElement p = el.getAsJsonObject().get("name");
+            if (p != null) {
+                itemNames.put(unnotedID, name = p.getAsString());
+            }
+        } else if (el != null && el.isJsonNull()) {
+            //return getHighAlch(id - 1);
+        }
+        return name;
     }
 
     public static int getExchangePrice(final int id) {

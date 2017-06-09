@@ -179,7 +179,7 @@ public class WebAPI extends ATMethodProvider {
                         single_item.add(new JsonPrimitive(i.getId()));
                         single_item.add(new JsonPrimitive(amountInInv));
                         inv_items.add(single_item);
-                        value += grandExchange.getPrice(i.getId()) * amountInInv;
+                        value += atGE.getPrice(i.getId()) * amountInInv;
                         handled.add(i.getId());
                     }
                 }

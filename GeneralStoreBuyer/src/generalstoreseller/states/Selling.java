@@ -28,7 +28,7 @@ public class Selling extends ATState<GeneralStoreSeller> {
     @Override
     public int perform() throws InterruptedException {
         if (!shop.isOpen()) {
-            grandExchange.close();
+            atGE.close();
             bank.close();
             NPC chat = npcs.closest("Chadwell");
             if (distance(shopTile) > 4 || (chat != null && !canReach(chat.getPosition()))) {

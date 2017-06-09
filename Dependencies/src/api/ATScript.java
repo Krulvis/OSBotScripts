@@ -15,6 +15,7 @@ import api.webapi.actions.Restart;
 import api.webapi.actions.Update;
 
 import java.awt.*;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -164,7 +165,7 @@ public abstract class ATScript extends ATMethodProvider {
                 currentState.onPaint(g2);
             }
             if (painter != null) {
-                painter.paint(g2);
+                painter.onRepaint(g2);
             }
         }
         ATPainter.drawString(g2, "V: " + getVersion(), 10, 50);
@@ -203,6 +204,10 @@ public abstract class ATScript extends ATMethodProvider {
                 }
             }
         }, "Event Handler Thread");
+    }
+
+    public String getSettingsFolder() {
+        return System.getProperty("user.home") + File.separator + "OSBot" + File.separator + "data" + File.separator + getName() + File.separator;
     }
 
 }

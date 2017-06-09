@@ -17,7 +17,6 @@ public class Buying extends ATState<GeneralStoreSeller> {
     public static boolean resupply = false, isBuying = true;
     public static int startCash = -1;
 
-
     @Override
     public boolean validate() {
         return resupply || !script.hasSellables();
@@ -33,11 +32,11 @@ public class Buying extends ATState<GeneralStoreSeller> {
             }
         }
         int[] sellables;
-        if (!grandExchange.isOpen()) {
+        if (!atGE.isOpen()) {
             if (shop.isOpen()) {
                 shop.close();
             }
-            grandExchange.open();
+            atGE.open();
         } else if (!buyTeleports()) {
             return Random.smallSleep();
         } else if (isBuying && !hasAllSellables() && !inventory.isFull() && (sellables = script.sellables.getSellables()) != null) {
@@ -48,14 +47,14 @@ public class Buying extends ATState<GeneralStoreSeller> {
                 if (inventory.isFull()) {
                     break;
                 }
-                if (grandExchange.getBuyTries(id) < 5 && inventory.getAmount(id, id + 1) < restockAmounts[i]) {
-                    if (!grandExchange.buy(id, restockAmounts[i], 120)) {
+                if (atGE.getBuyTries(id) < 5 && inventory.getAmount(id, id + 1) < restockAmounts[i]) {
+                    if (!atGE.buy(id, restockAmounts[i], 120)) {
                         break;
                     }
                 }
             }
         } else if (!script.sellables.isChecking()) {
-            grandExchange.resetBuyTries();
+            atGE.resetBuyTries();
             script.costs += startCash - inventory.getAmount(995);
             startCash = -1;
             isBuying = true;
@@ -66,9 +65,9 @@ public class Buying extends ATState<GeneralStoreSeller> {
 
     public boolean buyTeleports() {
         if (!inventory.contains(8007)) {
-            grandExchange.buy(8007, 10, 200);
+            atGE.buy(8007, 10, 200);
         } else if (!inventory.contains(8011)) {
-            grandExchange.buy(8011, 10, 200);
+            atGE.buy(8011, 10, 200);
         } else {
             return true;
         }
@@ -84,7 +83,7 @@ public class Buying extends ATState<GeneralStoreSeller> {
         for (int i = 0; i < sellables.length; i++) {
             int id = sellables[i];
             int amount = amounts[i];
-            if (grandExchange.getBuyTries(id) >= 5) {
+            if (atGE.getBuyTries(id) >= 5) {
                 //Skip cuz it's fucked in price
                 continue;
             }

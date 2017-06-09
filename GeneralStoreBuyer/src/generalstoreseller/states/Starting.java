@@ -21,6 +21,10 @@ public class Starting extends ATState<GeneralStoreSeller> {
             script.startWorld = worlds.getCurrentWorld();
         }
 
+        if (!script.loadGUI && script.sellables == null) {
+            script.loadSettings();
+        }
+
         if (inventory.contains("A magical scroll")) {
             if (!canContinue()) {
                 Item scroll = inventory.getItem("A magical scroll");

@@ -12,8 +12,6 @@ import java.util.ArrayList;
  */
 public class SellableItems extends ATMethodProvider {
 
-    public static int restockAmount = 200;
-
     //All items
     private ArrayList<SellableItem> all = new ArrayList<>();
     private ArrayList<SellableItem> current = new ArrayList<>();
@@ -63,6 +61,10 @@ public class SellableItems extends ATMethodProvider {
     }
 
     public void reCheckSellables() {
+        if (isChecking) {
+            System.out.println("Called rechecking too early, already rechecking prices...");
+            return;
+        }
         isChecking = true;
         current = new ArrayList<>();
         new Thread(new Runnable() {

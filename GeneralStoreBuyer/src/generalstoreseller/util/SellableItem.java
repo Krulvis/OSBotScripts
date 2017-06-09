@@ -1,6 +1,7 @@
 package generalstoreseller.util;
 
 import api.ATMethodProvider;
+import generalstoreseller.GeneralStoreSeller;
 import org.osbot.rs07.api.def.ItemDefinition;
 
 /**
@@ -14,18 +15,18 @@ public class SellableItem extends ATMethodProvider{
     private int buy;
     private int profit;
 
-    public SellableItem(int id, ATMethodProvider api) {
-        this(id, SellableItems.restockAmount, api);
+    public SellableItem(int id, GeneralStoreSeller script) {
+        this(id, script.restockAmount, script);
     }
 
-    public SellableItem(int id, int restockAmount, ATMethodProvider api) {
+    public SellableItem(int id, int restockAmount, GeneralStoreSeller api) {
         init(api);
         this.id = id;
         this.amount = restockAmount;
     }
 
     public void checkPrices() {
-        this.ha = grandExchange.getHighAlch(id);
+        this.ha = atGE.getHighAlch(id);
         this.buy = prices.getBuyPrice(id);
         this.profit = SellableItems.calculateProfit(buy, ha);
     }

@@ -14,7 +14,6 @@ import api.wrappers.grandexchange.GrandExchange;
 import api.wrappers.grandexchange.Prices;
 import api.wrappers.staking.ATStake;
 import org.osbot.rs07.api.filter.Filter;
-import org.osbot.rs07.api.filter.NameFilter;
 import org.osbot.rs07.api.map.Position;
 import org.osbot.rs07.api.model.Entity;
 import org.osbot.rs07.api.model.Item;
@@ -35,8 +34,6 @@ import org.osbot.rs07.utility.ConditionalSleep;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
-import java.io.UnsupportedEncodingException;
-import java.nio.charset.Charset;
 import java.util.*;
 
 /**
@@ -55,7 +52,7 @@ public class ATMethodProvider extends Script {
     public ATStake stake;
     public ATShop shop;
     public ATEmotes emotes;
-    public GrandExchange grandExchange;
+    public GrandExchange atGE;
     public Prices prices;
     public ImageUtils imageUtils;
     public WebAPI webAPI;
@@ -90,10 +87,12 @@ public class ATMethodProvider extends Script {
             this.store = parent.store;
             this.walking = parent.walking;
             this.logoutTab = parent.logoutTab;
+            this.worlds = parent.worlds;
+            this.magic = parent.magic;
+            this.grandExchange = parent.grandExchange; // this thing is shit
 
-            //Needs to be initialized
+            //needs to be initialized in ATScript
             this.localPathFinder = parent.localPathFinder;
-
             //Customs
             this.painter = parent.painter;
             this.interact = parent.interact;
@@ -102,7 +101,7 @@ public class ATMethodProvider extends Script {
             this.food = parent.food;
             this.emotes = parent.emotes;
             this.stake = parent.stake;
-            this.grandExchange = parent.grandExchange;
+            this.atGE = parent.atGE;
             this.friends = parent.friends;
             this.chat = parent.chat;
             this.imageUtils = parent.imageUtils;
@@ -111,20 +110,21 @@ public class ATMethodProvider extends Script {
             this.prices = parent.prices;
         } else {
             //Highest level, therefore initialize customs
+            //Order matters, everything that is below something will be null there
             this.localPathFinder = new LocalPathFinder(getBot());
             this.interact = new ATInteract(this);
+            this.imageUtils = new ImageUtils(this);
+            this.prices = new Prices(this);
             this.worldHopper = new ATWorldHopper(this);
-            this.atCombat = new ATCombat(this);
             this.food = new ATFood(this);
+            this.atCombat = new ATCombat(this);
             this.emotes = new ATEmotes(this);
             this.stake = new ATStake(this);
-            this.grandExchange = new GrandExchange(this);
-            this.friends = new ATFriendsList(this);
             this.chat = new ATChat(this);
-            this.imageUtils = new ImageUtils(this);
             this.webAPI = new WebAPI(this);
             this.shop = new ATShop(this);
-            this.prices = new Prices(this);
+            this.friends = new ATFriendsList(this);
+            this.atGE = new GrandExchange(this);
         }
     }
 
@@ -389,7 +389,7 @@ public class ATMethodProvider extends Script {
         return getWidgetChild(parent, new Filter<RS2Widget>() {
             @Override
             public boolean match(RS2Widget widget) {
-                return widget != null && Arrays.asList(widget.getInteractActions()).contains(action);
+                return widget != null && widget.getInteractActions() != null && Arrays.asList(widget.getInteractActions()).contains(action);
             }
         });
     }
@@ -403,7 +403,7 @@ public class ATMethodProvider extends Script {
             return null;
         }
         for (RS2Widget child : w.getChildWidgets()) {
-            if (filter.match(child)) {
+            if (child != null && filter.match(child)) {
                 return child;
             }
         }
@@ -622,9 +622,9 @@ public class ATMethodProvider extends Script {
         return null;
     }
 
-    public boolean isEscCloseInterface(){
+    public boolean isEscCloseInterface() {
         int config = configs.get(1224);
-        return (config & 0b10000000000000000000000000000000) ==  0b10000000000000000000000000000000;
+        return (config & 0b10000000000000000000000000000000) == 0b10000000000000000000000000000000;
     }
 
     public boolean openInventory() {

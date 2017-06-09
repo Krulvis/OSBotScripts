@@ -15,12 +15,10 @@ public abstract class GUIWrapper<S extends ATScript> extends JFrame {
     public boolean stop = false;
     private JPanel panel;
     public S script;
-    public String settingsFolder;
 
     public GUIWrapper(S script) {
         this.script = script;
-        this.settingsFolder = System.getProperty("user.home") + File.separator + "OSBot" + File.separator + "data" + File.separator + script.getName() + File.separator;
-        File folder = new File(this.settingsFolder);
+        File folder = new File(script.getSettingsFolder());
         if (!folder.exists()) {
             folder.mkdirs();
         }
@@ -69,7 +67,7 @@ public abstract class GUIWrapper<S extends ATScript> extends JFrame {
     };
 
     public String getSettingsFile() {
-        return this.settingsFolder + "settingsFolder.properties";
+        return script.getSettingsFolder() + "settings.properties";
     }
 
     public abstract void loadSettings();

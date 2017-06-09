@@ -43,6 +43,7 @@ public class GrandExchangeOffer extends ATMethodProvider {
     }
 
     public int getItemID() {
+
         return getGrandExchange().getItemId(getBox());
     }
 

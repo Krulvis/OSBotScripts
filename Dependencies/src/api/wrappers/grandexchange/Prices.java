@@ -38,7 +38,7 @@ public class Prices extends ATMethodProvider{
         if (checkedBuyPrice(itemId, maxTimeMinutes)) {
             return buyPriceMap.get(itemId);
         }
-        return grandExchange.getPrice(itemId);
+        return atGE.getPrice(itemId);
     }
 
     public int getSellPrice(final int itemId) {

@@ -26,10 +26,10 @@ public class GUI extends GUIWrapper<GeneralStoreSeller> {
             @Override
             public void actionPerformed(ActionEvent e) {
                 script.sellables = new SellableItems(script);
-                SellableItems.restockAmount = Integer.parseInt(amountField.getText());
+                script.restockAmount = Integer.parseInt(amountField.getText());
                 for (int i = 0; i < GeneralStoreSeller.startSellables.length; i++) {
                     int id = GeneralStoreSeller.startSellables[i];
-                    script.sellables.addSellable(new SellableItem(id, SellableItems.restockAmount, script));
+                    script.sellables.addSellable(new SellableItem(id, script.restockAmount, script));
                 }
                 script.restockWhenOneGone = restockWhenFirstItemCheckBox.isSelected();
                 String text = customIdsField.getText();
@@ -40,51 +40,24 @@ public class GUI extends GUIWrapper<GeneralStoreSeller> {
                         if (item != null && !item.equalsIgnoreCase("")) {
                             toSaveList.add(item);
                             int id = Integer.parseInt(item.contains(",") ? item.substring(0, item.indexOf(",")) : item);
-                            int amount = item.contains(",") ? Integer.parseInt(item.substring(item.indexOf(",") + 1)) : SellableItems.restockAmount;
+                            int amount = item.contains(",") ? Integer.parseInt(item.substring(item.indexOf(",") + 1)) : script.restockAmount;
                             SellableItem si = new SellableItem(id, amount, script);
                             System.out.println("Added custom: " + si.getId() + ", " + si.getAmount());
                             script.sellables.addSellable(si);
                         }
                     }
                 }
-                save();
-                setVisible(false);
-                dispose();
                 script.sellables.reCheckSellables();
+                startScript();
 
             }
         });
-        load();
+        loadSettings();
         setVisible(true);
     }
 
     @Override
     public void loadSettings() {
-
-    }
-
-    @Override
-    public void saveSettings() {
-        try {
-            Properties p = new Properties();
-            p.setProperty("quick_restock", String.valueOf(restockWhenFirstItemCheckBox.isSelected()));
-            if (toSaveList != null && toSaveList.size() > 0) {
-                for (int i = 0; i < toSaveList.size(); i++) {
-                    p.setProperty("item_" + i, String.valueOf(toSaveList.get(i)));
-                }
-            }
-            p.setProperty("restock_amount", String.valueOf(amountField.getText()));
-            p.store(new FileWriter(new File(getSettingsFile())), null);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void save() {
-
-    }
-
-    private void load() {
         try {
             Properties p = new Properties();
             p.load(new FileReader(new File(getSettingsFile())));
@@ -104,6 +77,23 @@ public class GUI extends GUIWrapper<GeneralStoreSeller> {
             amountField.setText(p.getProperty("restock_amount", "200"));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void saveSettings() {
+        try {
+            Properties p = new Properties();
+            p.setProperty("quick_restock", String.valueOf(restockWhenFirstItemCheckBox.isSelected()));
+            if (toSaveList != null && toSaveList.size() > 0) {
+                for (int i = 0; i < toSaveList.size(); i++) {
+                    p.setProperty("item_" + i, String.valueOf(toSaveList.get(i)));
+                }
+            }
+            p.setProperty("restock_amount", String.valueOf(amountField.getText()));
+            p.store(new FileWriter(new File(getSettingsFile())), null);
         } catch (IOException e) {
             e.printStackTrace();
         }
