@@ -66,6 +66,7 @@ public class WebAPI extends ATMethodProvider {
             System.out.println("Getting account from Web API");
             getNewAccount();
             addStatusListener();
+            addOnlineStatusThread();
         }
     }
 
@@ -212,6 +213,24 @@ public class WebAPI extends ATMethodProvider {
                 }
             }
         }, "StatusListenerThread").start();
+    }
+
+    public void addOnlineStatusThread() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (isConnected()) {
+                    try {
+                        JsonObject obje = new JsonObject();
+                        obje.add("online", new JsonPrimitive(isLoggedIn()));
+                        getWebConnection().sendJSON("bot/online", "PUT", obje);
+                        Thread.sleep(30000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }, "OnlineStatusThread").start();
     }
 
     public void getNewStatus() {

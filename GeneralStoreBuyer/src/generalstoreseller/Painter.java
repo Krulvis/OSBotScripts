@@ -2,6 +2,7 @@ package generalstoreseller;
 
 import api.ATState;
 import api.util.ATPainter;
+import generalstoreseller.states.Buying;
 
 import java.awt.*;
 
@@ -20,10 +21,12 @@ public class Painter extends ATPainter<GeneralStoreSeller> {
         ATState s = script.currentState;
         drawString(g, "State: " + (s != null ? s.getName() : "Checking prices"), x, y += yy);
 
-        if(script.sellables != null && script.sellables.isChecking()){
-            drawString(g, "Checking online prices...", x, y+=yy);
+        if (script.sellables != null && script.sellables.isChecking()) {
+            drawString(g, "Checking online prices...", x, y += yy);
         }
-        drawPerHour(g, "Resupplying: ", script.turnOver, script.timer.getPerHour(script.turnOver), x, y += yy);
+        if (script.buyingState != null && s instanceof Buying) {
+            drawString(g, "Resupplying: " + script.buyingState.resupply, x, y += yy);
+        }
         drawPerHour(g, "Turnover: ", script.turnOver, script.timer.getPerHour(script.turnOver), x, y += yy);
         if (script.costs > 0) {
             drawPerHour(g, "Costs: ", script.costs, script.timer.getPerHour(script.costs), x, y += yy);

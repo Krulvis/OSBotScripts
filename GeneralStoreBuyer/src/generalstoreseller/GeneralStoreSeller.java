@@ -180,7 +180,10 @@ public class GeneralStoreSeller extends ATScript implements InventoryListener {
     }
 
     public boolean hasSellables() {
-        return restockWhenOneGone ? !isMissingOneSellable() : inventory.contains(GeneralStoreSeller.startSellables);
+        boolean hasAll = !isMissingOneSellable();
+        boolean hasAny = inventory.contains(GeneralStoreSeller.startSellables);
+        System.out.println("Has All: " + hasAll + ", Has Any: " + hasAny);
+        return restockWhenOneGone ? hasAll : hasAny;
     }
 
     public boolean isMissingOneSellable() {
