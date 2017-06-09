@@ -41,6 +41,7 @@ public class ATWorldHopper extends ATMethodProvider {
         }
         if (world != -1) {
             log("Hopping to world " + world + ".");
+            closeAllInterfaces();
             return worlds.hop(world);
         }
         return false;
@@ -98,6 +99,10 @@ public class ATWorldHopper extends ATMethodProvider {
             worlds_array[i] = (int) worlds.get(i);
         }
         return worlds_array;
+    }
+
+    public boolean closeAllInterfaces() {
+        return bank.close() && shop.close() && atGE.close();
     }
 
 

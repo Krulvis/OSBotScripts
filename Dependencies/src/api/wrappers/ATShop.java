@@ -181,11 +181,11 @@ public class ATShop extends ATMethodProvider {
         if (def == null) {
             return false;
         }
-        int shopId = def.isNoted() ? item.getId() - 1 : item.getId();
         if (!isOpen()) {
             System.out.println("Shop is closed: " + (!isOpen()));
             return false;
         }
+        int shopId = def.isNoted() ? item.getId() - 1 : item.getId();
         int shopAmount = amountOf(shopId);
         //System.out.println("Shop has: " + shopAmount + " of: " + def.getName());
         if (shopAmount >= amount) {
@@ -204,7 +204,7 @@ public class ATShop extends ATMethodProvider {
         if (amountToSell >= 10) {
             action = "Sell 10";
         }
-        return interact.interact(item.getOwner().getBounds(), action);
+        return item.interact(action);
     }
 
     public boolean buyAtSlot(int slot, int amount) {

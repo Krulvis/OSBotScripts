@@ -2,6 +2,7 @@ package api.util;
 
 import api.ATScript;
 import org.osbot.rs07.api.map.Position;
+import org.osbot.rs07.api.model.Player;
 import org.osbot.rs07.api.util.GraphicUtilities;
 
 import java.awt.*;
@@ -63,8 +64,11 @@ public abstract class ATPainter<S extends ATScript> {
     private String name;
 
     public void hideChatboxName(Graphics g, Color color) {
-        if (name == null) {
-            name = script.myPlayer().getName();
+        if (name == null && script != null) {
+            Player p = script.myPlayer();
+            if (p != null) {
+                name = p.getName();
+            }
         }
         if (name != null) {
             g.setColor(color);
@@ -148,6 +152,7 @@ public abstract class ATPainter<S extends ATScript> {
         if (hideUsername) {
             hideChatboxName(g);
         }
+        g1.setFont(SMALL14);
         g.setStroke(new BasicStroke(1.0f));
 
         Color custom = this.custom.get();

@@ -454,7 +454,7 @@ public class GrandExchange extends ATMethodProvider {
                             }
                         });
                     }
-                }/* else if (distance(GE_LOCATION) > 100 && !ROW.hasWith() && inventory.contains(8007)) {
+                } else if (distance(GE_LOCATION) > 100 && inventory.contains(8007)) {//&& !ROW.hasWith()
                     Item tab = inventory.getItem(8007);
                     if (tab != null && tab.interact()) {
                         waitFor(6000, new Condition() {
@@ -464,7 +464,7 @@ public class GrandExchange extends ATMethodProvider {
                             }
                         });
                     }
-                } else if (distance(GE_LOCATION) > 25 && ROW.hasWith()) {
+                } /*else if (distance(GE_LOCATION) > 25 && ROW.hasWith()) {
                     if (ROW.teleport("ge")) {
                         waitFor(6000, new Condition() {
                             @Override

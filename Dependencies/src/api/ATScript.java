@@ -35,7 +35,6 @@ public abstract class ATScript extends ATMethodProvider {
     private GUIWrapper<? extends ATScript> guiWrapper;
     private RandomHandler randomHandler;
     private ArrayList<EventHandler> eventHandlers = new ArrayList<>();
-    private Cache cacheReader;
 
     @Override
     public int onLoop() throws InterruptedException {
@@ -62,6 +61,7 @@ public abstract class ATScript extends ATMethodProvider {
                 isScriptRunning.set(true);
             }
             if (this instanceof InventoryListener) {
+                System.out.println("Script has InventoryListener");
                 eventHandlers.add(new InventoryHandler(this));
             }
             startEventHandlers();
@@ -189,21 +189,26 @@ public abstract class ATScript extends ATMethodProvider {
     }
 
     public void startEventHandlers() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while (bot.getScriptExecutor().getCurrent() != null) {
-                    for (EventHandler eventHandler : eventHandlers) {
-                        eventHandler.handle();
-                    }
-                    try {
-                        Thread.sleep(200);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
+        if (eventHandlers.size() > 0) {// Only start when there are actual handlers added
+            System.out.println("Starting Event Handler Thread!");
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    while (bot.getScriptExecutor().getCurrent() != null) {
+                        if (isLoggedIn()) {
+                            for (EventHandler eventHandler : eventHandlers) {
+                                eventHandler.handle();
+                            }
+                        }
+                        try {
+                            Thread.sleep(200);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
-            }
-        }, "Event Handler Thread");
+            }, "Event Handler Thread").start();
+        }
     }
 
     public String getSettingsFolder() {

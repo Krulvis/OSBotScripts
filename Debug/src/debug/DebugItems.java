@@ -2,6 +2,7 @@ package debug;
 
 import api.ATScript;
 import api.ATState;
+import api.event.listener.inventory.InventoryListener;
 import api.util.ATPainter;
 import api.util.Random;
 import api.util.gui.GUIWrapper;
@@ -18,7 +19,7 @@ import java.util.LinkedList;
  * Created by Krulvis on 09-Jun-17.
  */
 @ScriptManifest(logo = "", author = "Krulvis", name = "Debug Items", info = "", version = 1.01D)
-public class DebugItems extends ATScript {
+public class DebugItems extends ATScript implements InventoryListener {
 
     @Override
     public void onStart() {
@@ -32,12 +33,6 @@ public class DebugItems extends ATScript {
 
     }
 
-    @Override
-    public int onLoop() {
-        current = inventory.getItemInSlot(0);
-
-        return Random.smallSleep();
-    }
 
     @Override
     public void onPaint(Graphics2D g) {
@@ -67,5 +62,15 @@ public class DebugItems extends ATScript {
     @Override
     protected Class<? extends GUIWrapper> getGUI() {
         return null;
+    }
+
+    @Override
+    public void itemAdded(Item item, int amount) {
+        System.out.println("Item added: " + item.getName() + ": " + amount);
+    }
+
+    @Override
+    public void itemRemoved(Item item, int amount) {
+
     }
 }

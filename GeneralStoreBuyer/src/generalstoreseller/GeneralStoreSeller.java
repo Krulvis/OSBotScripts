@@ -13,6 +13,7 @@ import generalstoreseller.util.GUI;
 import generalstoreseller.util.SellableItem;
 import generalstoreseller.util.SellableItems;
 import org.osbot.rs07.api.def.ItemDefinition;
+import org.osbot.rs07.api.map.Position;
 import org.osbot.rs07.api.model.Item;
 import org.osbot.rs07.api.ui.Message;
 import org.osbot.rs07.listener.MessageListener;
@@ -65,12 +66,14 @@ public class GeneralStoreSeller extends ATScript implements InventoryListener {
     public Timer firstWorldTimer = null;
     public boolean loadGUI = true;
     public int restockAmount = 200;
+    public Position shopTile = new Position(2466, 3285, 0);
 
     public Buying buyingState;
 
     @Override
     public void onStart() {
         timer = new Timer();
+        //setPrivateVersion();
         String param = getParameters();
         if (param != null) {
             if (param.contains("load")) {
@@ -124,8 +127,8 @@ public class GeneralStoreSeller extends ATScript implements InventoryListener {
     @Override
     protected void initialize(LinkedList<ATState> statesToAdd) {
         statesToAdd.add(new Starting(this));
-        statesToAdd.add(new Selling(this));
         statesToAdd.add(buyingState = new Buying(this));
+        statesToAdd.add(new Selling(this));
     }
 
     @Override
@@ -142,6 +145,9 @@ public class GeneralStoreSeller extends ATScript implements InventoryListener {
         Item[] invItems = inventory.getItems();
         ArrayList<Item> invSellables = new ArrayList<>();
         for (Item i : invItems) {
+            if (i == null) {
+                continue;
+            }
             ItemDefinition def = i.getDefinition();
             if (def != null && isSellable(def)) {
                 invSellables.add(i);
@@ -153,6 +159,9 @@ public class GeneralStoreSeller extends ATScript implements InventoryListener {
     public Item getSellable() {
         Item[] items = inventory.getItems();
         for (Item i : items) {
+            if (i == null) {
+                continue;
+            }
             ItemDefinition def = ItemDefinition.forId(i.getId());
             if (def != null && isSellable(def) && hasPlaceInShop(def) && shop.amountOf(def.isNoted() ? def.getId() - 1 : def.getId()) < 5) {
                 //System.out.println("Can still sell: " + def.getName() + ": " + i.getID());
@@ -180,10 +189,7 @@ public class GeneralStoreSeller extends ATScript implements InventoryListener {
     }
 
     public boolean hasSellables() {
-        boolean hasAll = !isMissingOneSellable();
-        boolean hasAny = inventory.contains(GeneralStoreSeller.startSellables);
-        System.out.println("Has All: " + hasAll + ", Has Any: " + hasAny);
-        return restockWhenOneGone ? hasAll : hasAny;
+        return restockWhenOneGone ? !isMissingOneSellable() : inventory.contains(GeneralStoreSeller.startSellables);
     }
 
     public boolean isMissingOneSellable() {
@@ -206,6 +212,7 @@ public class GeneralStoreSeller extends ATScript implements InventoryListener {
     @Override
     public void itemAdded(Item i, int amount) {
         ATState s = currentState;
+        System.out.println("Added: " + i.getName() + ": " + amount);
         if (i != null && i.getId() == 995 && (s instanceof Selling)) {
             turnOver += amount;
         }

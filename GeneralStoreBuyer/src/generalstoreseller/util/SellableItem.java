@@ -7,7 +7,7 @@ import org.osbot.rs07.api.def.ItemDefinition;
 /**
  * Created by s120619 on 2-3-2017.
  */
-public class SellableItem extends ATMethodProvider{
+public class SellableItem extends ATMethodProvider {
 
     private int id;
     private int amount;
@@ -33,7 +33,7 @@ public class SellableItem extends ATMethodProvider{
 
     public boolean hasInInventory() {
         ItemDefinition def = ItemDefinition.forId(id);
-        return def.getUnnotedId() == def.getNotedId() ? inventory.contains(id) : inventory.contains(id + 1);
+        return def.getNotedId() == -1 ? inventory.contains(id) : inventory.contains(id + 1);
     }
 
     public int getId() {

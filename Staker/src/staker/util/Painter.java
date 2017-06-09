@@ -18,7 +18,7 @@ import java.util.ArrayList;
 public class Painter extends ATPainter<Staker> {
 
     public Painter(Staker script) {
-        super(script, 7);
+        super(script);
     }
 
     @Override

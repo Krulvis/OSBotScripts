@@ -115,7 +115,6 @@ public class ATMethodProvider extends Script {
             this.interact = new ATInteract(this);
             this.imageUtils = new ImageUtils(this);
             this.prices = new Prices(this);
-            this.worldHopper = new ATWorldHopper(this);
             this.food = new ATFood(this);
             this.atCombat = new ATCombat(this);
             this.emotes = new ATEmotes(this);
@@ -125,6 +124,7 @@ public class ATMethodProvider extends Script {
             this.shop = new ATShop(this);
             this.friends = new ATFriendsList(this);
             this.atGE = new GrandExchange(this);
+            this.worldHopper = new ATWorldHopper(this);
         }
     }
 
