@@ -30,7 +30,7 @@ import java.util.Properties;
 /**
  * Created by Krulvis on 16-Feb-17.
  */
-@ScriptManifest(name = "GeneralStoreSeller", author = "Krulvis", version = 1.01D, logo = "", info = "")
+@ScriptManifest(name = "GeneralStoreSeller", author = "Krulvis", version = 1.04D, logo = "", info = "")
 public class GeneralStoreSeller extends ATScript implements InventoryListener {
 
     public static int[] startSellables = {
@@ -57,7 +57,7 @@ public class GeneralStoreSeller extends ATScript implements InventoryListener {
             4542,
             11069,
             19580,
-            19582};
+    };
 
     public SellableItems sellables;
     public boolean restockWhenOneGone = false;
@@ -91,7 +91,9 @@ public class GeneralStoreSeller extends ATScript implements InventoryListener {
             Properties p = new Properties();
             p.load(new FileReader(file));
             restockWhenOneGone = Boolean.parseBoolean(p.getProperty("quick_restock", "true"));
+            System.out.println("Restock when out of one: " + restockWhenOneGone);
             restockAmount = Integer.parseInt(p.getProperty("restock_amount", "200"));
+            System.out.println("Restock amount: " + restockAmount);
             //Initiate standard
             for (int i = 0; i < GeneralStoreSeller.startSellables.length; i++) {
                 int id = GeneralStoreSeller.startSellables[i];
@@ -188,13 +190,14 @@ public class GeneralStoreSeller extends ATScript implements InventoryListener {
         return false;
     }
 
-    public boolean hasSellables() {
-        return restockWhenOneGone ? !isMissingOneSellable() : inventory.contains(GeneralStoreSeller.startSellables);
+    public boolean hasNeededSellables() {
+        return !isLoggedIn() || inventory.getItems().length == 0 || restockWhenOneGone ? !isMissingOneSellable() : inventory.contains(GeneralStoreSeller.startSellables);
     }
 
     public boolean isMissingOneSellable() {
         for (SellableItem i : sellables.getCurrent()) {
             if (!i.hasInInventory()) {
+                System.out.println("Missing: " + i.getName());
                 return true;
             }
         }
@@ -205,6 +208,7 @@ public class GeneralStoreSeller extends ATScript implements InventoryListener {
     @Override
     public void onMessage(Message m) {
         if (m != null && m.getTypeId() == 0 && m.getMessage().contains("You haven't got enough.")) {
+            sellables.removeFromCurrent(atGE.getCurrentID());
             buyingState.isBuying = false;
         }
     }
@@ -213,7 +217,7 @@ public class GeneralStoreSeller extends ATScript implements InventoryListener {
     public void itemAdded(Item i, int amount) {
         ATState s = currentState;
         System.out.println("Added: " + i.getName() + ": " + amount);
-        if (i != null && i.getId() == 995 && (s instanceof Selling)) {
+        if (i.getId() == 995 && (s instanceof Selling)) {
             turnOver += amount;
         }
     }

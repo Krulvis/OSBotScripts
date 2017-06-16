@@ -19,7 +19,8 @@ public class Buying extends ATState<GeneralStoreSeller> {
 
     @Override
     public boolean validate() {
-        return resupply || !script.hasSellables();
+        return script.sellables != null
+                && (resupply || (!script.hasNeededSellables() && !script.sellables.isChecking()));
     }
 
     @Override
@@ -46,7 +47,7 @@ public class Buying extends ATState<GeneralStoreSeller> {
                 if (inventory.isFull()) {
                     break;
                 }
-                if (atGE.getBuyTries(id) < 5 && inventory.getAmount(id, id + 1) < restockAmounts[i]) {
+                if (atGE.getBuyTries(id) < 3 && inventory.getAmount(id, id + 1) < restockAmounts[i]) {
                     if (!atGE.buy(id, restockAmounts[i], 120)) {
                         break;
                     }
@@ -82,8 +83,9 @@ public class Buying extends ATState<GeneralStoreSeller> {
         for (int i = 0; i < sellables.length; i++) {
             int id = sellables[i];
             int amount = amounts[i];
-            if (atGE.getBuyTries(id) >= 5) {
+            if (atGE.getBuyTries(id) >= 3) {
                 //Skip cuz it's fucked in price
+                script.sellables.removeFromCurrent(sellables[i]);
                 continue;
             }
             if (inventory.getAmount(id, id + 1) < amount) {

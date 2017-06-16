@@ -90,4 +90,12 @@ public class SellableItems extends ATMethodProvider {
         }, "Sellables re-checking Thread").start();
     }
 
+    public void removeFromCurrent(int itemId) {
+        for (int i = 0; i < current.size(); i++) {
+            if (current.get(i).getId() == itemId) {
+                current.remove(i);
+            }
+        }
+    }
+
 }

@@ -294,12 +294,13 @@ public class ATStake extends ATMethodProvider {
                 my_amount += amount;
             } else {
                 ItemDefinition def = ItemDefinition.forId(id);
-                int price = def.isNoted() ? getLowestPrice(def.getUnnotedId()) : getLowestPrice(id);
-                my_amount += price * amount;
-
+                int price = -1;
                 if (def != null) {
+                    price = getLowestPrice(def.isNoted() ? def.getUnnotedId() : id);
                     pricemapNames.put(def.getName().toLowerCase(), price);
                 }
+                my_amount += price * amount;
+
             }
         }
         return my_amount;
@@ -344,18 +345,19 @@ public class ATStake extends ATMethodProvider {
             if (id <= 0 || ignoreList.contains(id)) {
                 continue;
             }
-            //System.out.println("Item: " + id + ": " + amount);
+
             if (id == 995) {
                 other_amount += amount;
             } else if (id == 13204) {
                 other_amount += amount * 1000;
             } else {
-                int price = getLowestPrice(id);
-                other_amount += price * amount;
                 ItemDefinition def = ItemDefinition.forId(id);
+                int price = -1;
                 if (def != null) {
+                    price = getLowestPrice(def.isNoted() ? def.getUnnotedId() : id);
                     pricemapNames.put(def.getName().toLowerCase(), price);
                 }
+                other_amount += price * amount;
             }
         }
         return other_amount;

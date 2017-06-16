@@ -23,7 +23,7 @@ public class Selling extends ATState<GeneralStoreSeller> {
 
     @Override
     public boolean validate() {
-        return script.sellables != null && script.sellables.getSellables() != null && script.hasSellables();
+        return script.sellables != null && !script.sellables.isChecking() && script.sellables.getSellables() != null && script.hasNeededSellables();
     }
 
     @Override
@@ -76,7 +76,6 @@ public class Selling extends ATState<GeneralStoreSeller> {
             }
         } else {
             worldHopper.hop(false);
-            sleep(Random.nextGaussian(1500, 2000, 250));
         }
         return Random.smallSleep();
     }
