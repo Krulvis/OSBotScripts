@@ -1,6 +1,8 @@
 package api.wrappers;
 
 import api.ATMethodProvider;
+import api.util.Random;
+import api.util.Timer;
 
 import java.util.ArrayList;
 
@@ -42,7 +44,16 @@ public class ATWorldHopper extends ATMethodProvider {
         if (world != -1) {
             log("Hopping to world " + world + ".");
             closeAllInterfaces();
-            return worlds.hop(world);
+            Timer hopTimer = new Timer(5000);
+            boolean hopped;
+            while (!(hopped = worlds.hop(world)) && !hopTimer.isFinished()) {
+                try {
+                    sleep(Random.nextGaussian(1500, 2000, 250));
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            return hopped;
         }
         return false;
     }

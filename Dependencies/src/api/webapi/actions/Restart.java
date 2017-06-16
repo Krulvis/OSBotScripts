@@ -19,12 +19,7 @@ public class Restart extends WebAction {
     @Override
     public boolean perform() {
         try {
-            //String opp = System.
-            if (startBot.contains("sh")) {
-                System.setProperty("os.name", "Linux");
-            }
             Runtime.getRuntime().exec(startBot);
-            System.setProperty("os.name", "Windows 7");
             System.exit(0);
             return true;
         } catch (IOException e) {

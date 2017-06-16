@@ -655,7 +655,7 @@ public class GrandExchange extends ATMethodProvider {
         return setting;
     }
 
-    private int getCurrentID() {
+    public int getCurrentID() {
         return configs.get(ITEM_ID_SETTING_ID);
     }
 
