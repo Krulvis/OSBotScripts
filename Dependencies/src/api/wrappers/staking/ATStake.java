@@ -385,8 +385,9 @@ public class ATStake extends ATMethodProvider {
                     } else {
                         amount = Integer.parseInt(amountStr);
                     }
-                    name = item.substring(0, item.lastIndexOf(" x ") - 1);
+                    name = item.substring(0, item.lastIndexOf(" x "));
                 }
+                System.out.println("Other offer has item: " + name.toLowerCase());
                 int price = name.equalsIgnoreCase("Coins") || !pricemapNames.containsKey(name.toLowerCase()) ? 1 : pricemapNames.get(name.toLowerCase());
                 total += amount * price;
                 //System.out.println("other third trade: " + name + ", amount: " + amount + ", value: " + amount * price);
