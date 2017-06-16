@@ -293,9 +293,10 @@ public class ATStake extends ATMethodProvider {
             if (id == 995) {
                 my_amount += amount;
             } else {
-                int price = getLowestPrice(id);
-                my_amount += price * amount;
                 ItemDefinition def = ItemDefinition.forId(id);
+                int price = def.isNoted() ? getLowestPrice(def.getUnnotedId()) : getLowestPrice(id);
+                my_amount += price * amount;
+
                 if (def != null) {
                     pricemapNames.put(def.getName().toLowerCase(), price);
                 }
