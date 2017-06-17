@@ -420,7 +420,8 @@ public class ATStake extends ATMethodProvider {
                     } else {
                         amount = Integer.parseInt(amountStr);
                     }
-                    name = item.substring(0, item.lastIndexOf(" x "));
+                    boolean unnoted = item.contains("  x ");
+                    name = item.substring(0, item.lastIndexOf(unnoted ? "  x " : " x "));
                 }
                 int price = name.equals("Coins") || !pricemapNames.containsKey(name.toLowerCase()) ? 1 : pricemapNames.get(name.toLowerCase());
                 total += amount * price;
