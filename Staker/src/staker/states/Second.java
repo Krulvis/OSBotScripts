@@ -101,6 +101,13 @@ public class Second extends ATState<Staker> {
             } else {
                 tooLowTimer = null;
             }
+        } else if (stake.declineSecond()) {
+            waitFor(2000, new Condition() {
+                @Override
+                public boolean evaluate() {
+                    return !stake.isSecondScreenOpen();
+                }
+            });
         }
         return Random.medSleep();
     }

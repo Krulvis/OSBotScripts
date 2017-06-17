@@ -296,7 +296,7 @@ public class ATStake extends ATMethodProvider {
                 ItemDefinition def = ItemDefinition.forId(id);
                 int price = -1;
                 if (def != null) {
-                    price = getLowestPrice(def.isNoted() ? def.getUnnotedId() : id);
+                    price = getLowestPrice(def.isNoted() ? id - 1 : id);
                     pricemapNames.put(def.getName().toLowerCase(), price);
                 }
                 my_amount += price * amount;
@@ -354,7 +354,7 @@ public class ATStake extends ATMethodProvider {
                 ItemDefinition def = ItemDefinition.forId(id);
                 int price = -1;
                 if (def != null) {
-                    price = getLowestPrice(def.isNoted() ? def.getUnnotedId() : id);
+                    price = getLowestPrice(def.isNoted() ? id - 1 : id);
                     pricemapNames.put(def.getName().toLowerCase(), price);
                 }
                 other_amount += price * amount;
@@ -385,9 +385,10 @@ public class ATStake extends ATMethodProvider {
                     } else {
                         amount = Integer.parseInt(amountStr);
                     }
-                    name = item.substring(0, item.lastIndexOf(" x ") - 1);
+                    boolean unnoted = item.contains("  x ");
+                    name = item.substring(0, item.lastIndexOf(unnoted ? "  x " : " x "));
                 }
-                System.out.println("Other offer has item: " + name.toLowerCase());
+                System.out.println("Other offer has item: " + name.toLowerCase() + " x " + amount);
                 int price = name.equalsIgnoreCase("Coins") || !pricemapNames.containsKey(name.toLowerCase()) ? 1 : pricemapNames.get(name.toLowerCase());
                 total += amount * price;
                 //System.out.println("other third trade: " + name + ", amount: " + amount + ", value: " + amount * price);

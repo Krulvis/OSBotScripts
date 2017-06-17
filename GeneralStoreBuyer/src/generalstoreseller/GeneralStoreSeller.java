@@ -198,6 +198,9 @@ public class GeneralStoreSeller extends ATScript implements InventoryListener {
         for (SellableItem i : sellables.getCurrent()) {
             if (!i.hasInInventory()) {
                 System.out.println("Missing: " + i.getName());
+                for (Item ii : inventory.getItems()) {
+                    System.out.println(ii == null ? "nullitem" : ii.getName());
+                }
                 return true;
             }
         }
