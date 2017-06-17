@@ -40,8 +40,6 @@ public class Waiting extends ATState<Staker> {
     public int perform() throws InterruptedException {
         if (!isLoggedIn()) {
             return Random.bigSleep();
-        } else if (!webAPI.handleWebActions()) {
-            return Random.smallSleep();
         }
         RandomHandler randomHandler = script.getRandomHandler();
         if (randomHandler != null && !randomHandler.getLoginHandler().checkedPid) {
@@ -51,6 +49,8 @@ public class Waiting extends ATState<Staker> {
         }
         if (script.currentDuel != null && script.currentDuel.isFinished()) {
             script.resetValues();
+        } else if (!webAPI.handleWebActions()) {
+            return Random.smallSleep();
         }
         if (script.myPlayer == null && client.isLoggedIn()) {
             script.myPlayer = new SPlayer(myPlayer().getName(), new int[]{skills.getStatic(Skill.ATTACK), skills.getStatic(Skill.STRENGTH), skills.getStatic(Skill.DEFENCE), skills.getStatic(Skill.HITPOINTS), skills.getStatic(Skill.PRAYER)});
