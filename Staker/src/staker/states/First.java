@@ -59,43 +59,39 @@ public class First extends ATState<Staker> {
                             }
                         });
                     }
-                }
-            }
-
-            if (script.currentDuel.shouldDecline()) {
-                log("Declined challenge, opponent taking too long.");
-                //TODO Make speciel timer for declining
-                script.currentDuel.setCancelReason("took_too_long_1st");
-                if (stake.declineFirst()) {
-                    waitFor(2000, new Condition() {
+                } else if (script.currentDuel.shouldDecline()) {
+                    log("Declined challenge, opponent taking too long.");
+                    //TODO Make speciel timer for declining
+                    script.currentDuel.setCancelReason("took_too_long_1st");
+                    if (stake.declineFirst()) {
+                        waitFor(2000, new Condition() {
+                            @Override
+                            public boolean evaluate() {
+                                return !stake.isStakeScreenOpen();
+                            }
+                        });
+                    }
+                } else if (script.ruleSet.allGood(this)) {
+                    AcceptFirstDuelScreenDelay.execute();
+                    if (!stake.isFirstScreenAccepted() && stake.acceptFirstScreen()) {
+                        waitFor(random(2000, 5000), new Condition() {
+                            @Override
+                            public boolean evaluate() {
+                                return stake.isSecondScreenOpen();
+                            }
+                        });
+                        if (stake.isSecondScreenOpen()) {
+                            script.currentDuel.declineTimer = new Timer(script.declineTime + Random.nextGaussian(15000, 25000, 5000));
+                        }
+                    }
+                } else if (stake.loadPreset()) {
+                    waitFor(5000, new Condition() {
                         @Override
                         public boolean evaluate() {
-                            return !stake.isStakeScreenOpen();
+                            return script.ruleSet.allGood(script);
                         }
                     });
                 }
-            }
-
-            if (script.ruleSet.allGood(this)) {
-                AcceptFirstDuelScreenDelay.execute();
-                if (!stake.isFirstScreenAccepted() && stake.acceptFirstScreen()) {
-                    waitFor(random(2000, 5000), new Condition() {
-                        @Override
-                        public boolean evaluate() {
-                            return stake.isSecondScreenOpen();
-                        }
-                    });
-                    if (stake.isSecondScreenOpen()) {
-                        script.currentDuel.declineTimer = new Timer(script.declineTime + Random.nextGaussian(15000, 25000, 5000));
-                    }
-                }
-            } else if (stake.loadPreset()) {
-                waitFor(5000, new Condition() {
-                    @Override
-                    public boolean evaluate() {
-                        return script.ruleSet.allGood(script);
-                    }
-                });
             }
         }
         return Random.smallSleep();
