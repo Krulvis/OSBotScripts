@@ -59,7 +59,14 @@ public class Waiting extends ATState<Staker> {
             script.startPos = myPosition();
         } else if (script.startPos != null && script.walkBack && distance(script.startPos) > 0) {
             RelocateDelay.execute();
-            walkPath(script.startPos);
+            if (walkPath(script.startPos)) {
+                waitFor(Random.nextGaussian(1000, 2500, 500), new Condition() {
+                    @Override
+                    public boolean evaluate() {
+                        return myPosition().equals(script.startPos);
+                    }
+                });
+            }
         }
         Settings.Weapon w = script.ruleSet.getWeapon();
         /*if (!w.isWearing(this) && !script.debug) {
