@@ -3,6 +3,7 @@ package staker.states;
 import api.ATState;
 import api.util.Random;
 import api.util.Timer;
+import api.util.statistics.Distributions.NormalDistribution;
 import api.wrappers.staking.data.RuleSet;
 import api.wrappers.staking.data.Settings;
 import org.osbot.rs07.api.model.Character;
@@ -156,7 +157,9 @@ public class Fight extends ATState<Staker> {
                                 break;
                             }
                         }
-                        Thread.sleep(nextGaussian(50, 75, 5));
+                        Thread.sleep(
+                                (long) NormalDistribution.generateWithBoundaries(120, 476, 230, 50, true)
+                        );
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }

@@ -156,9 +156,7 @@ public class Waiting extends ATState<Staker> {
                     java.util.List<Option> menuItems = menu.getMenu();
                     if (challengeMessageRectangle.getBoundingBox().contains(mouse.getPosition())
                             && menuItems != null) {
-                        //TODO DELAY
-                        //Build in Challenge accept delay
-                        sleep(100, 1000);
+                        AcceptChallengeDelay.execute();
                         String leftClick = menuItems.size() > 0 ? menuItems.get(0).action : null;
                         if (distance(player) < maxDistance && leftClick != null && leftClick.contains("Accept challenge")) {
                             mouse.click(false);
