@@ -25,7 +25,7 @@ import java.util.LinkedList;
  * Created by Krulvis on 29-May-17.
  */
 
-@ScriptManifest(author = "Krulvis", version = 1.22D, logo = "", info = "", name = "Staker")
+@ScriptManifest(author = "Krulvis", version = 1.23D, logo = "", info = "", name = "Staker")
 public class Staker extends ATScript {
 
     public boolean debug = false;
@@ -72,7 +72,6 @@ public class Staker extends ATScript {
 
     @Override
     public void update() {
-
     }
 
     @Override
@@ -106,12 +105,20 @@ public class Staker extends ATScript {
         return null;
     }
 
-    public void sendInventoryValue(){
+    /**
+     * Sends the value and screenshot of the inventory
+     */
+    public void sendInventoryValue() {
         openInventory();
         webAPI.sendInventoryScreenshot();
         webAPI.sendInventoryValue();
     }
 
+    /**
+     * Use this to close out on the last challenge, it will send results to the web
+     *
+     * @return
+     */
     public boolean resetValues() {
         if (currentDuel != null) {
             if (!currentDuel.hasSendResults()) {
@@ -214,19 +221,4 @@ public class Staker extends ATScript {
         }
     }
 
-    public void startConfigListener() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while (webAPI.isConnected()) {
-                    getNewSettings();
-                    try {
-                        Thread.sleep(60000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }, "ConfigListenerThread").start();
-    }
 }

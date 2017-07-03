@@ -49,6 +49,7 @@ public class Waiting extends ATState<Staker> {
         }
         if (script.currentDuel != null && script.currentDuel.isFinished()) {
             script.resetValues();
+            script.sendInventoryValue();
         } else if (!webAPI.handleWebActions()) {
             return Random.smallSleep();
         }

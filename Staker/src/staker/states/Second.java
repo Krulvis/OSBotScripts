@@ -18,19 +18,15 @@ public class Second extends ATState<Staker> {
     }
 
     public Timer tooLowTimer;
+    boolean tooLow = false;
+    int shouldOffer = 0;
+    int currentOffer = 0;
+    int otherExact;
 
     @Override
     public int perform() throws InterruptedException {
         if (script.currentDuel != null) {
-            final int otherExact = stake.otherOfferedAmount();
-            boolean tooLow = otherExact < script.minAmount;
-
-            script.currentDuel.setOtherExact(otherExact);
-            script.currentDuel.setOtherItems(stake.otherOfferedItems());
-            script.currentDuel.calculateMyOffer(script.equalOfferAtHighOdds, script.maxAmount);
-
-            final int shouldOffer = script.currentDuel.getMyRoundedMultiplied();
-            final int currentOffer = stake.myOfferedAmount();
+            calculateOffers();
             System.out.println("Other offer: " + otherExact + ", Should offer: " + shouldOffer + ", Curr Offer: " + currentOffer);
             if (script.currentDuel.shouldDecline()) {
                 log("Opponent took to long to offer 2nd duel");
@@ -67,17 +63,17 @@ public class Second extends ATState<Staker> {
                     if (currentOffer != shouldOffer && (shouldOffer < currentOffer || inventory.contains(995))) {
                         if (shouldOffer < currentOffer) {
                             //TODO DELAY FOR REMOVING BET
-                            if (stake.remove(currentOffer - shouldOffer)) {
+                            if (!calculateOffers() && stake.remove(currentOffer - shouldOffer)) {
                                 waitFor(3000, new Condition() {
                                     @Override
                                     public boolean evaluate() {
-                                        return stake.myOfferedAmount() == shouldOffer;
+                                        return calculateOffers();
                                     }
                                 });
                             }
                         } else if (shouldOffer > currentOffer) {
                             //TODO DELAY FOR ADDING BET
-                            if (stake.offer(shouldOffer - currentOffer)) {
+                            if (!calculateOffers() && stake.offer(shouldOffer - currentOffer)) {
                                 waitFor(2000, new Condition() {
                                     @Override
                                     public boolean evaluate() {
@@ -110,6 +106,20 @@ public class Second extends ATState<Staker> {
             });
         }
         return Random.medSleep();
+    }
+
+    public boolean calculateOffers() {
+        otherExact = stake.otherOfferedAmount();
+        tooLow = otherExact < script.minAmount;
+
+        script.currentDuel.setOtherExact(otherExact);
+        script.currentDuel.setOtherItems(stake.otherOfferedItems());
+        script.currentDuel.calculateMyOffer(script.equalOfferAtHighOdds, script.maxAmount);
+
+        shouldOffer = script.currentDuel.getMyRoundedMultiplied();
+        currentOffer = stake.myOfferedAmount();
+
+        return shouldOffer == currentOffer;
     }
 
     @Override

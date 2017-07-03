@@ -31,14 +31,13 @@ public class Third extends ATState<Staker> {
                 });
             }
         } else {
-            //TODO Make special delay for declining
-            if (!script.ruleSet.allGood(this))
+            if (!script.ruleSet.allGood(this)) {
                 script.currentDuel.setCancelReason("rule_scamming_3rd");
-            else if (stake.shouldAccept(script.currentDuel.getMyExact(), script.currentDuel.getOtherExact()))
+            } else if (stake.shouldAccept(script.currentDuel.getMyExact(), script.currentDuel.getOtherExact())) {
                 script.currentDuel.setCancelReason("amount_scamming_3rd");
-            else
+            } else {
                 script.currentDuel.setCancelReason("unknown_decline_3rd");
-
+            }
 
             if (stake.declineThird()) {
                 System.out.println("Declined on third interface, shit was a scam");
