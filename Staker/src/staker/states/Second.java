@@ -5,8 +5,7 @@ import api.util.Random;
 import api.util.Timer;
 import org.osbot.rs07.utility.Condition;
 import staker.Staker;
-import staker.util.antiban.delays.AcceptChallengeDelay;
-import staker.util.antiban.delays.AcceptSecondDuelScreenDelay;
+import staker.util.antiban.delays.*;
 
 /**
  * Created by Krulvis on 29-May-17.
@@ -30,8 +29,7 @@ public class Second extends ATState<Staker> {
             System.out.println("Other offer: " + otherExact + ", Should offer: " + shouldOffer + ", Curr Offer: " + currentOffer);
             if (script.currentDuel.shouldDecline()) {
                 log("Opponent took to long to offer 2nd duel");
-                //TODO Make speciel timer for declining
-                AcceptChallengeDelay.execute();
+                DeclineSecondDuelScreenDelay.execute();
                 script.currentDuel.setCancelReason("took_too_long_2nd");
                 if (stake.declineSecond()) {
                     waitFor(2000, new Condition() {
@@ -46,7 +44,7 @@ public class Second extends ATState<Staker> {
                     if (tooLowTimer == null) {
                         tooLowTimer = new Timer(Random.nextGaussian(5000, 10000, 5000));
                     } else if (tooLowTimer.isFinished()) {
-                        //TODO ADD DELAY FOR TOO LOW OFFER
+                        DeclineSecondDuelScreenDelay.execute();
                         log("Declined stake since opponents offer was too low");
                         script.currentDuel.setCancelReason("offer_too_low_2nd");
                         if (stake.declineSecond()) {
@@ -62,7 +60,7 @@ public class Second extends ATState<Staker> {
                     tooLowTimer = null;
                     if (currentOffer != shouldOffer && (shouldOffer < currentOffer || inventory.contains(995))) {
                         if (shouldOffer < currentOffer) {
-                            //TODO DELAY FOR REMOVING BET
+                            RemoveBetDelay.execute();
                             if (!calculateOffers() && stake.remove(currentOffer - shouldOffer)) {
                                 waitFor(3000, new Condition() {
                                     @Override
@@ -72,7 +70,7 @@ public class Second extends ATState<Staker> {
                                 });
                             }
                         } else if (shouldOffer > currentOffer) {
-                            //TODO DELAY FOR ADDING BET
+                            AddBetDelay.execute();
                             if (!calculateOffers() && stake.offer(shouldOffer - currentOffer)) {
                                 waitFor(2000, new Condition() {
                                     @Override

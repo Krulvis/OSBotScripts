@@ -10,5 +10,6 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="OSBot" level="project" />
+    <orderEntry type="library" name="osbot-2.4.127" level="project" />
   </component>
 </module>

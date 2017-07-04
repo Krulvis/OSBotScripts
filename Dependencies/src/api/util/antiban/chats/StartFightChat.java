@@ -22,7 +22,8 @@ public class StartFightChat extends ChatHandler {
                         "hope I win", "there we go", "gl bro", "stank and tank",
                         "lets win", "cmon streak", "hit hard", "gl hf",
                         "have fun", "lets hit", "hit hard plz", "gl dude",
-                        "good luck", "lets go"};
+                        "good luck", "lets go", "yolo", "gl bank",
+                        "losing bank today", "cmone rng gods"};
     }
 
     protected double setProcessOdds() {

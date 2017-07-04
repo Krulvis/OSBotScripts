@@ -10,6 +10,9 @@ import org.osbot.rs07.api.model.Player;
 import org.osbot.rs07.utility.Condition;
 import staker.Staker;
 import staker.util.antiban.delays.AcceptFirstDuelScreenDelay;
+import staker.util.antiban.delays.DeclineFirstDuelScreenDelay;
+
+import java.util.ArrayList;
 
 /**
  * Created by Krulvis on 29-May-17.
@@ -49,10 +52,10 @@ public class First extends ATState<Staker> {
                 double odds = script.currentDuel.getOdds().getRandomOdds();
                 if (!script.debug && odds <= 30 && odds > 0.0) {
                     System.out.println("Declining duel, odds: " + odds + " too " + "Low");
-                    //TODO Make speciel timer for declining
+                    DeclineFirstDuelScreenDelay.execute();
                     script.currentDuel.setCancelReason("odds_too_low_1st");
                     if (stake.declineFirst()) {
-                        waitFor(2000, new Condition() {
+                        waitFor(1000, new Condition() {
                             @Override
                             public boolean evaluate() {
                                 return !stake.isStakeScreenOpen();
@@ -61,10 +64,10 @@ public class First extends ATState<Staker> {
                     }
                 } else if (script.currentDuel.shouldDecline()) {
                     log("Declined challenge, opponent taking too long.");
-                    //TODO Make speciel timer for declining
+                    DeclineFirstDuelScreenDelay.execute();
                     script.currentDuel.setCancelReason("took_too_long_1st");
                     if (stake.declineFirst()) {
-                        waitFor(2000, new Condition() {
+                        waitFor(1000, new Condition() {
                             @Override
                             public boolean evaluate() {
                                 return !stake.isStakeScreenOpen();
