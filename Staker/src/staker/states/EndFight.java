@@ -60,8 +60,8 @@ public class EndFight extends ATState<Staker> {
     }
 
     private void rechallenge(RS2Widget wc, RS2Widget oldChallenge) {
-        if (oldChallenge != null && clickRechallenge(oldChallenge) && isMoving()) {
-
+        boolean hasGold = inventory.getAmount(995) >= script.minAmount;
+        if (oldChallenge != null && hasGold && clickRechallenge(oldChallenge) && isMoving()) {
             waitFor(Random.nextGaussian(4000, 8500, 5000, 1500), new Condition() {
                 @Override
                 public boolean evaluate() {
