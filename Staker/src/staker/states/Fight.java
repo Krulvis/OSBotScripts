@@ -171,6 +171,6 @@ public class Fight extends ATState<Staker> {
 
     @Override
     public boolean validate() {
-        return ARENA_AREA.contains(myPosition());
+        return ARENA_AREA.contains(myPosition()) && script.currentDuel != null;
     }
 }
