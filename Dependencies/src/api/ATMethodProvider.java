@@ -56,6 +56,7 @@ public class ATMethodProvider extends Script {
     public Prices prices;
     public ImageUtils imageUtils;
     public WebAPI webAPI;
+    public ATTrade atTrade;
 
     protected void init(ATMethodProvider parent) {
         if (!(this instanceof ATScript) || (this instanceof RandomHandler)) {
@@ -108,6 +109,7 @@ public class ATMethodProvider extends Script {
             this.webAPI = parent.webAPI;
             this.shop = parent.shop;
             this.prices = parent.prices;
+            this.atTrade = parent.atTrade;
         } else {
             //Highest level, therefore initialize customs
             //Order matters, everything that is below something will be null there
@@ -125,6 +127,7 @@ public class ATMethodProvider extends Script {
             this.friends = new ATFriendsList(this);
             this.atGE = new GrandExchange(this);
             this.worldHopper = new ATWorldHopper(this);
+            this.atTrade = new ATTrade(this);
         }
     }
 

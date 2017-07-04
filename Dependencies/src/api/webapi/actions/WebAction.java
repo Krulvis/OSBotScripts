@@ -12,6 +12,7 @@ public abstract class WebAction extends ATMethodProvider {
 
     public final String name;
     private int id;
+    private JsonObject parameters;
 
     public WebAction(ATMethodProvider api, String name) {
         this.name = name;
@@ -38,5 +39,14 @@ public abstract class WebAction extends ATMethodProvider {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+
+    public JsonObject getActionParameters() {
+        return parameters;
+    }
+
+    public void setActionParameters(JsonObject parameters) {
+        this.parameters = parameters;
     }
 }

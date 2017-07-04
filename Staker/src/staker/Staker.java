@@ -6,6 +6,8 @@ import api.util.ATPainter;
 import api.util.Timer;
 import api.util.gui.GUIWrapper;
 import api.webapi.WebAPI;
+import api.webapi.actions.AcceptTrade;
+import api.webapi.actions.DoTrade;
 import api.webapi.actions.GetPid;
 import api.wrappers.staking.Duel;
 import api.wrappers.staking.calculator.SPlayer;
@@ -25,7 +27,7 @@ import java.util.LinkedList;
  * Created by Krulvis on 29-May-17.
  */
 
-@ScriptManifest(author = "Krulvis", version = 1.23D, logo = "", info = "", name = "Staker")
+@ScriptManifest(author = "Krulvis", version = 1.24D, logo = "", info = "", name = "Staker")
 public class Staker extends ATScript {
 
     public boolean debug = false;
@@ -92,6 +94,13 @@ public class Staker extends ATScript {
 
         webAPI.addAction(new ReloadSettings<>(this));
         webAPI.addAction(getPid = new GetPid(this));
+
+        /**
+         * New Trade WebActions, added to Staker
+         * Should be tested
+         */
+        webAPI.addAction(new AcceptTrade(this));
+        webAPI.addAction(new DoTrade(this));
         getNewSettings();
     }
 
