@@ -265,6 +265,10 @@ public class WebAPI extends ATMethodProvider {
                     WebAction action = getAction(a);
                     if (action != null) {
                         action.setId(id);
+                        JsonElement params = ob.get("parameters");
+                        if (params != null) {
+                            action.setActionParameters(params.getAsJsonObject());
+                        }
                         System.out.println("RECEIVED Action: " + action.getName() + ", ID: " + action.getId());
                         actionQueue.add(action);
                     }
